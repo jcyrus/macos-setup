@@ -1,7 +1,7 @@
 #!/bin/bash
-# install.sh - Installs Brewfile and configures the environment
+# install.sh
 
-set -e # Fail immediately if a command fails
+set -e # Fail immediately if any command fails
 
 echo "🚀 Starting Day 1 Installation..."
 
@@ -11,29 +11,32 @@ if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv)"
 else
-    echo "🍺 Homebrew already installed. Updating..."
+    echo "🍺 Homebrew found. Updating..."
     brew update
 fi
 
-# 2. Bundle Apps
-echo "📦 Installing apps from Brewfile..."
-brew bundle --file=./Brewfile || true # Continue even if one app fails
+# 2. Pre-Tap Essential Repositories
+echo "🔗 Tapping repositories..."
+brew tap leoafarias/fvm
 
-# 3. Configure Zsh + Starship
-echo "🐚 Generating .zshrc..."
-# Install Oh My Zsh (for plugin management)
+# 3. Bundle Apps
+echo "📦 Installing apps from Brewfile..."
+brew bundle --file=./Brewfile
+
+# 4. Configure Shell
+echo "🐚 Setting up Zsh..."
+# Install Oh My Zsh if missing
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
-# Overwrite .zshrc with Modern Settings
 cat <<EOT > ~/.zshrc
 # --- Path & Brew ---
 eval "\$(/opt/homebrew/bin/brew shellenv)"
 
 # --- Oh My Zsh ---
 export ZSH="\$HOME/.oh-my-zsh"
-ZSH_THEME="" # Disabled for Starship
+ZSH_THEME="" 
 plugins=(git zoxide brew docker)
 source \$ZSH/oh-my-zsh.sh
 
@@ -53,13 +56,18 @@ alias lg="lazygit"
 export PATH="\$HOME/.cargo/bin:\$PATH"
 EOT
 
-# 4. Language Setup
+# 5. Language Setup
 echo "🦀 Setting up Rust..."
-rustup-init -y --no-modify-path
+# We check if rustup-init installed correctly
+if command -v rustup-init &> /dev/null; then
+    rustup-init -y --no-modify-path
+else
+    echo "❌ Error: rustup-init not found. Brew installation failed."
+    exit 1
+fi
 
 echo "📱 Setting up Node (LTS)..."
-# FNM env needs to be eval'd in this script scope to work
 eval "$(fnm env)"
 fnm install --lts
 
-echo "✅ Done! Restart your terminal (Warp) to see your new setup."
+echo "✅ Done! Restart Warp."
