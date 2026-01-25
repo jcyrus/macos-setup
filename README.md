@@ -4,14 +4,43 @@ An opinionated, "Day 1" setup script for macOS developers.
 
 This repository automates the installation of a modern stack (Rust, Flutter, Web), CLI power tools, and essential GUI applications. It is designed to take a fresh Mac from zero to hero in under 15 minutes.
 
-## 🚀 The Stack
-* **Terminal:** Warp + Starship + Zoxide
-* **Shell:** Zsh + Oh My Zsh (Plugin Manager)
-* **Core CLI:** Bat, Eza, Ripgrep, JQ, GitHub CLI
-* **Languages:** Rust (Rustup), Node (FNM), Flutter (FVM)
-* **Browsing:** Brave (Privacy & Speed)
-* **Security:** Bitwarden + Mullvad VPN
-* **Creativity:** Figma, Darktable, VS Code
+## 📦 The App Manifest
+
+| Category | App / Tool | Description |
+| :--- | :--- | :--- |
+| **🚀 Terminal** | **Warp** | AI-Powered modern terminal with "blocks" UI. |
+| | **Starship** | Minimal, blazing fast shell prompt. |
+| | **Zoxide** | Smarter `cd` that remembers your most used paths. |
+| **🛠 Core CLI** | **Eza** | Modern replacement for `ls` with icons & git status. |
+| | **Bat** | Modern replacement for `cat` with syntax highlighting. |
+| | **Ripgrep** | Ultra-fast text search tool (`rg`). |
+| | **JQ** | Command-line JSON processor. |
+| | **GitHub CLI** | Official GitHub tool (`gh`). |
+| **🦀 Rust** | **Rustup** | Official Rust toolchain installer. |
+| | **Bacon** | Background Rust code checker (TUI). |
+| | **Cargo-Binstall** | Binary installer (skips compiling). |
+| **🌐 Web** | **FNM** | Fast Node Manager (Rust-based). |
+| | **PNPM** | Disk-efficient package manager. |
+| **📱 Mobile** | **FVM** | Flutter Version Manager. |
+| | **Scrcpy** | Low-latency Android screen mirroring. |
+| | **Cocoapods** | Dependency manager for iOS projects. |
+| **💻 GUI Core** | **VS Code** | The standard code editor. |
+| | **Raycast** | Extensible launcher (Spotlight replacement). |
+| | **Brave** | Privacy-focused browser. |
+| | **Google Chrome** | Google's web browser. |
+| | **Docker** | Containerization platform. |
+| | **TablePlus** | Native database GUI. |
+| | **Rectangle** | Window snapping manager. |
+| | **Shottr** | Precision screenshot tool. |
+| **🔒 Security** | **Bitwarden** | Open-source password manager. |
+| | **Mullvad** | Privacy-focused VPN (No email required). |
+| **🎨 Creative** | **Figma** | Interface design tool. |
+| | **Darktable** | Open-source photography workflow (Lightroom alt). |
+| | **ImageMagick** | CLI image manipulation tool. |
+| **🍿 Lifestyle** | **IINA** | Modern media player (Swift-based). |
+| | **Whisky** | Run Windows games on Mac (GPTK wrapper). |
+| | **Stremio** | Video streaming aggregator. |
+| | **Spotify** | Music streaming. |
 
 ## ⚠️ Prerequisites
 * A fresh installation of macOS.
@@ -19,30 +48,30 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 
 ## 🛠 Usage
 
-### Step 1: Clone (or Download)
-Open your terminal and clone this repo (or download the ZIP):
+### Step 1: Clone
+Open your terminal and clone this repo:
 ```bash
 git clone https://github.com/jcyrus/macos-setup.git
-cd macos-setup
+cd modern-mac-setup
 chmod +x install.sh
 
 ```
 
-### Step 2: The Install
+### Step 2: Install
 
-This script installs Homebrew, bundles all applications, and generates a fresh shell configuration.
+Run the installer. This sets up Homebrew, installs all apps, and configures Zsh/Starship.
 
 ```bash
 ./install.sh
 
 ```
 
-### Step 3: Post-Install Manual Steps
+### Step 3: Post-Install Steps
 
 1. **Warp:** Open Warp and sign in.
-2. **App Store:** Open the Mac App Store and sign in to auto-install any `mas` apps.
-3. **Raycast:** Open Raycast (`Alt+Space` recommended) and set up extensions.
-4. **Brave:** Set as default browser.
+2. **App Store:** Open the Mac App Store and sign in to auto-install `mas` apps.
+3. **Raycast:** Open Raycast (`Alt+Space`) and install extensions.
+4. **Flutter:** Run `fvm install stable` to get the latest SDK.
 
 ## 📦 Customization
 
