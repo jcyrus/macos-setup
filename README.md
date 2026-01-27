@@ -30,7 +30,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | | **Google Chrome** | Google's web browser. |
 | | **Docker** | Containerization platform. |
 | | **TablePlus** | Native database GUI. |
-| | **Rectangle** | Window snapping manager. |
+
 | | **Shottr** | Precision screenshot tool. |
 | **🔒 Security** | **Bitwarden** | Open-source password manager. |
 | | **Mullvad** | Privacy-focused VPN (No email required). |
@@ -41,6 +41,8 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | | **Whisky** | Run Windows games on Mac (GPTK wrapper). |
 | | **Stremio** | Video streaming aggregator. |
 | | **Spotify** | Music streaming. |
+| **👻 Custom** | **GhostWire** | (From jcyrus tap) |
+| | **Spektr** | (From jcyrus tap) |
 
 ## ⚠️ Prerequisites
 * A fresh installation of macOS.
@@ -63,7 +65,12 @@ Run the installer. This sets up Homebrew, installs all apps, and configures Zsh/
 
 ```bash
 ./install.sh
+```
 
+### Step 3: Updates
+To keep your apps and tools up to date, or to install new apps added to `Brewfile`:
+```bash
+./update.sh
 ```
 
 ### Step 3: Post-Install Steps
@@ -76,3 +83,6 @@ Run the installer. This sets up Homebrew, installs all apps, and configures Zsh/
 ## 📦 Customization
 
 Edit the `Brewfile` to add or remove apps before running the installer. Comment out lines with `#` to skip them.
+
+## 🤝 Contributing
+Found a bug or want to add a new tool? Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

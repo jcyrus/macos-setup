@@ -2,6 +2,7 @@
 
 # --- TAPS ---
 tap "leoafarias/fvm"
+tap "jcyrus/homebrew-tap"
 
 # --- 1. CORE CLI ---
 brew "git"
@@ -33,7 +34,7 @@ cask "raycast"
 cask "docker-desktop"
 cask "tableplus"
 cask "shottr"
-cask "rectangle"
+
 cask "appcleaner"
 cask "the-unarchiver"
 cask "font-fira-code"
@@ -52,3 +53,14 @@ cask "spotify"
 cask "iina"
 cask "stremio"
 cask "whisky"
+cask "ghostwire"
+cask "spektr"
+
+# --- 6. OPTIONAL (Uncomment to install) ---
+# cask "iterm2"
+# cask "discord"
+# cask "slack"
+# cask "zoom"
+# cask "obsidian"
+# cask "postman"
+# cask "vlc"

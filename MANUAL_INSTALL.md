@@ -24,6 +24,7 @@ Some tools require custom repositories.
 
 ```bash
 brew tap leoafarias/fvm   # For Flutter Version Management
+brew tap jcyrus/homebrew-tap # Custom Apps
 
 ```
 
@@ -65,7 +66,7 @@ brew install leoafarias/fvm/fvm
 
 ```bash
 brew install --cask warp visual-studio-code brave-browser google-chrome raycast docker-desktop
-brew install --cask tableplus shottr rectangle appcleaner the-unarchiver
+brew install --cask tableplus shottr appcleaner the-unarchiver
 brew install --cask font-fira-code font-jetbrains-mono
 
 ```
@@ -81,6 +82,7 @@ brew install --cask bitwarden mullvad-vpn
 
 ```bash
 brew install --cask figma darktable telegram spotify iina stremio whisky
+brew install --cask ghostwire spektr
 brew install imagemagick
 
 ```
