@@ -34,7 +34,7 @@ Copy and run the blocks for the tools you want.
 
 ### 🚀 Core CLI Tools (Essentials)
 
-*Modern replacements for standard unix tools.*
+_Modern replacements for standard unix tools._
 
 ```bash
 brew install git gh zoxide eza bat ripgrep jq starship mas
@@ -43,7 +43,7 @@ brew install git gh zoxide eza bat ripgrep jq starship mas
 
 ### 🦀 Rust Stack
 
-*The complete Rust toolchain.*
+_The complete Rust toolchain._
 
 ```bash
 brew install rustup-init bacon cargo-binstall
@@ -52,7 +52,7 @@ brew install rustup-init bacon cargo-binstall
 
 ### 🌐 Web & Mobile Stack
 
-*Node.js (FNM), Flutter (FVM), and Mobile utils.*
+_Node.js (FNM), Flutter (FVM), and Mobile utils._
 
 ```bash
 brew install fnm pnpm cocoapods scrcpy
@@ -62,7 +62,7 @@ brew install leoafarias/fvm/fvm
 
 ### 💻 GUI Applications (The Core)
 
-*The essential "Day 1" apps.*
+_The essential "Day 1" apps._
 
 ```bash
 brew install --cask warp visual-studio-code brave-browser google-chrome raycast orbstack
@@ -128,14 +128,14 @@ fvm global stable
 To get the fancy prompt and smart commands, you need to edit your shell config.
 
 1. **Install Oh My Zsh (Optional but recommended):**
-```bash
-sh -c "$(curl -fsSL [https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh](https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh))"
 
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-
 2. **Edit your `.zshrc`:**
-Open `~/.zshrc` and add these lines to the bottom:
+   Open `~/.zshrc` and add these lines to the bottom:
+
 ```bash
 # --- Homebrew Path ---
 eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -155,8 +155,8 @@ export PATH="$HOME/.cargo/bin:$PATH"
 
 ```
 
-
 3. **Apply Changes:**
+
 ```bash
 source ~/.zshrc
 

@@ -39,6 +39,7 @@ cask "appcleaner"
 cask "the-unarchiver"
 cask "font-fira-code"
 cask "font-jetbrains-mono"
+cask "font-0xproto-nerd-font"
 
 # --- 4. SECURITY ---
 cask "bitwarden"

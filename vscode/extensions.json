@@ -1,0 +1,34 @@
+{
+  "recommendations": [
+    // --- Core / Formatting ---
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+
+    // --- Rust ---
+    "rust-lang.rust-analyzer",
+    "tamasfe.even-better-toml",
+
+    // --- Dependency Management (Rust, Go, JS, TS, Python, Dart) ---
+    "fill-labs.dependi",
+
+    // --- Flutter & Dart ---
+    "dart-code.dart-code",
+    "dart-code.flutter",
+
+    // --- Web (TypeScript / Next.js / Tailwind) ---
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+
+    // --- UI & Themes ---
+    "pkief.material-icon-theme",
+
+    // --- Git ---
+    "eamodio.gitlens",
+    "github.copilot",
+
+    // --- Utilities ---
+    "usernamehw.errorlens",
+    "christian-kohler.path-intellisense",
+    "mikestead.dotenv"
+  ]
+}
