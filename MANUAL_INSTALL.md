@@ -74,7 +74,7 @@ brew install --cask font-fira-code font-jetbrains-mono
 ### 🔒 Security & Privacy
 
 ```bash
-brew install --cask bitwarden mullvad-vpn
+brew install --cask bitwarden tailscale
 
 ```
 

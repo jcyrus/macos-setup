@@ -33,7 +33,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 
 | | **Shottr** | Precision screenshot tool. |
 | **🔒 Security** | **Bitwarden** | Open-source password manager. |
-| | **Mullvad** | Privacy-focused VPN (No email required). |
+| | **Tailscale** | Zero-config VPN mesh network. |
 | **🎨 Creative** | **Figma** | Interface design tool. |
 | | **Darktable** | Open-source photography workflow (Lightroom alt). |
 | | **ImageMagick** | CLI image manipulation tool. |

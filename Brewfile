@@ -42,7 +42,7 @@ cask "font-jetbrains-mono"
 
 # --- 4. SECURITY ---
 cask "bitwarden"
-cask "mullvad-vpn"
+cask "tailscale"
 
 # --- 5. EXTRAS ---
 cask "figma"
