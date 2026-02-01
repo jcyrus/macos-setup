@@ -56,7 +56,7 @@ if ! grep -q "oh-my-zsh.sh" "$HOME/.zshrc"; then
 # --- Oh My Zsh (MacOS Setup) ---
 export ZSH="\$HOME/.oh-my-zsh"
 ZSH_THEME=""
-plugins=(git zoxide brew docker)
+plugins=(git zoxide brew)
 source \$ZSH/oh-my-zsh.sh
 EOT
 fi

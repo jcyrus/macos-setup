@@ -31,7 +31,7 @@ cask "visual-studio-code"
 cask "brave-browser"
 cask "google-chrome"
 cask "raycast"
-cask "docker-desktop"
+cask "orbstack"
 cask "tableplus"
 cask "shottr"
 

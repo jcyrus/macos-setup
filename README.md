@@ -28,7 +28,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | | **Raycast** | Extensible launcher (Spotlight replacement). |
 | | **Brave** | Privacy-focused browser. |
 | | **Google Chrome** | Google's web browser. |
-| | **Docker** | Containerization platform. |
+| | **OrbStack** | Fast, lightweight Docker & Linux container manager. |
 | | **TablePlus** | Native database GUI. |
 
 | | **Shottr** | Precision screenshot tool. |

@@ -65,7 +65,7 @@ brew install leoafarias/fvm/fvm
 *The essential "Day 1" apps.*
 
 ```bash
-brew install --cask warp visual-studio-code brave-browser google-chrome raycast docker-desktop
+brew install --cask warp visual-studio-code brave-browser google-chrome raycast orbstack
 brew install --cask tableplus shottr appcleaner the-unarchiver
 brew install --cask font-fira-code font-jetbrains-mono
 
