@@ -21,4 +21,21 @@ brew bundle --file=./Brewfile
 echo "🧹 Cleaning up..."
 brew cleanup
 
+echo "🦀 Updating Rust toolchain..."
+rustup update
+
+echo "📱 Refreshing Node LTS (fnm)..."
+eval "$(fnm env --use-on-cd)"
+fnm install --lts
+
+echo "🧠 Syncing Neovim plugins (LazyVim)..."
+if command -v nvim &> /dev/null; then
+	nvim --headless "+Lazy! sync" +qa
+fi
+
+echo "📚 Updating tldr cache..."
+if command -v tldr &> /dev/null; then
+	tldr --update
+fi
+
 echo "✅ Update Complete!"

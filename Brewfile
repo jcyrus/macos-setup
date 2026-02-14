@@ -4,18 +4,45 @@
 tap "leoafarias/fvm"
 tap "jcyrus/homebrew-tap"
 
-# --- 1. CORE CLI ---
+# --- TERMINAL ---
+brew "starship"
+brew "zoxide"
+brew "tmux"
+
+# --- CORE CLI ---
 brew "git"
 brew "gh"
-brew "zoxide"
 brew "eza"
 brew "bat"
 brew "ripgrep"
+brew "fd"
+brew "fzf"
 brew "jq"
-brew "starship"
+brew "tealdeer"
 brew "mas"
 
-# --- 2. STACKS ---
+# --- MODERN CLI ---
+brew "git-delta"
+brew "dust"
+brew "duf"
+brew "procs"
+brew "btop"
+brew "hyperfine"
+brew "tokei"
+brew "yazi"
+brew "tree-sitter"
+
+# --- AI / LLM ---
+brew "ollama"
+
+# --- EDITORS ---
+brew "neovim"
+
+# --- GIT TUIs ---
+brew "lazygit"
+brew "lazydocker"
+
+# --- STACKS ---
 brew "rustup-init"
 brew "bacon"
 brew "cargo-binstall"
@@ -25,7 +52,7 @@ brew "leoafarias/fvm/fvm"
 brew "cocoapods"
 brew "scrcpy"
 
-# --- 3. GUI APPS ---
+# --- GUI APPS ---
 cask "warp"
 cask "visual-studio-code"
 cask "brave-browser"
@@ -34,18 +61,21 @@ cask "raycast"
 cask "orbstack"
 cask "tableplus"
 cask "shottr"
-
+cask "bruno"
+cask "obsidian"
 cask "appcleaner"
 cask "the-unarchiver"
+
+# --- FONTS ---
 cask "font-fira-code"
 cask "font-jetbrains-mono"
 cask "font-0xproto-nerd-font"
 
-# --- 4. SECURITY ---
+# --- SECURITY ---
 cask "bitwarden"
 cask "tailscale"
 
-# --- 5. EXTRAS ---
+# --- CREATIVE / LIFESTYLE ---
 cask "figma"
 cask "darktable"
 brew "imagemagick"
@@ -54,14 +84,15 @@ cask "spotify"
 cask "iina"
 cask "stremio"
 cask "whisky"
+
+# --- CUSTOM TAP APPS ---
 cask "ghostwire"
 cask "spektr"
 
-# --- 6. OPTIONAL (Uncomment to install) ---
+# --- OPTIONAL (Uncomment to install) ---
 # cask "iterm2"
 # cask "discord"
 # cask "slack"
 # cask "zoom"
-# cask "obsidian"
 # cask "postman"
 # cask "vlc"

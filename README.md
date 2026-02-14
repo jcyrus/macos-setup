@@ -6,43 +6,66 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 
 ## 📦 The App Manifest
 
-| Category        | App / Tool         | Description                                            |
-| :-------------- | :----------------- | :----------------------------------------------------- |
-| **🚀 Terminal** | **Warp**           | AI-Powered modern terminal with "blocks" UI.           |
-|                 | **Starship**       | Minimal, blazing fast shell prompt.                    |
-|                 | **Zoxide**         | Smarter `cd` that remembers your most used paths.      |
-| **🛠 Core CLI** | **Eza**            | Modern replacement for `ls` with icons & git status.   |
-|                 | **Bat**            | Modern replacement for `cat` with syntax highlighting. |
-|                 | **Ripgrep**        | Ultra-fast text search tool (`rg`).                    |
-|                 | **JQ**             | Command-line JSON processor.                           |
-|                 | **GitHub CLI**     | Official GitHub tool (`gh`).                           |
-| **🦀 Rust**     | **Rustup**         | Official Rust toolchain installer.                     |
-|                 | **Bacon**          | Background Rust code checker (TUI).                    |
-|                 | **Cargo-Binstall** | Binary installer (skips compiling).                    |
-| **🌐 Web**      | **FNM**            | Fast Node Manager (Rust-based).                        |
-|                 | **PNPM**           | Disk-efficient package manager.                        |
-| **📱 Mobile**   | **FVM**            | Flutter Version Manager.                               |
-|                 | **Scrcpy**         | Low-latency Android screen mirroring.                  |
-|                 | **Cocoapods**      | Dependency manager for iOS projects.                   |
-| **💻 GUI Core** | **VS Code**        | The standard code editor.                              |
-|                 | **Raycast**        | Extensible launcher (Spotlight replacement).           |
-|                 | **Brave**          | Privacy-focused browser.                               |
-|                 | **Google Chrome**  | Google's web browser.                                  |
-|                 | **OrbStack**       | Fast, lightweight Docker & Linux container manager.    |
-|                 | **TablePlus**      | Native database GUI.                                   |
-
-| | **Shottr** | Precision screenshot tool. |
-| **🔒 Security** | **Bitwarden** | Open-source password manager. |
-| | **Tailscale** | Zero-config VPN mesh network. |
-| **🎨 Creative** | **Figma** | Interface design tool. |
-| | **Darktable** | Open-source photography workflow (Lightroom alt). |
-| | **ImageMagick** | CLI image manipulation tool. |
-| **🍿 Lifestyle** | **IINA** | Modern media player (Swift-based). |
-| | **Whisky** | Run Windows games on Mac (GPTK wrapper). |
-| | **Stremio** | Video streaming aggregator. |
-| | **Spotify** | Music streaming. |
-| **👻 Custom** | **GhostWire** | (From jcyrus tap) |
-| | **Spektr** | (From jcyrus tap) |
+| Category          | App / Tool         | Description                                            |
+| :---------------- | :----------------- | :----------------------------------------------------- |
+| **🚀 Terminal**   | **Warp**           | AI-powered modern terminal with blocks UI.             |
+|                   | **Starship**       | Minimal, blazing fast shell prompt.                    |
+|                   | **Zoxide**         | Smarter `cd` that remembers your most used paths.      |
+|                   | **tmux**           | Terminal multiplexer with persistent sessions.         |
+| **🛠 Core CLI**   | **Eza**            | Modern replacement for `ls` with icons & git status.   |
+|                   | **Bat**            | Modern replacement for `cat` with syntax highlighting. |
+|                   | **Ripgrep**        | Ultra-fast text search tool (`rg`).                    |
+|                   | **fd**             | Fast, user-friendly `find` replacement.                |
+|                   | **fzf**            | Fuzzy finder for files, history, and commands.         |
+|                   | **JQ**             | Command-line JSON processor.                           |
+|                   | **GitHub CLI**     | Official GitHub tool (`gh`).                           |
+|                   | **tealdeer**       | Fast `tldr` client with example-driven docs.           |
+| **⚡ Modern CLI** | **git-delta**      | Syntax-highlighted side-by-side git diffs.             |
+|                   | **dust**           | Intuitive disk usage viewer (`du` replacement).        |
+|                   | **duf**            | Modern disk free utility (`df` replacement).           |
+|                   | **procs**          | Modern process viewer (`ps` replacement).              |
+|                   | **btop**           | Resource monitor for CPU/memory/network/processes.     |
+|                   | **hyperfine**      | Reliable command-line benchmarking.                    |
+|                   | **tokei**          | Fast code statistics by language.                      |
+|                   | **yazi**           | Blazing-fast terminal file manager.                    |
+| **🤖 AI / LLM**   | **Ollama**         | Run local LLMs on device.                              |
+| **🧠 Editors**    | **VS Code**        | GUI editor with curated extensions and settings.       |
+|                   | **Neovim**         | Terminal editor powered by LazyVim.                    |
+| **🌿 Git TUIs**   | **Lazygit**        | Fast terminal UI for git workflows.                    |
+|                   | **Lazydocker**     | Terminal UI for Docker/OrbStack workflows.             |
+| **🦀 Rust**       | **Rustup**         | Official Rust toolchain installer.                     |
+|                   | **Bacon**          | Background Rust code checker (TUI).                    |
+|                   | **Cargo-Binstall** | Binary installer (skips compiling).                    |
+| **🌐 Web**        | **FNM**            | Fast Node.js manager (Rust-based).                     |
+|                   | **PNPM**           | Disk-efficient package manager.                        |
+| **📱 Mobile**     | **FVM**            | Flutter Version Manager.                               |
+|                   | **Scrcpy**         | Low-latency Android screen mirroring.                  |
+|                   | **Cocoapods**      | Dependency manager for iOS projects.                   |
+| **💻 GUI Core**   | **Raycast**        | Extensible launcher (Spotlight replacement).           |
+|                   | **Brave**          | Privacy-focused browser.                               |
+|                   | **Google Chrome**  | Google's web browser.                                  |
+|                   | **OrbStack**       | Fast container manager for macOS.                      |
+|                   | **TablePlus**      | Native database GUI.                                   |
+|                   | **Shottr**         | Precision screenshot tool.                             |
+|                   | **Bruno**          | Open-source API client.                                |
+|                   | **AppCleaner**     | Cleanly uninstall macOS apps.                          |
+|                   | **The Unarchiver** | Archive extraction utility.                            |
+| **🔒 Security**   | **Bitwarden**      | Open-source password manager.                          |
+|                   | **Tailscale**      | Zero-config VPN mesh network.                          |
+| **🎨 Creative**   | **Figma**          | Interface design tool.                                 |
+|                   | **Darktable**      | Open-source photography workflow.                      |
+|                   | **ImageMagick**    | CLI image manipulation tool.                           |
+| **📓 Notes**      | **Obsidian**       | Local-first notes and knowledge base.                  |
+| **🍿 Lifestyle**  | **Telegram**       | Messaging client.                                      |
+|                   | **IINA**           | Modern media player.                                   |
+|                   | **Whisky**         | Run Windows games on Mac (GPTK wrapper).               |
+|                   | **Stremio**        | Video streaming aggregator.                            |
+|                   | **Spotify**        | Music streaming.                                       |
+| **🔤 Fonts**      | **0xProto Nerd**   | Recommended coding font for terminal/editor icons.     |
+|                   | **Fira Code**      | Monospaced programming font.                           |
+|                   | **JetBrains Mono** | Monospaced programming font.                           |
+| **👻 Custom**     | **GhostWire**      | (From jcyrus tap)                                      |
+|                   | **Spektr**         | (From jcyrus tap)                                      |
 
 ## ⚠️ Prerequisites
 
@@ -57,14 +80,14 @@ Open your terminal and clone this repo:
 
 ```bash
 git clone https://github.com/jcyrus/macos-setup.git
-cd modern-mac-setup
+cd macos-setup
 chmod +x install.sh
 
 ```
 
 ### Step 2: Install
 
-Run the installer. This sets up Homebrew, installs all apps, and configures Zsh/Starship.
+Run the installer. This sets up Homebrew, installs all apps, and configures Zsh, Neovim, and tmux.
 
 ```bash
 ./install.sh
@@ -84,7 +107,50 @@ To keep your apps and tools up to date, or to install new apps added to `Brewfil
 2. **App Store:** Open the Mac App Store and sign in to auto-install `mas` apps.
 3. **Raycast:** Open Raycast (`Alt+Space`) and install extensions.
 4. **Flutter:** Run `fvm install stable` to get the latest SDK.
-5. **VS Code:** Apply the settings and install recommended extensions (see below).
+5. **Ollama:** Pull your first model: `ollama pull llama3.2`.
+6. **Neovim:** Run `nvim` once to bootstrap LazyVim and install plugins/LSP tools.
+7. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins.
+8. **VS Code:** Apply the settings and install recommended extensions (see below).
+
+### Step 5: Quick Verification (Optional)
+
+Run these grouped checks to verify the setup quickly.
+
+**Core CLI**
+
+```bash
+git --version && gh --version && rg --version && fzf --version
+eza --version && bat --version && zoxide --version
+```
+
+**Rust / Web / Mobile**
+
+```bash
+rustc --version && cargo --version && bacon --version
+node --version && pnpm --version
+fvm --version && pod --version
+```
+
+**Neovim / tmux / Git TUIs**
+
+```bash
+nvim --version | head -n 1
+tmux -V
+lazygit --version && lazydocker --version
+```
+
+**AI / LLM**
+
+```bash
+ollama --version
+ollama list
+```
+
+If `ollama list` is empty, pull a model:
+
+```bash
+ollama pull llama3.2
+```
 
 ## 🎨 VS Code Setup
 
@@ -121,9 +187,28 @@ code --install-extension mikestead.dotenv
 
 > **Note:** The settings use `0xProto Nerd Font Mono`. Install it via: `brew install --cask font-0xproto-nerd-font`
 
+## 🧠 Neovim Setup (LazyVim)
+
+This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.config/nvim` during `./install.sh`.
+
+### Enabled language extras
+
+- Rust
+- Dart/Flutter
+- Tailwind CSS
+- TypeScript/JavaScript
+- TOML
+- Git
+
+### Notes
+
+- LazyVim bootstraps on first run of `nvim`.
+- Mason installs language servers/debug tools automatically.
+- Use `:LazyExtras` to toggle additional modules.
+
 ## 📦 Customization
 
-Edit the `Brewfile` to add or remove apps before running the installer. Comment out lines with `#` to skip them.
+Edit `Brewfile` to add or remove tools before running the installer. Comment out lines with `#` to skip optional apps.
 
 ## 🤝 Contributing
 

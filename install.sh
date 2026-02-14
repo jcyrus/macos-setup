@@ -3,6 +3,8 @@
 
 set -e # Fail immediately if any command fails
 
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo "🚀 Starting Day 1 Installation..."
 
 # 1. Install Homebrew
@@ -18,6 +20,7 @@ fi
 # 2. Pre-Tap Essential Repositories
 echo "🔗 Tapping repositories..."
 brew tap leoafarias/fvm
+brew tap jcyrus/homebrew-tap
 
 # 3. Bundle Apps
 echo "📦 Installing apps from Brewfile..."
@@ -39,10 +42,17 @@ if [ -f "$HOME/.zshrc" ]; then
     cp "$HOME/.zshrc" "$HOME/.zshrc.backup"
 fi
 
-# Function to append if not exists
-append_if_missing() {
-    grep -qF "$1" "$HOME/.zshrc" || echo "$1" >> "$HOME/.zshrc"
-}
+touch "$HOME/.zshrc"
+
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+fi
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+fi
 
 # Ensure Homebrew is in path (idempotent)
 if ! grep -q "shellenv" "$HOME/.zshrc"; then
@@ -56,9 +66,11 @@ if ! grep -q "oh-my-zsh.sh" "$HOME/.zshrc"; then
 # --- Oh My Zsh (MacOS Setup) ---
 export ZSH="\$HOME/.oh-my-zsh"
 ZSH_THEME=""
-plugins=(git zoxide brew)
+plugins=(git zoxide brew zsh-autosuggestions zsh-syntax-highlighting fzf)
 source \$ZSH/oh-my-zsh.sh
 EOT
+elif grep -q "^plugins=(" "$HOME/.zshrc"; then
+    sed -i '' 's/^plugins=(.*/plugins=(git zoxide brew zsh-autosuggestions zsh-syntax-highlighting fzf)/' "$HOME/.zshrc"
 fi
 
 # Tools & Aliases (Use a marker to avoid dupes)
@@ -75,9 +87,54 @@ alias ll="eza -l --icons"
 alias cat="bat"
 alias f="fvm flutter"
 alias lg="lazygit"
+alias help="tldr"
 
 export PATH="\$HOME/.cargo/bin:\$PATH"
 EOT
+fi
+
+if ! grep -q "fzf --zsh" "$HOME/.zshrc"; then
+    cat <<'EOT' >> ~/.zshrc
+
+# --- fzf (MacOS Setup) ---
+if [ -f "$(brew --prefix)/opt/fzf/shell/completion.zsh" ]; then
+  source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+fi
+if [ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ]; then
+  source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+fi
+EOT
+fi
+
+echo "⚙️ Configuring Git defaults..."
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+
+echo "🧠 Setting up Neovim config..."
+mkdir -p "$HOME/.config"
+
+needs_nvim_migration=false
+
+if [ -e "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
+    mv "$HOME/.config/nvim" "$HOME/.config/nvim.backup.$(date +%s)"
+    needs_nvim_migration=true
+fi
+
+ln -sfn "$REPO_DIR/nvim" "$HOME/.config/nvim"
+
+if [ "$needs_nvim_migration" = true ]; then
+    for nvim_state_dir in "$HOME/.local/share/nvim" "$HOME/.local/state/nvim" "$HOME/.cache/nvim"; do
+        if [ -d "$nvim_state_dir" ]; then
+            mv "$nvim_state_dir" "$nvim_state_dir.backup.$(date +%s)"
+        fi
+    done
+fi
+
+echo "🪟 Setting up tmux..."
+ln -sfn "$REPO_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+mkdir -p "$HOME/.tmux/plugins"
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
 
 # 5. Language Setup
@@ -94,4 +151,4 @@ echo "📱 Setting up Node (LTS)..."
 eval "$(fnm env)"
 fnm install --lts
 
-echo "✅ Done! Restart Warp."
+echo "✅ Done! Restart your terminal, then open nvim once to bootstrap LazyVim."

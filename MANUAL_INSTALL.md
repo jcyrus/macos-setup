@@ -1,163 +1,209 @@
 # 🛠 Manual Installation Guide
 
-If you prefer not to run the automated `install.sh` script, you can install everything manually using the commands below.
+If you prefer not to run `install.sh`, use this guide to install and configure the same setup manually.
 
 ## 1. Prerequisites
 
-First, you need to install **Homebrew**, the package manager for macOS. Open your terminal and run:
+Install Homebrew:
 
 ```bash
-/bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
-
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-Once installed, add it to your PATH (if you are on an M1/M2/M3 Mac):
+Add Homebrew to your shell on Apple Silicon:
 
 ```bash
 eval "$(/opt/homebrew/bin/brew shellenv)"
-
 ```
 
-## 2. Add Essential Repositories (Taps)
-
-Some tools require custom repositories.
+## 2. Add Required Taps
 
 ```bash
-brew tap leoafarias/fvm   # For Flutter Version Management
-brew tap jcyrus/homebrew-tap # Custom Apps
-
+brew tap leoafarias/fvm
+brew tap jcyrus/homebrew-tap
 ```
 
-## 3. The Installation Blocks
+## 3. Install Tooling
 
-Copy and run the blocks for the tools you want.
-
-### 🚀 Core CLI Tools (Essentials)
-
-_Modern replacements for standard unix tools._
+### 🚀 Terminal
 
 ```bash
-brew install git gh zoxide eza bat ripgrep jq starship mas
-
+brew install starship zoxide tmux
 ```
 
-### 🦀 Rust Stack
+### 🛠 Core CLI
 
-_The complete Rust toolchain._
+```bash
+brew install git gh eza bat ripgrep fd fzf jq tealdeer mas
+```
+
+### ⚡ Modern CLI
+
+```bash
+brew install git-delta dust duf procs btop hyperfine tokei yazi tree-sitter
+```
+
+### 🤖 AI / LLM
+
+```bash
+brew install ollama
+```
+
+### 🧠 Editors + Git TUIs
+
+```bash
+brew install neovim lazygit lazydocker
+```
+
+### 🦀 Rust + 🌐 Web + 📱 Mobile
 
 ```bash
 brew install rustup-init bacon cargo-binstall
-
+brew install fnm pnpm leoafarias/fvm/fvm cocoapods scrcpy
 ```
 
-### 🌐 Web & Mobile Stack
-
-_Node.js (FNM), Flutter (FVM), and Mobile utils._
-
-```bash
-brew install fnm pnpm cocoapods scrcpy
-brew install leoafarias/fvm/fvm
-
-```
-
-### 💻 GUI Applications (The Core)
-
-_The essential "Day 1" apps._
+### 💻 GUI Apps
 
 ```bash
 brew install --cask warp visual-studio-code brave-browser google-chrome raycast orbstack
-brew install --cask tableplus shottr appcleaner the-unarchiver
-brew install --cask font-fira-code font-jetbrains-mono
-
+brew install --cask tableplus shottr bruno obsidian appcleaner the-unarchiver
 ```
 
-### 🔒 Security & Privacy
+### 🔤 Fonts
+
+```bash
+brew install --cask font-fira-code font-jetbrains-mono font-0xproto-nerd-font
+```
+
+### 🔒 Security
 
 ```bash
 brew install --cask bitwarden tailscale
-
 ```
 
-### 🎨 Creative & Lifestyle (Optional)
+### 🎨 Creative + 🍿 Lifestyle + 👻 Custom
 
 ```bash
 brew install --cask figma darktable telegram spotify iina stremio whisky
-brew install --cask ghostwire spektr
 brew install imagemagick
-
+brew install --cask ghostwire spektr
 ```
 
----
+## 4. Shell and Language Setup
 
-## 4. Configuration (Crucial)
-
-Installing the tools is only half the battle. You need to hook them up to your shell to make them work.
-
-### Step A: Setup Rust
-
-Run the initializer to set up the toolchain.
+### Rust
 
 ```bash
-rustup-init -y
-
+rustup-init -y --no-modify-path
 ```
 
-### Step B: Setup Node.js (FNM)
-
-Initialize FNM and install the latest Node version.
+### Node (FNM)
 
 ```bash
-# Add this to your shell config later, but for now run:
 eval "$(fnm env --use-on-cd)"
 fnm install --lts
-
 ```
 
-### Step C: Setup Flutter (FVM)
-
-Install the stable version of Flutter.
+### Flutter (FVM)
 
 ```bash
 fvm install stable
 fvm global stable
-
 ```
 
-### Step D: Configure Zsh & Starship
-
-To get the fancy prompt and smart commands, you need to edit your shell config.
-
-1. **Install Oh My Zsh (Optional but recommended):**
+### Oh My Zsh + Plugins
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 ```
 
-2. **Edit your `.zshrc`:**
-   Open `~/.zshrc` and add these lines to the bottom:
+Add this to `~/.zshrc`:
 
 ```bash
-# --- Homebrew Path ---
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# --- Tool Initializations ---
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME=""
+plugins=(git zoxide brew zsh-autosuggestions zsh-syntax-highlighting fzf)
+source $ZSH/oh-my-zsh.sh
+
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd)"
 
-# --- Aliases ---
+if [ -f "$(brew --prefix)/opt/fzf/shell/completion.zsh" ]; then
+   source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+fi
+if [ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ]; then
+   source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+fi
+
 alias ls="eza --icons"
+alias ll="eza -l --icons"
 alias cat="bat"
 alias f="fvm flutter"
+alias lg="lazygit"
+alias help="tldr"
 
-# --- Path Additions ---
 export PATH="$HOME/.cargo/bin:$PATH"
-
 ```
 
-3. **Apply Changes:**
+Apply changes:
 
 ```bash
 source ~/.zshrc
+```
 
+## 5. Neovim (LazyVim)
+
+From the repo root (`macos-setup`), symlink the included Neovim config:
+
+```bash
+mkdir -p ~/.config
+ln -sfn "$(pwd)/nvim" ~/.config/nvim
+```
+
+Run Neovim once to bootstrap plugins:
+
+```bash
+nvim
+```
+
+Then enable extras via `:LazyExtras`:
+
+- `lang.rust`
+- `lang.dart`
+- `lang.tailwind`
+- `lang.typescript`
+- `lang.toml`
+- `lang.git`
+
+## 6. tmux + TPM
+
+Symlink the included tmux config and install TPM:
+
+```bash
+ln -sfn "$(pwd)/tmux/.tmux.conf" ~/.tmux.conf
+mkdir -p ~/.tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+Open tmux and press `prefix + I` to install plugins.
+
+## 7. Quick Verification (Optional)
+
+Use the canonical verification commands in [README.md](README.md#step-5-quick-verification-optional) to validate this manual setup.
+
+Quick smoke test:
+
+```bash
+git --version && nvim --version | head -n 1 && tmux -V && ollama --version
+```
+
+## 8. Optional Extras
+
+```bash
+brew install --cask iterm2 discord slack zoom postman vlc
 ```
