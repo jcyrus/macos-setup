@@ -1,0 +1,292 @@
+format = """
+$os\
+$directory\
+$git_branch\
+$git_status\
+$fill\
+$aws\
+$azure\
+$bun\
+$deno\
+$elixir\
+$erlang\
+$gcloud\
+$helm\
+$julia\
+$kubernetes\
+$nim\
+$opa\
+$perl\
+$pulumi\
+$rlang\
+$scala\
+$terraform\
+$zig\
+$c\
+$cpp\
+$dart\
+$docker_context\
+$golang\
+$java\
+$kotlin\
+$lua\
+$nodejs\
+$package\
+$php\
+$python\
+$ruby\
+$rust\
+$swift\
+$cmd_duration\
+$line_break\
+$character
+"""
+
+palette = "catppuccin_mocha"
+add_newline = false
+
+[fill]
+symbol = " "
+
+[character]
+success_symbol = "[󰄛](bold green)"
+error_symbol = "[󰄛](bold red)"
+vimcmd_symbol = "[󰘳](bold mauve)"
+
+[cmd_duration]
+min_time = 500
+format = '[$duration](fg:overlay0 bg:surface0)'
+
+[directory]
+format = "[](fg:blue)[ $path]($style)[](fg:blue)"
+style = "fg:base bg:blue"
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " 󰌾"
+
+[git_branch]
+format = "[](fg:green)[󰘬 $branch]($style)[](fg:green)"
+style = "fg:base bg:green"
+
+[git_status]
+format = "[](fg:teal)[$all_status$ahead_behind]($style)[](fg:teal)"
+style = "fg:base bg:teal"
+ahead = "󰁝${count}"
+behind = "󰁅${count}"
+diverged = "󰹹󰁝${ahead_count}󰁅${behind_count}"
+conflicted = "󰞇${count}"
+deleted = "󰆴${count}"
+modified = "󰏫${count}"
+renamed = "󰑕${count}"
+staged = "󰄬${count}"
+stashed = "󰏗${count}"
+untracked = "󰞋${count}"
+
+[package]
+symbol = "󰏗 "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+style = "fg:base bg:peach"
+
+[nodejs]
+symbol = " "
+format = "[](fg:green)[$symbol$version]($style)[](fg:green)"
+style = "fg:base bg:green"
+
+[rust]
+symbol = "󱘗 "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+style = "fg:base bg:red"
+
+[python]
+symbol = " "
+format = '[](fg:yellow)[$symbol$version( \($virtualenv\))]($style)[](fg:yellow)'
+style = "fg:base bg:yellow"
+
+[golang]
+symbol = " "
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire)"
+style = "fg:base bg:sapphire"
+
+[java]
+symbol = " "
+format = "[](fg:maroon)[$symbol$version]($style)[](fg:maroon)"
+style = "fg:base bg:maroon"
+
+[dart]
+symbol = " "
+format = "[](fg:sky)[$symbol$version]($style)[](fg:sky)"
+style = "fg:base bg:sky"
+
+[docker_context]
+symbol = " "
+format = "[](fg:blue)[$symbol$context]($style)[](fg:blue)"
+style = "fg:base bg:blue"
+
+[lua]
+symbol = " "
+format = "[](fg:lavender)[$symbol$version]($style)[](fg:lavender)"
+style = "fg:base bg:lavender"
+
+[c]
+symbol = " "
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal)"
+style = "fg:base bg:teal"
+
+[cpp]
+symbol = " "
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal)"
+style = "fg:base bg:teal"
+
+[ruby]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+style = "fg:base bg:red"
+
+[swift]
+symbol = " "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+style = "fg:base bg:peach"
+
+[php]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve)"
+style = "fg:base bg:mauve"
+
+[kotlin]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve)"
+style = "fg:base bg:mauve"
+
+[os]
+disabled = false
+format = '[](fg:mauve)[$symbol]($style)[](fg:mauve)'
+style = "fg:base bg:mauve"
+
+[aws]
+symbol = " "
+format = '[](fg:peach)[$symbol$profile( \($region\))]($style)[](fg:peach)'
+style = "fg:base bg:peach"
+
+[gcloud]
+symbol = "󱇶 "
+format = '[](fg:blue)[$symbol$account(@$domain)( \($project\))]($style)[](fg:blue)'
+style = "fg:base bg:blue"
+
+[azure]
+symbol = "󰠅 "
+format = '[](fg:blue)[$symbol($subscription)]($style)[](fg:blue)'
+style = "fg:base bg:blue"
+
+[bun]
+symbol = " "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+style = "fg:base bg:peach"
+
+[deno]
+symbol = " "
+format = "[](fg:green)[$symbol$version]($style)[](fg:green)"
+style = "fg:base bg:green"
+
+[elixir]
+symbol = " "
+format = '[](fg:mauve)[$symbol$version( \(OTP $otp_version\))]($style)[](fg:mauve)'
+style = "fg:base bg:mauve"
+
+[erlang]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+style = "fg:base bg:red"
+
+[helm]
+symbol = "󰠳 "
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire)"
+style = "fg:base bg:sapphire"
+
+[julia]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve)"
+style = "fg:base bg:mauve"
+
+[kubernetes]
+disabled = false
+symbol = "󱃾 "
+format = '[](fg:teal)[$symbol$context( \($namespace\))]($style)[](fg:teal)'
+style = "fg:base bg:teal"
+detect_files = ["k8s", "kubeconfig", "Chart.yaml", "helmfile.yaml"]
+
+[nim]
+symbol = " "
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow)"
+style = "fg:base bg:yellow"
+
+[opa]
+symbol = "󱤊 "
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue)"
+style = "fg:base bg:blue"
+
+[perl]
+symbol = " "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+style = "fg:base bg:peach"
+
+[pulumi]
+symbol = " "
+format = "[](fg:mauve)[$symbol$stack]($style)[](fg:mauve)"
+style = "fg:base bg:mauve"
+
+[rlang]
+symbol = "󰟔 "
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire)"
+style = "fg:base bg:sapphire"
+
+[scala]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+style = "fg:base bg:red"
+
+[terraform]
+symbol = "󱁢 "
+format = "[](fg:lavender)[$symbol$workspace]($style)[](fg:lavender)"
+style = "fg:base bg:lavender"
+
+[zig]
+symbol = " "
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow)"
+style = "fg:base bg:yellow"
+
+[os.symbols]
+Macos = "󰀵 "
+Linux = "󰌽 "
+Windows = "󰍲 "
+Ubuntu = "󰕈 "
+Arch = "󰣇 "
+Debian = "󰣚 "
+Fedora = "󰣛 "
+
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"

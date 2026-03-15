@@ -5,6 +5,7 @@ tap "leoafarias/fvm"
 tap "jcyrus/homebrew-tap"
 
 # --- TERMINAL ---
+cask "ghostty"
 brew "starship"
 brew "zoxide"
 brew "tmux"
@@ -69,6 +70,7 @@ cask "the-unarchiver"
 # --- FONTS ---
 cask "font-fira-code"
 cask "font-jetbrains-mono"
+cask "font-jetbrains-mono-nerd-font"
 cask "font-0xproto-nerd-font"
 
 # --- SECURITY ---

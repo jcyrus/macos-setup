@@ -137,6 +137,56 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
 
+CATPPUCCIN_TMUX_REPO="https://github.com/catppuccin/tmux.git"
+CATPPUCCIN_TMUX_VERSION="v2.1.3"
+CATPPUCCIN_TMUX_DIR="$HOME/.tmux/plugins/tmux"
+
+backup_and_install_catppuccin_tmux() {
+    if [ -e "$CATPPUCCIN_TMUX_DIR" ]; then
+        mv "$CATPPUCCIN_TMUX_DIR" "$CATPPUCCIN_TMUX_DIR.backup.$(date +%s)"
+    fi
+    git clone -b "$CATPPUCCIN_TMUX_VERSION" "$CATPPUCCIN_TMUX_REPO" "$CATPPUCCIN_TMUX_DIR"
+}
+
+if [ -d "$CATPPUCCIN_TMUX_DIR/.git" ]; then
+    origin_url="$(git -C "$CATPPUCCIN_TMUX_DIR" remote get-url origin 2>/dev/null || true)"
+    if [ "$origin_url" = "$CATPPUCCIN_TMUX_REPO" ] || [ "$origin_url" = "git@github.com:catppuccin/tmux.git" ]; then
+        if ! git -C "$CATPPUCCIN_TMUX_DIR" diff --quiet || ! git -C "$CATPPUCCIN_TMUX_DIR" diff --cached --quiet; then
+            backup_and_install_catppuccin_tmux
+        else
+            git -C "$CATPPUCCIN_TMUX_DIR" fetch --tags --quiet
+            git -C "$CATPPUCCIN_TMUX_DIR" checkout --quiet -f "$CATPPUCCIN_TMUX_VERSION"
+        fi
+    else
+        backup_and_install_catppuccin_tmux
+    fi
+elif [ ! -e "$CATPPUCCIN_TMUX_DIR" ]; then
+    git clone -b "$CATPPUCCIN_TMUX_VERSION" "$CATPPUCCIN_TMUX_REPO" "$CATPPUCCIN_TMUX_DIR"
+else
+    backup_and_install_catppuccin_tmux
+fi
+
+echo "👻 Setting up Ghostty..."
+needs_ghostty_migration=false
+
+if [ -e "$HOME/.config/ghostty" ] && [ ! -L "$HOME/.config/ghostty" ]; then
+    mv "$HOME/.config/ghostty" "$HOME/.config/ghostty.backup.$(date +%s)"
+    needs_ghostty_migration=true
+fi
+
+ln -sfn "$REPO_DIR/ghostty" "$HOME/.config/ghostty"
+
+if [ "$needs_ghostty_migration" = true ]; then
+    echo "📝 Existing Ghostty config backed up."
+fi
+
+echo "✨ Setting up Starship config..."
+if [ -e "$HOME/.config/starship.toml" ] && [ ! -L "$HOME/.config/starship.toml" ]; then
+    mv "$HOME/.config/starship.toml" "$HOME/.config/starship.toml.backup.$(date +%s)"
+fi
+
+ln -sfn "$REPO_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
+
 # 5. Language Setup
 echo "🦀 Setting up Rust..."
 # We check if rustup-init installed correctly

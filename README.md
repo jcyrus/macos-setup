@@ -9,6 +9,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | Category          | App / Tool         | Description                                            |
 | :---------------- | :----------------- | :----------------------------------------------------- |
 | **🚀 Terminal**   | **Warp**           | AI-powered modern terminal with blocks UI.             |
+|                   | **Ghostty**        | GPU-accelerated terminal with Catppuccin config.       |
 |                   | **Starship**       | Minimal, blazing fast shell prompt.                    |
 |                   | **Zoxide**         | Smarter `cd` that remembers your most used paths.      |
 |                   | **tmux**           | Terminal multiplexer with persistent sessions.         |
@@ -109,8 +110,9 @@ To keep your apps and tools up to date, or to install new apps added to `Brewfil
 4. **Flutter:** Run `fvm install stable` to get the latest SDK.
 5. **Ollama:** Pull your first model: `ollama pull llama3.2`.
 6. **Neovim:** Run `nvim` once to bootstrap LazyVim and install plugins/LSP tools.
-7. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins.
-8. **VS Code:** Apply the settings and install recommended extensions (see below).
+7. **Ghostty:** Open Ghostty after install to verify the bundled Catppuccin Mocha config and font rendering.
+8. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins, including Catppuccin.
+9. **VS Code:** Apply the settings and install recommended extensions (see below).
 
 ### Step 5: Quick Verification (Optional)
 
@@ -199,6 +201,27 @@ This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.
 - TypeScript/JavaScript
 - TOML
 - Git
+
+## 🖥 Terminal Setup
+
+`./install.sh` wires up the terminal stack automatically by symlinking the repo configs into your home directory.
+
+### Included configs
+
+- **Ghostty:** The `ghostty/` directory is linked to `~/.config/ghostty`, so Ghostty uses `~/.config/ghostty/config` with `0xProto Nerd Font Mono`, Catppuccin Mocha colors, translucent background, hidden title bar, and tuned cursor/padding settings.
+- **Starship:** `starship/starship.toml` is linked to `~/.config/starship.toml` and uses a Catppuccin Mocha powerline prompt with Nerd Font icons.
+- **tmux:** `tmux/.tmux.conf` is linked to `~/.tmux.conf` and uses TPM plus `catppuccin/tmux` for a top status bar with session, app, user, and time segments.
+
+### Prerequisites
+
+- `0xProto Nerd Font Mono` for the shared terminal/editor font setup.
+- `font-jetbrains-mono-nerd-font` is installed by default as a secondary Nerd Font.
+
+### One-line install
+
+```bash
+git clone https://github.com/jcyrus/macos-setup.git && cd macos-setup && chmod +x install.sh && ./install.sh
+```
 
 ### Notes
 
