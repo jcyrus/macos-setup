@@ -208,14 +208,14 @@ This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.
 
 ### Included configs
 
-- **Ghostty:** `ghostty/config` is linked to `~/.config/ghostty/config` with `0xProto Nerd Font Mono`, Catppuccin Mocha colors, translucent background, hidden title bar, and tuned cursor/padding settings.
+- **Ghostty:** The `ghostty/` directory is linked to `~/.config/ghostty`, so Ghostty uses `~/.config/ghostty/config` with `0xProto Nerd Font Mono`, Catppuccin Mocha colors, translucent background, hidden title bar, and tuned cursor/padding settings.
 - **Starship:** `starship/starship.toml` is linked to `~/.config/starship.toml` and uses a Catppuccin Mocha powerline prompt with Nerd Font icons.
 - **tmux:** `tmux/.tmux.conf` is linked to `~/.tmux.conf` and uses TPM plus `catppuccin/tmux` for a top status bar with session, app, user, and time segments.
 
 ### Prerequisites
 
 - `0xProto Nerd Font Mono` for the shared terminal/editor font setup.
-- `font-jetbrains-mono-nerd-font` if you want a secondary Nerd Font installed alongside the default.
+- `font-jetbrains-mono-nerd-font` is installed by default as a secondary Nerd Font.
 
 ### One-line install
 
