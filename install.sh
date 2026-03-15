@@ -136,7 +136,13 @@ mkdir -p "$HOME/.tmux/plugins"
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
-if [ ! -d "$HOME/.tmux/plugins/tmux" ]; then
+if [ -d "$HOME/.tmux/plugins/tmux/.git" ]; then
+    git -C "$HOME/.tmux/plugins/tmux" fetch --tags --quiet
+    git -C "$HOME/.tmux/plugins/tmux" checkout --quiet v2.1.3
+elif [ ! -e "$HOME/.tmux/plugins/tmux" ]; then
+    git clone -b v2.1.3 https://github.com/catppuccin/tmux.git "$HOME/.tmux/plugins/tmux"
+else
+    mv "$HOME/.tmux/plugins/tmux" "$HOME/.tmux/plugins/tmux.backup.$(date +%s)"
     git clone -b v2.1.3 https://github.com/catppuccin/tmux.git "$HOME/.tmux/plugins/tmux"
 fi
 

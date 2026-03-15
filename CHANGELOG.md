@@ -8,10 +8,10 @@ The format is based on Keep a Changelog.
 
 ### Added
 
-- Added a Ghostty config with manual Catppuccin Mocha colors, translucent background, blur, tuned padding, and Nerd Font settings.
-- Added a Starship prompt config with a Catppuccin Mocha powerline layout, Nerd Font icon overrides, and a two-line prompt with command duration above the prompt character.
-- Added Catppuccin-based tmux theming with a top status bar and session, application, user, and time segments.
-- Added Homebrew install entries for Ghostty and JetBrains Mono Nerd Font.
+- Ghostty config with manual Catppuccin Mocha colors, translucent background, blur, tuned padding, and Nerd Font settings.
+- Starship prompt config with a Catppuccin Mocha powerline layout, Nerd Font icon overrides, and a two-line prompt with command duration above the prompt character.
+- Catppuccin-based tmux theming with a top status bar and session, application, user, and time segments.
+- Homebrew install entries for Ghostty and JetBrains Mono Nerd Font.
 
 ### Changed
 
