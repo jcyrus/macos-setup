@@ -136,6 +136,30 @@ mkdir -p "$HOME/.tmux/plugins"
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
+if [ ! -d "$HOME/.tmux/plugins/tmux" ]; then
+    git clone -b v2.1.3 https://github.com/catppuccin/tmux.git "$HOME/.tmux/plugins/tmux"
+fi
+
+echo "👻 Setting up Ghostty..."
+needs_ghostty_migration=false
+
+if [ -e "$HOME/.config/ghostty" ] && [ ! -L "$HOME/.config/ghostty" ]; then
+    mv "$HOME/.config/ghostty" "$HOME/.config/ghostty.backup.$(date +%s)"
+    needs_ghostty_migration=true
+fi
+
+ln -sfn "$REPO_DIR/ghostty" "$HOME/.config/ghostty"
+
+if [ "$needs_ghostty_migration" = true ]; then
+    echo "📝 Existing Ghostty config backed up."
+fi
+
+echo "✨ Setting up Starship config..."
+if [ -e "$HOME/.config/starship.toml" ] && [ ! -L "$HOME/.config/starship.toml" ]; then
+    mv "$HOME/.config/starship.toml" "$HOME/.config/starship.toml.backup.$(date +%s)"
+fi
+
+ln -sfn "$REPO_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
 # 5. Language Setup
 echo "🦀 Setting up Rust..."
