@@ -248,7 +248,7 @@ else
     if [ -d "/Applications/OrbStack.app" ]; then
         fail "docker CLI" "OrbStack installed but docker is not on PATH"
         hint "open OrbStack → Settings → enable CLI integration, or run:"
-        hint "sudo ln -sfn /Applications/OrbStack.app/Contents/MacOS/xbin/docker /usr/local/bin/docker"
+        hint "ln -sfn /Applications/OrbStack.app/Contents/MacOS/xbin/docker /opt/homebrew/bin/docker"
     else
         warn "docker CLI" "not installed (OrbStack or Docker Desktop needed)"
     fi
