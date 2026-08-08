@@ -24,7 +24,9 @@
 
     // --- Git ---
     "eamodio.gitlens",
-    "github.copilot",
+    // github.copilot is intentionally omitted: VS Code 1.132+ bundles Copilot,
+    // and installing the marketplace extension fails because it tries to
+    // downgrade the newer built-in copilot-chat.
 
     // --- Utilities ---
     "usernamehw.errorlens",

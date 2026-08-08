@@ -108,6 +108,9 @@ alias f="fvm flutter"
 alias lg="lazygit"
 alias help="tldr"
 
+# Homebrew's rustup formula links only \`rustup\` into bin; the rustc/cargo
+# shims live here. \$HOME/.cargo/bin is where \`cargo install\` puts binaries.
+export PATH="/opt/homebrew/opt/rustup/bin:\$PATH"
 export PATH="\$HOME/.cargo/bin:\$PATH"
 EOT
 fi
@@ -199,13 +202,23 @@ ln -sfn "$REPO_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
 # 7. Language Setup
 echo "🦀 Setting up Rust..."
-if command -v rustup &> /dev/null || [ -x "$HOME/.cargo/bin/rustup" ]; then
-    echo "🦀 Rust already installed. Skipping rustup-init."
-elif command -v rustup-init &> /dev/null; then
-    rustup-init -y --no-modify-path
-else
-    echo "❌ Error: rustup-init not found. Brew installation failed."
+# Homebrew's rustup formula (formerly rustup-init) links only `rustup` into
+# bin; rustc/cargo live in an unlinked shim directory that must be on PATH.
+# There is no `rustup-init` binary any more, so the toolchain is installed
+# with `rustup toolchain install` rather than by running an installer.
+if command -v brew &> /dev/null && [ -d "$(brew --prefix rustup 2>/dev/null)/bin" ]; then
+    export PATH="$(brew --prefix rustup)/bin:$PATH"
+fi
+
+if ! command -v rustup &> /dev/null; then
+    echo "❌ Error: rustup not found. Brew installation failed."
     exit 1
+fi
+
+if [ -z "$(rustup toolchain list 2>/dev/null | grep -v 'no installed toolchains')" ]; then
+    rustup default stable
+else
+    echo "🦀 Rust toolchain already installed. Skipping."
 fi
 
 echo "📱 Setting up Node (LTS)..."

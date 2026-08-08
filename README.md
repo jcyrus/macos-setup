@@ -33,7 +33,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 |                   | **Neovim**         | Terminal editor powered by LazyVim.                    |
 | **🌿 Git TUIs**   | **Lazygit**        | Fast terminal UI for git workflows.                    |
 |                   | **Lazydocker**     | Terminal UI for Docker/OrbStack workflows.             |
-| **🦀 Rust**       | **Rustup**         | Official Rust toolchain installer.                     |
+| **🦀 Rust**       | **Rustup**         | Official Rust toolchain manager.                       |
 |                   | **Bacon**          | Background Rust code checker (TUI).                    |
 |                   | **Cargo-Binstall** | Binary installer (skips compiling).                    |
 | **🌐 Web**        | **FNM**            | Fast Node.js manager (Rust-based).                     |
@@ -63,8 +63,8 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 |                   | **Spotify**        | Music streaming.                                       |
 | **🔤 Fonts**      | **0xProto Nerd**   | Default coding font for the terminal and VS Code.      |
 |                   | **JetBrains Mono Nerd** | Secondary Nerd Font.                              |
-| **👻 Custom**     | **GhostWire**      | (From jcyrus tap)                                      |
-|                   | **Spektr**         | (From jcyrus tap)                                      |
+| **👻 Custom**     | **ZeroDrop**       | Secure, ephemeral TUI chat client (jcyrus tap).        |
+|                   | **Spektr**         | TUI utility for cleaning dev artifacts (jcyrus tap).   |
 
 ## ⚠️ Prerequisites
 
@@ -198,7 +198,6 @@ code --install-extension bradlc.vscode-tailwindcss
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension pkief.material-icon-theme
 code --install-extension eamodio.gitlens
-code --install-extension github.copilot
 code --install-extension usernamehw.errorlens
 code --install-extension christian-kohler.path-intellisense
 code --install-extension mikestead.dotenv

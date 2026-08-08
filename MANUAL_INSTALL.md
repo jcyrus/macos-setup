@@ -69,7 +69,7 @@ brew install neovim lazygit lazydocker
 ### 🦀 Rust + 🌐 Web + 📱 Mobile
 
 ```bash
-brew install rustup-init bacon cargo-binstall
+brew install rustup bacon cargo-binstall
 brew install fnm pnpm leoafarias/fvm/fvm cocoapods scrcpy
 ```
 
@@ -97,7 +97,7 @@ brew install --cask bitwarden tailscale
 ```bash
 brew install --cask figma darktable telegram spotify iina stremio whisky
 brew install imagemagick
-brew install --cask ghostwire spektr
+brew install jcyrus/tap/zerodrop jcyrus/tap/spektr
 ```
 
 ## 4. Shell and Language Setup
@@ -138,6 +138,9 @@ alias f="fvm flutter"
 alias lg="lazygit"
 alias help="tldr"
 
+# Homebrew's rustup formula links only `rustup` into bin; rustc and cargo live
+# in this shim directory. ~/.cargo/bin is where `cargo install` puts binaries.
+export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
@@ -151,8 +154,10 @@ source ~/.zshrc
 
 ### Rust
 
+Homebrew's `rustup` formula does not ship a `rustup-init` binary and links only `rustup` itself, so install the toolchain directly (the PATH line above makes `rustc` and `cargo` resolvable):
+
 ```bash
-rustup-init -y --no-modify-path
+rustup default stable
 ```
 
 ### Node (FNM)

@@ -35,7 +35,10 @@ The format is based on Keep a Changelog.
 - `install.sh` did not check for Xcode Command Line Tools despite the README claiming it did, and never primed the tealdeer cache.
 - `xcode-select --install` returns non-zero when an install is already in progress, which aborted the script under `set -e` before the "finish the installer, then re-run" guidance was printed.
 - A failed `tldr --update` aborted `install.sh` at the last step, reporting an otherwise-complete setup as a failure.
-- `update.sh` called bare `rustup update`, which fails when Rust was installed by `rustup-init --no-modify-path` and `~/.cargo/bin` is not on PATH.
+- `update.sh` called bare `rustup update`, which fails when `~/.cargo/bin` is not on PATH.
+- **Rust was never actually installed.** `rustup-init` is an old name for the `rustup` formula and the `rustup-init` binary no longer exists, so the installer's Rust step could not work on a fresh machine. Homebrew's `rustup` also links only `rustup` itself, leaving `rustc` and `cargo` in an unlinked shim directory. The Brewfile now requests `rustup`, the installer runs `rustup default stable`, and the generated `.zshrc` puts `$(brew --prefix rustup)/bin` on PATH.
+- The custom tap entries were declared as casks, but `ghostwire` and `spektr` are formulae, so `brew bundle` could never satisfy them. `ghostwire` has also been renamed upstream to `zerodrop`, where the old name survives only as a migration shim.
+- `github.copilot` is no longer recommended: VS Code 1.132+ bundles Copilot, and installing the marketplace extension fails trying to downgrade the newer built-in `copilot-chat`.
 
 ### Removed
 

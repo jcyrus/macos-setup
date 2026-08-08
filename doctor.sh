@@ -59,7 +59,8 @@ printf "%srepo: %s%s\n" "$C_DIM" "$REPO_DIR" "$C_OFF"
 section "Homebrew"
 if command -v brew &> /dev/null; then
     ok "brew" "$(brew --version | head -n 1)"
-    missing="$(brew bundle check --verbose --file="$REPO_DIR/Brewfile" 2>/dev/null \
+    # brew bundle check reports everything on stderr, so this must be 2>&1.
+    missing="$(brew bundle check --verbose --file="$REPO_DIR/Brewfile" 2>&1 \
         | sed -n 's/^→ \(.*\) needs to be installed or updated\./\1/p')"
     if [ -z "$missing" ]; then
         ok "Brewfile" "all entries satisfied"
@@ -133,10 +134,16 @@ pinned="$(sed -n "s/.*@plugin 'catppuccin\/tmux#\([^']*\)'.*/\1/p" "$REPO_DIR/tm
 cat_dir="$HOME/.tmux/plugins/tmux"
 if [ -d "$cat_dir/.git" ]; then
     have="$(git -C "$cat_dir" describe --tags 2>/dev/null || git -C "$cat_dir" rev-parse --short HEAD)"
-    if [ -n "$pinned" ] && [ "$have" != "$pinned" ]; then
+    # Compare resolved commits, not tag names: several tags can point at the
+    # same commit (v2.1 and v2.1.3 do), and `describe` picks only one of them.
+    have_sha="$(git -C "$cat_dir" rev-parse HEAD 2>/dev/null)"
+    want_sha="$(git -C "$cat_dir" rev-parse "$pinned^{commit}" 2>/dev/null)"
+    if [ -n "$pinned" ] && [ -n "$want_sha" ] && [ "$have_sha" != "$want_sha" ]; then
         warn "catppuccin/tmux" "at $have, config pins $pinned"
+    elif [ -z "$want_sha" ] && [ -n "$pinned" ]; then
+        warn "catppuccin/tmux" "at $have, cannot resolve pinned tag $pinned"
     else
-        ok "catppuccin/tmux" "$have"
+        ok "catppuccin/tmux" "$have (pinned $pinned)"
     fi
 else
     fail "catppuccin/tmux" "missing"
@@ -154,8 +161,16 @@ fi
 if command -v rustc &> /dev/null; then
     ok "rust" "$(rustc --version | awk '{print $2}')"
 elif command -v rustup &> /dev/null; then
-    fail "rust" "rustup present but no toolchain installed"
-    hint "run: rustup default stable"
+    # Distinguish "no toolchain" from "toolchain installed but its shims are
+    # not on PATH" — Homebrew's rustup links only `rustup` itself.
+    if [ -n "$(rustup toolchain list 2>/dev/null | grep -v 'no installed toolchains')" ]; then
+        fail "rust" "toolchain installed but rustc is not on PATH"
+        shim_dir="$(brew --prefix rustup 2>/dev/null)/bin"
+        hint "add to your shell: export PATH=\"$shim_dir:\$PATH\""
+    else
+        fail "rust" "rustup present but no toolchain installed"
+        hint "run: rustup default stable"
+    fi
 else
     fail "rust" "not installed"
 fi

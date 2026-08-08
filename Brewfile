@@ -2,7 +2,7 @@
 
 # --- TAPS ---
 tap "leoafarias/fvm"
-tap "jcyrus/homebrew-tap"
+tap "jcyrus/tap"
 
 # --- TERMINAL ---
 cask "ghostty"
@@ -44,7 +44,7 @@ brew "lazygit"
 brew "lazydocker"
 
 # --- STACKS ---
-brew "rustup-init"
+brew "rustup"
 brew "bacon"
 brew "cargo-binstall"
 brew "fnm"
@@ -87,8 +87,10 @@ cask "stremio"
 cask "whisky"
 
 # --- CUSTOM TAP APPS ---
-cask "ghostwire"
-cask "spektr"
+# These are formulae, not casks. ghostwire was renamed to zerodrop upstream;
+# the old name survives only as a migration shim.
+brew "jcyrus/tap/zerodrop"
+brew "jcyrus/tap/spektr"
 
 # --- OPTIONAL (Uncomment to install) ---
 # cask "font-fira-code"
