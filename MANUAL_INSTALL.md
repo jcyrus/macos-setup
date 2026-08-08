@@ -78,6 +78,7 @@ brew install fnm pnpm leoafarias/fvm/fvm cocoapods scrcpy
 ```bash
 brew install --cask visual-studio-code brave-browser google-chrome raycast orbstack
 brew install --cask tableplus shottr bruno obsidian appcleaner the-unarchiver
+brew install --cask hiddenbar stats utm sf-symbols
 ```
 
 ### 🔤 Fonts

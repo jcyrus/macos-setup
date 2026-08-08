@@ -65,6 +65,10 @@ cask "bruno"
 cask "obsidian"
 cask "appcleaner"
 cask "the-unarchiver"
+cask "hiddenbar"
+cask "stats"
+cask "utm"
+cask "sf-symbols"
 
 # --- FONTS ---
 # 0xProto is the font referenced by the Ghostty and VS Code configs.
@@ -74,6 +78,7 @@ cask "font-jetbrains-mono-nerd-font"
 
 # --- SECURITY ---
 cask "bitwarden"
+cask "tailscale"
 
 # --- CREATIVE / LIFESTYLE ---
 cask "figma"

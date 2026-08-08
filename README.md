@@ -50,6 +50,10 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 |                   | **Bruno**          | Open-source API client.                                |
 |                   | **AppCleaner**     | Cleanly uninstall macOS apps.                          |
 |                   | **The Unarchiver** | Archive extraction utility.                            |
+|                   | **Hidden Bar**     | Ultra-lightweight menu bar icon hider.                 |
+|                   | **Stats**          | Open-source macOS system monitor in menu bar.          |
+|                   | **UTM**            | Virtual machine host for macOS (Apple Silicon native). |
+|                   | **SF Symbols**     | Official Apple iconography inspection tool.            |
 | **🔒 Security**   | **Bitwarden**      | Open-source password manager.                          |
 |                   | **Tailscale**      | Zero-config VPN mesh network.                          |
 | **🎨 Creative**   | **Figma**          | Interface design tool.                                 |

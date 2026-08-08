@@ -6,8 +6,11 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-08
+
 ### Added
 
+- Homebrew casks for Hidden Bar (`hiddenbar`), Stats (`stats`), UTM virtual machines (`utm`), SF Symbols (`sf-symbols`), and Tailscale mesh VPN (`tailscale`).
 - Ghostty config using the built-in Catppuccin Mocha theme, with translucent background, blur, tuned padding, and Nerd Font settings.
 - Starship prompt config with a Catppuccin Mocha powerline layout, Nerd Font icon overrides, and a two-line prompt with command duration above the prompt character.
 - Catppuccin-based tmux theming with a top status bar and session, application, user, and time segments.
