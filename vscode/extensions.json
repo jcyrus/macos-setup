@@ -21,6 +21,7 @@
 
     // --- UI & Themes ---
     "pkief.material-icon-theme",
+    "Catppuccin.catppuccin-vsc",
 
     // --- Git ---
     "eamodio.gitlens",

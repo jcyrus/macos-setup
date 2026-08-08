@@ -74,7 +74,6 @@ cask "font-jetbrains-mono-nerd-font"
 
 # --- SECURITY ---
 cask "bitwarden"
-cask "tailscale"
 
 # --- CREATIVE / LIFESTYLE ---
 cask "figma"

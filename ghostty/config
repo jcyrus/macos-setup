@@ -9,11 +9,15 @@ theme = Catppuccin Mocha
 cursor-color = #cba6f7
 
 background-opacity = 0.88
-background-blur = 8
+background-blur = 20
 macos-titlebar-style = hidden
 window-padding-x = 15
 window-padding-y = 15
 adjust-cell-height = 20%
+
+copy-on-select = clipboard
+window-save-state = always
+confirm-close-surface = false
 
 cursor-style = bar
 cursor-style-blink = true

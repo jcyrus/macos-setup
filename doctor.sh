@@ -240,6 +240,33 @@ else
     warn "code CLI" "not on PATH (skipping extension check)"
 fi
 
+# --- Docker / OrbStack ------------------------------------------------------
+section "Docker"
+if command -v docker &> /dev/null; then
+    ok "docker CLI" "$(docker --version 2>/dev/null | head -c 40)"
+else
+    if [ -d "/Applications/OrbStack.app" ]; then
+        fail "docker CLI" "OrbStack installed but docker is not on PATH"
+        hint "open OrbStack → Settings → enable CLI integration, or run:"
+        hint "sudo ln -sfn /Applications/OrbStack.app/Contents/MacOS/xbin/docker /usr/local/bin/docker"
+    else
+        warn "docker CLI" "not installed (OrbStack or Docker Desktop needed)"
+    fi
+fi
+
+# --- Starship ---------------------------------------------------------------
+section "Starship"
+if command -v starship &> /dev/null; then
+    ok "starship" "$(starship --version | head -n 1)"
+    if STARSHIP_CONFIG="$REPO_DIR/starship/starship.toml" starship prompt &>/dev/null; then
+        ok "starship config" "parses cleanly"
+    else
+        fail "starship config" "syntax error in starship.toml"
+    fi
+else
+    fail "starship" "not installed"
+fi
+
 # --- Summary ----------------------------------------------------------------
 printf "\n%s── Summary%s\n" "$C_HEAD" "$C_OFF"
 printf "  %s%d ok%s   %s%d warn%s   %s%d fail%s\n\n" \

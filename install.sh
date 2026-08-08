@@ -119,6 +119,11 @@ fi
 echo "⚙️ Configuring Git defaults..."
 git config --global core.pager delta
 git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global delta.line-numbers true
+git config --global delta.side-by-side true
+git config --global merge.conflictstyle zdiff3
 
 # 6. Dotfile symlinks
 echo "🧠 Setting up Neovim config..."
@@ -237,6 +242,17 @@ fi
 
 if [ "${BUNDLE_FAILED:-false}" = true ]; then
     echo "⚠️  Reminder: some Brewfile entries failed earlier. See the log above."
+fi
+
+# 9. Docker / OrbStack CLI check
+if ! command -v docker &> /dev/null; then
+    if [ -d "/Applications/OrbStack.app" ]; then
+        echo "⚠️  OrbStack is installed but 'docker' is not on PATH."
+        echo "   Open OrbStack and enable CLI integration, or run:"
+        echo "   sudo ln -sfn /Applications/OrbStack.app/Contents/MacOS/xbin/docker /usr/local/bin/docker"
+    else
+        echo "ℹ️  Docker CLI not found. Install OrbStack or Docker Desktop if needed."
+    fi
 fi
 
 echo "✅ Done! Restart your terminal, then open nvim once to bootstrap LazyVim."

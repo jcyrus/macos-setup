@@ -24,9 +24,9 @@ echo "🧹 Cleaning up..."
 brew cleanup
 
 echo "🦀 Updating Rust toolchain..."
-# install.sh runs rustup-init with --no-modify-path, so rustup may only exist
-# under ~/.cargo/bin and not be on PATH in a non-interactive shell.
-export PATH="$HOME/.cargo/bin:$PATH"
+# Homebrew's rustup formula links only `rustup` into its shim directory;
+# rustc/cargo live there too. ~/.cargo/bin is where `cargo install` puts binaries.
+export PATH="/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH"
 if command -v rustup &> /dev/null; then
 	rustup update
 else
@@ -46,6 +46,12 @@ fi
 echo "📚 Updating tldr cache..."
 if command -v tldr &> /dev/null; then
 	tldr --update
+fi
+echo "🪟 Updating tmux plugins..."
+if [ -x "$HOME/.tmux/plugins/tpm/bin/update_plugins" ]; then
+    "$HOME/.tmux/plugins/tpm/bin/update_plugins" all
+else
+    echo "⚠️  TPM not found. Skipping tmux plugin update."
 fi
 
 echo "✅ Update Complete!"
