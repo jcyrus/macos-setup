@@ -8,6 +8,9 @@ The format is based on Keep a Changelog.
 
 ### Fixed
 
+- `MANUAL_INSTALL.md` did not reproduce `install.sh`. It was missing the Ghostty cask entirely, the Ghostty/Starship config symlinks, the git-delta configuration, `font-jetbrains-mono-nerd-font`, the pinned Catppuccin tmux clone, the tealdeer cache priming, the Xcode CLT prerequisite, and any mention of VS Code setup or `update.sh`.
+- Documentation told users to enable Neovim language extras via `:LazyExtras`, but they are already imported in `nvim/lua/config/lazy.lua`; enabling them again would double-declare them.
+
 - `fnm install --lts` never set a default alias, so `node` was unavailable in new shells and the README's `node --version` check failed. Both scripts now run `fnm default lts-latest`.
 - The fzf setup block in `install.sh` was guarded by a marker string it never wrote, so it was appended again on every run.
 - `zoxide` and `fzf` were initialised twice: once via the Oh My Zsh plugins and again explicitly. They are now initialised only once, directly, and `zsh-syntax-highlighting` is last in the plugin list as upstream requires.

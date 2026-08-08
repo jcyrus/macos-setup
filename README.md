@@ -100,6 +100,8 @@ Run the installer. This sets up Homebrew, installs all apps, and configures Zsh,
 ./install.sh
 ```
 
+Prefer to do it by hand? [MANUAL_INSTALL.md](MANUAL_INSTALL.md) walks through every step the installer performs.
+
 ### Step 3: Updates
 
 To keep your apps and tools up to date, or to install new apps added to `Brewfile`:
@@ -200,6 +202,8 @@ This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.
 
 ### Enabled language extras
 
+These are declared directly in `nvim/lua/config/lazy.lua` and install on first launch — there is nothing to toggle via `:LazyExtras`:
+
 - Rust
 - Dart/Flutter
 - Tailwind CSS
@@ -226,7 +230,7 @@ This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.
 
 - LazyVim bootstraps on first run of `nvim`.
 - Mason installs language servers/debug tools automatically.
-- Use `:LazyExtras` to toggle additional modules.
+- Use `:LazyExtras` to toggle modules beyond the ones already declared in `nvim/lua/config/lazy.lua`.
 
 ## 📦 Customization
 
