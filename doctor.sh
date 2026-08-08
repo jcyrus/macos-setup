@@ -267,6 +267,20 @@ else
     fail "starship" "not installed"
 fi
 
+# --- Ollama -----------------------------------------------------------------
+section "Ollama"
+if command -v ollama &> /dev/null; then
+    ok "ollama CLI" "$(ollama --version 2>/dev/null | head -n 1)"
+    if curl -s http://localhost:11434/api/tags &>/dev/null; then
+        ok "ollama service" "running on localhost:11434"
+    else
+        warn "ollama service" "not running"
+        hint "run: brew services start ollama"
+    fi
+else
+    warn "ollama" "not installed"
+fi
+
 # --- Summary ----------------------------------------------------------------
 printf "\n%s── Summary%s\n" "$C_HEAD" "$C_OFF"
 printf "  %s%d ok%s   %s%d warn%s   %s%d fail%s\n\n" \

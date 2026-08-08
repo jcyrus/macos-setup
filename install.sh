@@ -233,6 +233,11 @@ eval "$(fnm env)"
 fnm install --lts
 fnm default lts-latest
 
+echo "🤖 Starting Ollama background service..."
+if command -v ollama &> /dev/null; then
+    brew services start ollama 2>/dev/null || true
+fi
+
 # 8. First-run caches
 echo "📚 Priming tldr cache..."
 if command -v tldr &> /dev/null; then
