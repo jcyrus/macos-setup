@@ -81,6 +81,7 @@
   // UI & EXPLORER
   // ----------------------------------------------------------------------
   "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Catppuccin Mocha",
   "workbench.tree.indent": 14,
   "workbench.editor.labelFormat": "short",
   "explorer.compactFolders": false,

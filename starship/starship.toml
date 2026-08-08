@@ -3,6 +3,7 @@ $os\
 $directory\
 $git_branch\
 $git_status\
+$custom\
 $fill\
 $aws\
 $azure\
@@ -43,34 +44,49 @@ $character
 """
 
 palette = "catppuccin_mocha"
-add_newline = false
+add_newline = true
 
 [fill]
 symbol = " "
 
 [character]
-success_symbol = "[󰄛](bold green)"
-error_symbol = "[󰄛](bold red)"
-vimcmd_symbol = "[󰘳](bold mauve)"
+success_symbol = "[󰄛](bold green) "
+error_symbol = "[󰄛](bold red) "
+vimcmd_symbol = "[󰘳](bold mauve) "
 
 [cmd_duration]
 min_time = 500
-format = '[$duration](fg:overlay0 bg:surface0)'
+format = '[](fg:peach)[⏱ $duration]($style)[](fg:peach)'
+style = "fg:base bg:peach"
+
+[os]
+disabled = false
+format = '[](fg:mauve)[$symbol]($style)'
+style = "fg:base bg:mauve"
+
+[os.symbols]
+Macos = "󰀵 "
+Linux = "󰌽 "
+Windows = "󰍲 "
+Ubuntu = "󰕈 "
+Arch = "󰣇 "
+Debian = "󰣚 "
+Fedora = "󰣛 "
 
 [directory]
-format = "[](fg:blue)[ $path]($style)[](fg:blue)"
+format = "[](fg:mauve bg:blue)[  $path ]($style)"
 style = "fg:base bg:blue"
 truncation_length = 3
 truncation_symbol = "…/"
 read_only = " 󰌾"
 
 [git_branch]
-format = "[](fg:green)[󰘬 $branch]($style)[](fg:green)"
+format = "[](fg:blue bg:green)[ 󰘬 $branch]($style)"
 style = "fg:base bg:green"
 
 [git_status]
-format = "[](fg:teal)[$all_status$ahead_behind]($style)[](fg:teal)"
-style = "fg:base bg:teal"
+format = '([ $all_status$ahead_behind]($style))'
+style = "fg:base bg:green"
 ahead = "󰁝${count}"
 behind = "󰁅${count}"
 diverged = "󰹹󰁝${ahead_count}󰁅${behind_count}"
@@ -82,186 +98,183 @@ staged = "󰄬${count}"
 stashed = "󰏗${count}"
 untracked = "󰞋${count}"
 
+# Custom modules for dynamic powerline end cap depending on whether git is active
+[custom.git_cap]
+command = "echo ''"
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+format = "[](fg:green) "
+
+[custom.dir_cap]
+command = "echo ''"
+when = "! git rev-parse --is-inside-work-tree 2>/dev/null"
+format = "[](fg:blue) "
+
 [package]
 symbol = "󰏗 "
-format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
 style = "fg:base bg:peach"
 
 [nodejs]
 symbol = " "
-format = "[](fg:green)[$symbol$version]($style)[](fg:green)"
+format = "[](fg:green)[$symbol$version]($style)[](fg:green) "
 style = "fg:base bg:green"
 
 [rust]
 symbol = "󱘗 "
-format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
 style = "fg:base bg:red"
 
 [python]
 symbol = " "
-format = '[](fg:yellow)[$symbol$version( \($virtualenv\))]($style)[](fg:yellow)'
+format = '[](fg:yellow)[$symbol$version( \($virtualenv\))]($style)[](fg:yellow) '
 style = "fg:base bg:yellow"
 
 [golang]
 symbol = " "
-format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire)"
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire) "
 style = "fg:base bg:sapphire"
 
 [java]
 symbol = " "
-format = "[](fg:maroon)[$symbol$version]($style)[](fg:maroon)"
+format = "[](fg:maroon)[$symbol$version]($style)[](fg:maroon) "
 style = "fg:base bg:maroon"
 
 [dart]
 symbol = " "
-format = "[](fg:sky)[$symbol$version]($style)[](fg:sky)"
+format = "[](fg:sky)[$symbol$version]($style)[](fg:sky) "
 style = "fg:base bg:sky"
 
 [docker_context]
 symbol = " "
-format = "[](fg:blue)[$symbol$context]($style)[](fg:blue)"
+format = "[](fg:blue)[$symbol$context]($style)[](fg:blue) "
 style = "fg:base bg:blue"
 
 [lua]
 symbol = " "
-format = "[](fg:lavender)[$symbol$version]($style)[](fg:lavender)"
+format = "[](fg:lavender)[$symbol$version]($style)[](fg:lavender) "
 style = "fg:base bg:lavender"
 
 [c]
 symbol = " "
-format = "[](fg:teal)[$symbol$version]($style)[](fg:teal)"
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal) "
 style = "fg:base bg:teal"
 
 [cpp]
 symbol = " "
-format = "[](fg:teal)[$symbol$version]($style)[](fg:teal)"
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal) "
 style = "fg:base bg:teal"
 
 [ruby]
 symbol = " "
-format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
 style = "fg:base bg:red"
 
 [swift]
 symbol = " "
-format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
 style = "fg:base bg:peach"
 
 [php]
 symbol = " "
-format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve)"
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
 style = "fg:base bg:mauve"
 
 [kotlin]
 symbol = " "
-format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve)"
-style = "fg:base bg:mauve"
-
-[os]
-disabled = false
-format = '[](fg:mauve)[$symbol]($style)[](fg:mauve)'
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
 style = "fg:base bg:mauve"
 
 [aws]
 symbol = " "
-format = '[](fg:peach)[$symbol$profile( \($region\))]($style)[](fg:peach)'
+format = '[](fg:peach)[$symbol$profile( \($region\))]($style)[](fg:peach) '
 style = "fg:base bg:peach"
 
 [gcloud]
 symbol = "󱇶 "
-format = '[](fg:blue)[$symbol$account(@$domain)( \($project\))]($style)[](fg:blue)'
+format = '[](fg:blue)[$symbol$account(@$domain)( \($project\))]($style)[](fg:blue) '
 style = "fg:base bg:blue"
 
 [azure]
 symbol = "󰠅 "
-format = '[](fg:blue)[$symbol($subscription)]($style)[](fg:blue)'
+format = '[](fg:blue)[$symbol($subscription)]($style)[](fg:blue) '
 style = "fg:base bg:blue"
 
 [bun]
 symbol = " "
-format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
 style = "fg:base bg:peach"
 
 [deno]
 symbol = " "
-format = "[](fg:green)[$symbol$version]($style)[](fg:green)"
+format = "[](fg:green)[$symbol$version]($style)[](fg:green) "
 style = "fg:base bg:green"
 
 [elixir]
 symbol = " "
-format = '[](fg:mauve)[$symbol$version( \(OTP $otp_version\))]($style)[](fg:mauve)'
+format = '[](fg:mauve)[$symbol$version( \(OTP $otp_version\))]($style)[](fg:mauve) '
 style = "fg:base bg:mauve"
 
 [erlang]
 symbol = " "
-format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
 style = "fg:base bg:red"
 
 [helm]
 symbol = "󰠳 "
-format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire)"
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire) "
 style = "fg:base bg:sapphire"
 
 [julia]
 symbol = " "
-format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve)"
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
 style = "fg:base bg:mauve"
 
 [kubernetes]
 disabled = false
 symbol = "󱃾 "
-format = '[](fg:teal)[$symbol$context( \($namespace\))]($style)[](fg:teal)'
+format = '[](fg:teal)[$symbol$context( \($namespace\))]($style)[](fg:teal) '
 style = "fg:base bg:teal"
 detect_files = ["k8s", "kubeconfig", "Chart.yaml", "helmfile.yaml"]
 
 [nim]
 symbol = " "
-format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow)"
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
 style = "fg:base bg:yellow"
 
 [opa]
 symbol = "󱤊 "
-format = "[](fg:blue)[$symbol$version]($style)[](fg:blue)"
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
 style = "fg:base bg:blue"
 
 [perl]
 symbol = " "
-format = "[](fg:peach)[$symbol$version]($style)[](fg:peach)"
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
 style = "fg:base bg:peach"
 
 [pulumi]
 symbol = " "
-format = "[](fg:mauve)[$symbol$stack]($style)[](fg:mauve)"
+format = "[](fg:mauve)[$symbol$stack]($style)[](fg:mauve) "
 style = "fg:base bg:mauve"
 
 [rlang]
 symbol = "󰟔 "
-format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire)"
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire) "
 style = "fg:base bg:sapphire"
 
 [scala]
 symbol = " "
-format = "[](fg:red)[$symbol$version]($style)[](fg:red)"
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
 style = "fg:base bg:red"
 
 [terraform]
 symbol = "󱁢 "
-format = "[](fg:lavender)[$symbol$workspace]($style)[](fg:lavender)"
+format = "[](fg:lavender)[$symbol$workspace]($style)[](fg:lavender) "
 style = "fg:base bg:lavender"
 
 [zig]
 symbol = " "
-format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow)"
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
 style = "fg:base bg:yellow"
-
-[os.symbols]
-Macos = "󰀵 "
-Linux = "󰌽 "
-Windows = "󰍲 "
-Ubuntu = "󰕈 "
-Arch = "󰣇 "
-Debian = "󰣚 "
-Fedora = "󰣛 "
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"

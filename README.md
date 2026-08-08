@@ -8,8 +8,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 
 | Category          | App / Tool         | Description                                            |
 | :---------------- | :----------------- | :----------------------------------------------------- |
-| **🚀 Terminal**   | **Warp**           | AI-powered modern terminal with blocks UI.             |
-|                   | **Ghostty**        | GPU-accelerated terminal with Catppuccin config.       |
+| **🚀 Terminal**   | **Ghostty**        | GPU-accelerated terminal with Catppuccin config.       |
 |                   | **Starship**       | Minimal, blazing fast shell prompt.                    |
 |                   | **Zoxide**         | Smarter `cd` that remembers your most used paths.      |
 |                   | **tmux**           | Terminal multiplexer with persistent sessions.         |
@@ -34,7 +33,7 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 |                   | **Neovim**         | Terminal editor powered by LazyVim.                    |
 | **🌿 Git TUIs**   | **Lazygit**        | Fast terminal UI for git workflows.                    |
 |                   | **Lazydocker**     | Terminal UI for Docker/OrbStack workflows.             |
-| **🦀 Rust**       | **Rustup**         | Official Rust toolchain installer.                     |
+| **🦀 Rust**       | **Rustup**         | Official Rust toolchain manager.                       |
 |                   | **Bacon**          | Background Rust code checker (TUI).                    |
 |                   | **Cargo-Binstall** | Binary installer (skips compiling).                    |
 | **🌐 Web**        | **FNM**            | Fast Node.js manager (Rust-based).                     |
@@ -62,11 +61,10 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 |                   | **Whisky**         | Run Windows games on Mac (GPTK wrapper).               |
 |                   | **Stremio**        | Video streaming aggregator.                            |
 |                   | **Spotify**        | Music streaming.                                       |
-| **🔤 Fonts**      | **0xProto Nerd**   | Recommended coding font for terminal/editor icons.     |
-|                   | **Fira Code**      | Monospaced programming font.                           |
-|                   | **JetBrains Mono** | Monospaced programming font.                           |
-| **👻 Custom**     | **GhostWire**      | (From jcyrus tap)                                      |
-|                   | **Spektr**         | (From jcyrus tap)                                      |
+| **🔤 Fonts**      | **0xProto Nerd**   | Default coding font for the terminal and VS Code.      |
+|                   | **JetBrains Mono Nerd** | Secondary Nerd Font.                              |
+| **👻 Custom**     | **ZeroDrop**       | Secure, ephemeral TUI chat client (jcyrus tap).        |
+|                   | **Spektr**         | TUI utility for cleaning dev artifacts (jcyrus tap).   |
 
 ## ⚠️ Prerequisites
 
@@ -74,6 +72,14 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 - Xcode Command Line Tools (The script will prompt you to install them if missing).
 
 ## 🛠 Usage
+
+### One-line install
+
+```bash
+git clone https://github.com/jcyrus/macos-setup.git && cd macos-setup && chmod +x install.sh && ./install.sh
+```
+
+Or step by step:
 
 ### Step 1: Clone
 
@@ -94,6 +100,8 @@ Run the installer. This sets up Homebrew, installs all apps, and configures Zsh,
 ./install.sh
 ```
 
+Prefer to do it by hand? [MANUAL_INSTALL.md](MANUAL_INSTALL.md) walks through every step the installer performs.
+
 ### Step 3: Updates
 
 To keep your apps and tools up to date, or to install new apps added to `Brewfile`:
@@ -102,19 +110,28 @@ To keep your apps and tools up to date, or to install new apps added to `Brewfil
 ./update.sh
 ```
 
-### Step 4: Post-Install Steps
+### Step 4: Health Check
 
-1. **Warp:** Open Warp and sign in.
-2. **App Store:** Open the Mac App Store and sign in to auto-install `mas` apps.
+To see how far a machine has drifted from this setup, run the doctor. It is strictly read-only — no installs, no writes:
+
+```bash
+./doctor.sh
+```
+
+It reports dangling config symlinks (the failure mode where a tool starts fine but silently loads no config), missing shell initialisation, duplicated `zoxide`/`fzf` setup, toolchains that are installed but not activated, and unapplied VS Code settings. Exits non-zero if anything failed.
+
+### Step 5: Post-Install Steps
+
+1. **Ghostty:** Open Ghostty to verify the bundled Catppuccin Mocha config and font rendering.
+2. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins, including Catppuccin.
 3. **Raycast:** Open Raycast (`Alt+Space`) and install extensions.
-4. **Flutter:** Run `fvm install stable` to get the latest SDK.
+4. **Flutter:** Run `fvm install stable && fvm global stable` to get the latest SDK.
 5. **Ollama:** Pull your first model: `ollama pull llama3.2`.
 6. **Neovim:** Run `nvim` once to bootstrap LazyVim and install plugins/LSP tools.
-7. **Ghostty:** Open Ghostty after install to verify the bundled Catppuccin Mocha config and font rendering.
-8. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins, including Catppuccin.
-9. **VS Code:** Apply the settings and install recommended extensions (see below).
+7. **VS Code:** Apply the settings and install recommended extensions (see below).
+8. **App Store (optional):** `mas` is installed for scripting App Store installs, but this Brewfile ships no `mas` entries. Add your own with `mas "App Name", id: 1234567890` after signing in to the App Store.
 
-### Step 5: Quick Verification (Optional)
+### Step 6: Quick Verification (Optional)
 
 Run these grouped checks to verify the setup quickly.
 
@@ -181,7 +198,6 @@ code --install-extension bradlc.vscode-tailwindcss
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension pkief.material-icon-theme
 code --install-extension eamodio.gitlens
-code --install-extension github.copilot
 code --install-extension usernamehw.errorlens
 code --install-extension christian-kohler.path-intellisense
 code --install-extension mikestead.dotenv
@@ -194,6 +210,8 @@ code --install-extension mikestead.dotenv
 This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.config/nvim` during `./install.sh`.
 
 ### Enabled language extras
+
+These are declared directly in `nvim/lua/config/lazy.lua` and install on first launch — there is nothing to toggle via `:LazyExtras`:
 
 - Rust
 - Dart/Flutter
@@ -217,17 +235,11 @@ This repo ships a ready-to-use LazyVim config in `nvim/` and symlinks it to `~/.
 - `0xProto Nerd Font Mono` for the shared terminal/editor font setup.
 - `font-jetbrains-mono-nerd-font` is installed by default as a secondary Nerd Font.
 
-### One-line install
-
-```bash
-git clone https://github.com/jcyrus/macos-setup.git && cd macos-setup && chmod +x install.sh && ./install.sh
-```
-
 ### Notes
 
 - LazyVim bootstraps on first run of `nvim`.
 - Mason installs language servers/debug tools automatically.
-- Use `:LazyExtras` to toggle additional modules.
+- Use `:LazyExtras` to toggle modules beyond the ones already declared in `nvim/lua/config/lazy.lua`.
 
 ## 📦 Customization
 

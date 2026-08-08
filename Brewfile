@@ -2,7 +2,7 @@
 
 # --- TAPS ---
 tap "leoafarias/fvm"
-tap "jcyrus/homebrew-tap"
+tap "jcyrus/tap"
 
 # --- TERMINAL ---
 cask "ghostty"
@@ -44,7 +44,7 @@ brew "lazygit"
 brew "lazydocker"
 
 # --- STACKS ---
-brew "rustup-init"
+brew "rustup"
 brew "bacon"
 brew "cargo-binstall"
 brew "fnm"
@@ -54,7 +54,6 @@ brew "cocoapods"
 brew "scrcpy"
 
 # --- GUI APPS ---
-cask "warp"
 cask "visual-studio-code"
 cask "brave-browser"
 cask "google-chrome"
@@ -68,14 +67,13 @@ cask "appcleaner"
 cask "the-unarchiver"
 
 # --- FONTS ---
-cask "font-fira-code"
-cask "font-jetbrains-mono"
-cask "font-jetbrains-mono-nerd-font"
+# 0xProto is the font referenced by the Ghostty and VS Code configs.
+# JetBrains Mono Nerd Font is the secondary Nerd Font (supersedes plain font-jetbrains-mono).
 cask "font-0xproto-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
 
 # --- SECURITY ---
 cask "bitwarden"
-cask "tailscale"
 
 # --- CREATIVE / LIFESTYLE ---
 cask "figma"
@@ -88,11 +86,15 @@ cask "stremio"
 cask "whisky"
 
 # --- CUSTOM TAP APPS ---
-cask "ghostwire"
-cask "spektr"
+# These are formulae, not casks. ghostwire was renamed to zerodrop upstream;
+# the old name survives only as a migration shim.
+brew "jcyrus/tap/zerodrop"
+brew "jcyrus/tap/spektr"
 
 # --- OPTIONAL (Uncomment to install) ---
+# cask "font-fira-code"
 # cask "iterm2"
+# cask "warp"
 # cask "discord"
 # cask "slack"
 # cask "zoom"
