@@ -110,7 +110,17 @@ To keep your apps and tools up to date, or to install new apps added to `Brewfil
 ./update.sh
 ```
 
-### Step 4: Post-Install Steps
+### Step 4: Health Check
+
+To see how far a machine has drifted from this setup, run the doctor. It is strictly read-only — no installs, no writes:
+
+```bash
+./doctor.sh
+```
+
+It reports dangling config symlinks (the failure mode where a tool starts fine but silently loads no config), missing shell initialisation, duplicated `zoxide`/`fzf` setup, toolchains that are installed but not activated, and unapplied VS Code settings. Exits non-zero if anything failed.
+
+### Step 5: Post-Install Steps
 
 1. **Ghostty:** Open Ghostty to verify the bundled Catppuccin Mocha config and font rendering.
 2. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins, including Catppuccin.
@@ -121,7 +131,7 @@ To keep your apps and tools up to date, or to install new apps added to `Brewfil
 7. **VS Code:** Apply the settings and install recommended extensions (see below).
 8. **App Store (optional):** `mas` is installed for scripting App Store installs, but this Brewfile ships no `mas` entries. Add your own with `mas "App Name", id: 1234567890` after signing in to the App Store.
 
-### Step 5: Quick Verification (Optional)
+### Step 6: Quick Verification (Optional)
 
 Run these grouped checks to verify the setup quickly.
 

@@ -24,7 +24,14 @@ echo "🧹 Cleaning up..."
 brew cleanup
 
 echo "🦀 Updating Rust toolchain..."
-rustup update
+# install.sh runs rustup-init with --no-modify-path, so rustup may only exist
+# under ~/.cargo/bin and not be on PATH in a non-interactive shell.
+export PATH="$HOME/.cargo/bin:$PATH"
+if command -v rustup &> /dev/null; then
+	rustup update
+else
+	echo "⚠️  rustup not found. Skipping Rust update."
+fi
 
 echo "📱 Refreshing Node LTS (fnm)..."
 eval "$(fnm env --use-on-cd)"

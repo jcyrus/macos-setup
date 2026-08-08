@@ -10,7 +10,9 @@ echo "🚀 Starting Day 1 Installation..."
 # 1. Xcode Command Line Tools (Homebrew and git both need these)
 if ! xcode-select -p &> /dev/null; then
     echo "🧰 Installing Xcode Command Line Tools..."
-    xcode-select --install
+    # Returns non-zero when an install is already in progress, which must not
+    # abort the script under `set -e` before the guidance below is printed.
+    xcode-select --install || true
     echo "⏳ Finish the Command Line Tools installer, then re-run this script."
     exit 1
 fi
@@ -216,7 +218,8 @@ fnm default lts-latest
 # 8. First-run caches
 echo "📚 Priming tldr cache..."
 if command -v tldr &> /dev/null; then
-    tldr --update
+    # Optional and network-dependent; must not fail the whole install.
+    tldr --update || echo "⚠️  Could not update the tldr cache. Continuing."
 fi
 
 if [ "${BUNDLE_FAILED:-false}" = true ]; then

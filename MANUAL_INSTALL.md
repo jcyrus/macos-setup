@@ -259,7 +259,7 @@ cp vscode/settings.json ~/Library/Application\ Support/Code/User/settings.json
 
 ## 7. Quick Verification (Optional)
 
-Use the canonical verification commands in [README.md](README.md#step-5-quick-verification-optional) to validate this manual setup.
+Use the canonical verification commands in [README.md](README.md#step-6-quick-verification-optional) to validate this manual setup.
 
 Quick smoke test:
 
