@@ -79,6 +79,14 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 git clone https://github.com/jcyrus/macos-setup.git && cd macos-setup && chmod +x install.sh && ./install.sh
 ```
 
+### 🤖 AI Agent Automated Install
+
+If you prefer to let an AI agent (Cursor, Antigravity, Claude Code, Windsurf, Copilot, etc.) handle the setup, copy and paste this prompt to your AI assistant:
+
+> *"Run `./install.sh` to set up this Mac. Monitor the execution stream, automatically fix any Homebrew, cask, PATH, or symlink issues that occur, run `./doctor.sh` to verify health, and auto-remediate any doctor failures until `./doctor.sh` passes cleanly with 0 errors."*
+
+AI coding agents automatically follow the detailed troubleshooting playbooks and health verification rules defined in [AGENTS.md](AGENTS.md).
+
 Or step by step:
 
 ### Step 1: Clone
