@@ -54,7 +54,6 @@ brew "cocoapods"
 brew "scrcpy"
 
 # --- GUI APPS ---
-cask "warp"
 cask "visual-studio-code"
 cask "brave-browser"
 cask "google-chrome"
@@ -68,10 +67,10 @@ cask "appcleaner"
 cask "the-unarchiver"
 
 # --- FONTS ---
-cask "font-fira-code"
-cask "font-jetbrains-mono"
-cask "font-jetbrains-mono-nerd-font"
+# 0xProto is the font referenced by the Ghostty and VS Code configs.
+# JetBrains Mono Nerd Font is the secondary Nerd Font (supersedes plain font-jetbrains-mono).
 cask "font-0xproto-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
 
 # --- SECURITY ---
 cask "bitwarden"
@@ -92,7 +91,9 @@ cask "ghostwire"
 cask "spektr"
 
 # --- OPTIONAL (Uncomment to install) ---
+# cask "font-fira-code"
 # cask "iterm2"
+# cask "warp"
 # cask "discord"
 # cask "slack"
 # cask "zoom"

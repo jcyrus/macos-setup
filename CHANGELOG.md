@@ -6,6 +6,12 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+### Removed
+
+- Warp cask. Ghostty is the terminal this repo actually configures; Warp is now an optional, commented-out entry.
+- `font-jetbrains-mono`, which is superseded by `font-jetbrains-mono-nerd-font`, and `font-fira-code`, which no config referenced (moved to optional).
+- Duplicate `brew tap` calls in `install.sh`; taps are declared in the Brewfile and applied by `brew bundle`.
+
 ### Added
 
 - Ghostty config with manual Catppuccin Mocha colors, translucent background, blur, tuned padding, and Nerd Font settings.

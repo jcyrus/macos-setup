@@ -17,14 +17,9 @@ else
     brew update
 fi
 
-# 2. Pre-Tap Essential Repositories
-echo "🔗 Tapping repositories..."
-brew tap leoafarias/fvm
-brew tap jcyrus/homebrew-tap
-
-# 3. Bundle Apps
+# 2. Bundle Apps (taps are declared in the Brewfile and handled by brew bundle)
 echo "📦 Installing apps from Brewfile..."
-brew bundle --file=./Brewfile
+brew bundle --file="$REPO_DIR/Brewfile"
 
 # 4. Configure Shell
 echo "🐚 Setting up Zsh..."
