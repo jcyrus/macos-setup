@@ -6,6 +6,31 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+### Added
+
+- Shell linting for the repo's own scripts: `shellcheck`, `shfmt` and `lefthook` in the Brewfile, a `lefthook.yml` pre-commit hook, and an `.editorconfig` that is the single source of truth for shell formatting. `shellcheck` blocks a commit when it finds anything; `shfmt` reformats and restages instead. `install.sh` runs `lefthook install` when executed from a git clone.
+- `.editorconfig` also covers JSON/YAML/TOML/Lua/Markdown, closing a gap where `vscode/extensions.json` recommended the EditorConfig extension but the repo shipped no config for it to read.
+- `macos.sh`, an opinionated macOS system preferences script covering keyboard repeat, text substitution, Finder, screenshots, Dock/Spaces and dialog defaults. It supports `--dry-run` to preview changes and `--restore` to undo them, exporting every domain it touches to `~/.macos-setup-backups/<timestamp>/` before writing. All settings are user-level `defaults write` calls: nothing requires `sudo`, and nothing weakens Gatekeeper, quarantine or FileVault.
+- Shottr's scriptable preferences (`fileNameTemplate`, `captureCursor`) are set by `macos.sh`, guarded so they are only written once Shottr has been launched and has a preferences domain to merge into. Its save folder is documented as unscriptable: the app is sandboxed with only `files.user-selected.read-write`, so write permission comes from a security-scoped bookmark created when the folder is chosen in Shottr's own panel.
+
+### Changed
+
+- `tailscale` cask renamed upstream to `tailscale-app`; the Brewfile and manual install instructions now use the new token.
+- `install.sh` and `update.sh` now explicitly `brew tap jcyrus/tap` and `brew tap leoafarias/fvm` before `brew bundle`, so a tap failure is reported separately from a bundle failure instead of being folded into it.
+
+### Removed
+
+- `whisky` cask. It's deprecated upstream (unmaintained) and no longer installable via `brew bundle`.
+
+### Fixed
+
+- The README app manifest still listed Whisky as an installed app after the cask was removed from the Brewfile.
+- `install.sh` masked the return value of `brew --prefix rustup` by assigning it inside an `export` (SC2155).
+- `doctor.sh` used `tr 'A-Z' 'a-z'` to case-fold VS Code extension IDs, which is not accent- or locale-safe; it now uses `[:upper:]`/`[:lower:]`.
+- `update.sh` was tab-indented while every other script used four spaces. All shell sources are now formatted consistently by `shfmt`.
+- `macos.sh` computed a `REPO_DIR` it never used — caught by `shellcheck` (SC2034) as soon as linting was introduced.
+- **`ls` and `ll` were broken whenever given a path.** The generated aliases used `eza --icons`, but `--icons` takes an optional `WHEN` value, so eza consumed the following argument: `ls somedir` became `eza --icons somedir` and failed with `invalid value 'somedir' for '--icons [<WHEN>]'`. Bare `ls` worked, which is why it went unnoticed. Both aliases now pass `--icons=auto` explicitly.
+
 ## [1.0.0] - 2026-08-08
 
 ### Added

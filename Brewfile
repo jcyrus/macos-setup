@@ -33,6 +33,14 @@ brew "tokei"
 brew "yazi"
 brew "tree-sitter"
 
+# --- SHELL QUALITY ---
+# The scripts in this repo are the product, so they are linted and formatted
+# on commit. lefthook.yml wires these into a pre-commit hook; .editorconfig
+# is the single source of truth for shfmt's style.
+brew "shellcheck"
+brew "shfmt"
+brew "lefthook"
+
 # --- AI / LLM ---
 brew "ollama"
 
@@ -78,7 +86,7 @@ cask "font-jetbrains-mono-nerd-font"
 
 # --- SECURITY ---
 cask "bitwarden"
-cask "tailscale"
+cask "tailscale-app"
 
 # --- CREATIVE / LIFESTYLE ---
 cask "figma"
@@ -88,7 +96,6 @@ cask "telegram"
 cask "spotify"
 cask "iina"
 cask "stremio"
-cask "whisky"
 
 # --- CUSTOM TAP APPS ---
 # These are formulae, not casks. ghostwire was renamed to zerodrop upstream;

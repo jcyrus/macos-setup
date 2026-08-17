@@ -62,7 +62,6 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | **📓 Notes**      | **Obsidian**       | Local-first notes and knowledge base.                  |
 | **🍿 Lifestyle**  | **Telegram**       | Messaging client.                                      |
 |                   | **IINA**           | Modern media player.                                   |
-|                   | **Whisky**         | Run Windows games on Mac (GPTK wrapper).               |
 |                   | **Stremio**        | Video streaming aggregator.                            |
 |                   | **Spotify**        | Music streaming.                                       |
 | **🔤 Fonts**      | **0xProto Nerd**   | Default coding font for the terminal and VS Code.      |
@@ -137,11 +136,12 @@ It reports dangling config symlinks (the failure mode where a tool starts fine b
 1. **Ghostty:** Open Ghostty to verify the bundled Catppuccin Mocha config and font rendering.
 2. **tmux:** Start `tmux`, then press `prefix + I` (capital i) to install TPM plugins, including Catppuccin.
 3. **Raycast:** Open Raycast (`Alt+Space`) and install extensions.
-4. **Flutter:** Run `fvm install stable && fvm global stable` to get the latest SDK.
-5. **Ollama:** Pull your first model: `ollama pull llama3.2`.
-6. **Neovim:** Run `nvim` once to bootstrap LazyVim and install plugins/LSP tools.
-7. **VS Code:** Apply the settings and install recommended extensions (see below).
-8. **App Store (optional):** `mas` is installed for scripting App Store installs, but this Brewfile ships no `mas` entries. Add your own with `mas "App Name", id: 1234567890` after signing in to the App Store.
+4. **Shottr:** Launch it once, then set its save folder to `~/Screenshots` in Preferences. This step cannot be scripted — see [macOS System Defaults](#-macos-system-defaults). Re-run `./macos.sh` afterwards to apply its filename and cursor settings.
+5. **Flutter:** Run `fvm install stable && fvm global stable` to get the latest SDK.
+6. **Ollama:** Pull your first model: `ollama pull llama3.2`.
+7. **Neovim:** Run `nvim` once to bootstrap LazyVim and install plugins/LSP tools.
+8. **VS Code:** Apply the settings and install recommended extensions (see below).
+9. **App Store (optional):** `mas` is installed for scripting App Store installs, but this Brewfile ships no `mas` entries. Add your own with `mas "App Name", id: 1234567890` after signing in to the App Store.
 
 ### Step 6: Quick Verification (Optional)
 
@@ -182,6 +182,61 @@ If `ollama list` is empty, pull a model:
 ```bash
 ollama pull llama3.2
 ```
+
+## 🍎 macOS System Defaults
+
+`./macos.sh` applies opinionated system preferences — the settings that make a
+Mac pleasant for keyboard-driven development. It is separate from `install.sh`
+because system preferences are more personal than installed apps.
+
+```bash
+./macos.sh --dry-run    # preview every change, write nothing
+./macos.sh              # apply (backs up first)
+```
+
+Everything is a user-level `defaults write`. Nothing needs `sudo`, and nothing
+weakens security posture — Gatekeeper, quarantine and FileVault are left alone.
+
+### What it changes
+
+- **Keyboard:** disables press-and-hold so held keys repeat, sets a fast repeat
+  rate and short initial delay, and enables full keyboard navigation. These
+  matter most for Neovim and tmux's vi mode.
+- **Text input:** disables smart quotes, smart dashes, auto-capitalisation,
+  auto-period and autocorrect, all of which corrupt code and commit messages.
+- **Finder:** shows file extensions, the path bar and the status bar; defaults
+  to list view; scopes search to the current folder; sorts folders first; and
+  stops `.DS_Store` files being written to network shares and USB volumes.
+- **Screenshots:** sends the built-in `Cmd-Shift-3/4` captures to
+  `~/Screenshots` as shadowless PNGs, with no floating thumbnail.
+- **Dock & Spaces:** auto-hides the Dock with no reveal delay, hides recent
+  apps, shrinks the tiles, and stops macOS reordering Spaces by recent use.
+- **Windows & dialogs:** expands save and print panels by default and speeds up
+  window resize animations.
+
+### Undo
+
+Every domain is exported to `~/.macos-setup-backups/<timestamp>/` before any
+write. Domains that were untouched export as empty plists, so restoring returns
+them to genuine system defaults rather than to some earlier customised state:
+
+```bash
+./macos.sh --restore ~/.macos-setup-backups/<timestamp>
+```
+
+### Deliberate omissions
+
+- **Showing hidden files permanently** (`AppleShowAllFiles`) — `Cmd-Shift-.`
+  toggles dotfiles on demand instead of cluttering every window.
+- **Forcing local saves** (`NSDocumentSaveNewDocumentsToCloud`) — left unset so
+  new documents keep going to iCloud and follow you across devices.
+- **Disabling the quarantine prompt** (`LSQuarantine`) — common in dotfiles
+  repos, but it weakens Gatekeeper.
+- **Shottr's save folder** — genuinely cannot be scripted. Shottr is sandboxed
+  with only `files.user-selected.read-write`, so its write permission comes
+  from a security-scoped bookmark macOS creates when you pick the folder in its
+  own panel. A path written to `defaults` carries no such permission. The
+  script sets the Shottr keys that *are* scriptable and points you at the rest.
 
 ## 🎨 VS Code Setup
 
@@ -256,6 +311,50 @@ These are declared directly in `nvim/lua/config/lazy.lua` and install on first l
 ## 📦 Customization
 
 Edit `Brewfile` to add or remove tools before running the installer. Comment out lines with `#` to skip optional apps.
+
+## 🧹 Shell Linting
+
+The scripts in this repo are the product, so they are linted and formatted on
+the way in rather than audited afterwards.
+
+| Tool           | Role                                                        |
+| :------------- | :---------------------------------------------------------- |
+| **shellcheck** | Finds real bugs — unquoted expansions, `set -e` masking.     |
+| **shfmt**      | Formats shell source. Style comes from `.editorconfig`.      |
+| **lefthook**   | Runs both as a pre-commit hook.                              |
+
+`install.sh` installs the hooks automatically when run from a git clone. To set
+them up by hand:
+
+```bash
+lefthook install
+```
+
+On commit, `shellcheck` **blocks** if it finds anything (it cannot auto-fix),
+while `shfmt` rewrites the file and restages it. To check everything manually:
+
+```bash
+shellcheck ./*.sh          # lint
+shfmt -d ./*.sh            # show formatting diffs
+shfmt -w ./*.sh            # apply formatting
+```
+
+Bypass the hook for a single commit with `LEFTHOOK=0 git commit ...`.
+
+> **Note:** `.editorconfig` is the single source of truth for shell formatting.
+> shfmt reads it directly and **ignores** `-i`/`-ci` flags while it exists, so
+> change the style there rather than in `lefthook.yml`.
+
+### Suppressed warnings
+
+Two shellcheck warnings are disabled deliberately, both documented inline:
+
+- **SC2088** in `doctor.sh` — the `"~/..."` strings are display labels, not
+  paths. The real paths beside them use `$HOME`.
+- **SC2143** in `install.sh` and `doctor.sh` — shellcheck suggests
+  `! grep -q`, but that is **not** equivalent on macOS. BSD grep exits 0 for
+  `-qv` on empty input, so the rewrite would misreport a failing `rustup` as
+  "toolchain already installed" and skip the install.
 
 ## 🤝 Contributing
 

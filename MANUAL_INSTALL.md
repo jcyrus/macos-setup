@@ -54,6 +54,12 @@ brew install git gh eza bat ripgrep fd fzf jq tealdeer mas
 brew install git-delta dust duf procs btop hyperfine tokei yazi tree-sitter
 ```
 
+### 🧹 Shell Quality
+
+```bash
+brew install shellcheck shfmt lefthook
+```
+
 ### 🤖 AI / LLM
 
 ```bash
@@ -90,13 +96,13 @@ brew install --cask font-0xproto-nerd-font font-jetbrains-mono-nerd-font
 ### 🔒 Security
 
 ```bash
-brew install --cask bitwarden tailscale
+brew install --cask bitwarden tailscale-app
 ```
 
 ### 🎨 Creative + 🍿 Lifestyle + 👻 Custom
 
 ```bash
-brew install --cask figma darktable telegram spotify iina stremio whisky
+brew install --cask figma darktable telegram spotify iina stremio
 brew install imagemagick
 brew install jcyrus/tap/zerodrop jcyrus/tap/spektr
 ```
@@ -132,8 +138,8 @@ eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd)"
 eval "$(fzf --zsh)"
 
-alias ls="eza --icons"
-alias ll="eza -l --icons"
+alias ls="eza --icons=auto"
+alias ll="eza -l --icons=auto"
 alias cat="bat --paging=never --plain"
 alias f="fvm flutter"
 alias lg="lazygit"
@@ -185,6 +191,15 @@ Wire `git-delta` up as the pager, which is what makes the installed diff highlig
 ```bash
 git config --global core.pager delta
 git config --global interactive.diffFilter "delta --color-only"
+```
+
+### Git hooks (lefthook)
+
+Install this repo's pre-commit hooks, which run `shellcheck` and `shfmt` over
+any staged `*.sh` files. Run this from the repo root:
+
+```bash
+lefthook install
 ```
 
 ### tealdeer

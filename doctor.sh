@@ -6,13 +6,27 @@
 #
 # Exit status: 0 if nothing failed, 1 if any check failed.
 
+# SC2088: this file passes "~/..." strings as *display labels* to check_link and
+# fail, never as paths to resolve. The real paths alongside them use $HOME. Tilde
+# expansion is not wanted here, so the warning does not apply file-wide.
+# shellcheck disable=SC2088
+
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 if [ -t 1 ]; then
-    C_OK=$'\033[32m'; C_WARN=$'\033[33m'; C_FAIL=$'\033[31m'
-    C_HEAD=$'\033[1;36m'; C_DIM=$'\033[2m'; C_OFF=$'\033[0m'
+    C_OK=$'\033[32m'
+    C_WARN=$'\033[33m'
+    C_FAIL=$'\033[31m'
+    C_HEAD=$'\033[1;36m'
+    C_DIM=$'\033[2m'
+    C_OFF=$'\033[0m'
 else
-    C_OK=""; C_WARN=""; C_FAIL=""; C_HEAD=""; C_DIM=""; C_OFF=""
+    C_OK=""
+    C_WARN=""
+    C_FAIL=""
+    C_HEAD=""
+    C_DIM=""
+    C_OFF=""
 fi
 
 PASS_N=0
@@ -20,9 +34,18 @@ WARN_N=0
 FAIL_N=0
 
 section() { printf "\n%s── %s%s\n" "$C_HEAD" "$1" "$C_OFF"; }
-ok()   { PASS_N=$((PASS_N + 1)); printf "  %sok%s    %-26s %s\n" "$C_OK" "$C_OFF" "$1" "$2"; }
-warn() { WARN_N=$((WARN_N + 1)); printf "  %swarn%s  %-26s %s\n" "$C_WARN" "$C_OFF" "$1" "$2"; }
-fail() { FAIL_N=$((FAIL_N + 1)); printf "  %sFAIL%s  %-26s %s\n" "$C_FAIL" "$C_OFF" "$1" "$2"; }
+ok() {
+    PASS_N=$((PASS_N + 1))
+    printf "  %sok%s    %-26s %s\n" "$C_OK" "$C_OFF" "$1" "$2"
+}
+warn() {
+    WARN_N=$((WARN_N + 1))
+    printf "  %swarn%s  %-26s %s\n" "$C_WARN" "$C_OFF" "$1" "$2"
+}
+fail() {
+    FAIL_N=$((FAIL_N + 1))
+    printf "  %sFAIL%s  %-26s %s\n" "$C_FAIL" "$C_OFF" "$1" "$2"
+}
 hint() { printf "        %s%s%s\n" "$C_DIM" "$1" "$C_OFF"; }
 
 # A config is only healthy if it is a symlink AND resolves inside this repo.
@@ -57,11 +80,11 @@ printf "%srepo: %s%s\n" "$C_DIM" "$REPO_DIR" "$C_OFF"
 
 # --- Homebrew ---------------------------------------------------------------
 section "Homebrew"
-if command -v brew &> /dev/null; then
+if command -v brew &>/dev/null; then
     ok "brew" "$(brew --version | head -n 1)"
     # brew bundle check reports everything on stderr, so this must be 2>&1.
-    missing="$(brew bundle check --verbose --file="$REPO_DIR/Brewfile" 2>&1 \
-        | sed -n 's/^→ \(.*\) needs to be installed or updated\./\1/p')"
+    missing="$(brew bundle check --verbose --file="$REPO_DIR/Brewfile" 2>&1 |
+        sed -n 's/^→ \(.*\) needs to be installed or updated\./\1/p')"
     if [ -z "$missing" ]; then
         ok "Brewfile" "all entries satisfied"
     else
@@ -75,10 +98,10 @@ fi
 
 # --- Config symlinks --------------------------------------------------------
 section "Config symlinks"
-check_link "~/.config/nvim"          "$HOME/.config/nvim"          "$REPO_DIR/nvim"
-check_link "~/.config/ghostty"       "$HOME/.config/ghostty"       "$REPO_DIR/ghostty"
+check_link "~/.config/nvim" "$HOME/.config/nvim" "$REPO_DIR/nvim"
+check_link "~/.config/ghostty" "$HOME/.config/ghostty" "$REPO_DIR/ghostty"
 check_link "~/.config/starship.toml" "$HOME/.config/starship.toml" "$REPO_DIR/starship/starship.toml"
-check_link "~/.tmux.conf"            "$HOME/.tmux.conf"            "$REPO_DIR/tmux/.tmux.conf"
+check_link "~/.tmux.conf" "$HOME/.tmux.conf" "$REPO_DIR/tmux/.tmux.conf"
 
 # --- Shell ------------------------------------------------------------------
 section "Shell"
@@ -106,7 +129,7 @@ if [ -f "$HOME/.zshrc" ]; then
     plugin_line="$(grep -m1 '^plugins=(' "$HOME/.zshrc")"
     for dup in zoxide fzf; do
         case " $plugin_line " in
-            *" $dup"*|*"($dup"*)
+            *" $dup"* | *"($dup"*)
                 if [ "$dup" = "zoxide" ] && grep -q "zoxide init" "$HOME/.zshrc"; then
                     warn "duplicate zoxide init" "OMZ plugin + explicit eval"
                     hint "drop 'zoxide' from plugins=(...); the eval is enough"
@@ -120,7 +143,7 @@ if [ -f "$HOME/.zshrc" ]; then
 
     case "$plugin_line" in
         *"zsh-syntax-highlighting)"*) ok "syntax-highlighting" "last in plugin list" ;;
-        *zsh-syntax-highlighting*)    warn "syntax-highlighting" "not last in plugin list" ;;
+        *zsh-syntax-highlighting*) warn "syntax-highlighting" "not last in plugin list" ;;
     esac
 else
     fail "~/.zshrc" "missing"
@@ -151,18 +174,21 @@ fi
 
 # --- Toolchains -------------------------------------------------------------
 section "Toolchains"
-if command -v node &> /dev/null; then
+if command -v node &>/dev/null; then
     ok "node" "$(node --version)"
 else
     fail "node" "not on PATH"
     hint "'fnm install --lts' installs but does not activate; 'fnm default lts-latest' does"
 fi
 
-if command -v rustc &> /dev/null; then
+if command -v rustc &>/dev/null; then
     ok "rust" "$(rustc --version | awk '{print $2}')"
-elif command -v rustup &> /dev/null; then
+elif command -v rustup &>/dev/null; then
     # Distinguish "no toolchain" from "toolchain installed but its shims are
     # not on PATH" — Homebrew's rustup links only `rustup` itself.
+    # See the matching note in install.sh: `grep -qv` is not equivalent here,
+    # because BSD grep exits 0 for `-qv` on empty input.
+    # shellcheck disable=SC2143
     if [ -n "$(rustup toolchain list 2>/dev/null | grep -v 'no installed toolchains')" ]; then
         fail "rust" "toolchain installed but rustc is not on PATH"
         shim_dir="$(brew --prefix rustup 2>/dev/null)/bin"
@@ -175,7 +201,7 @@ else
     fail "rust" "not installed"
 fi
 
-if command -v fvm &> /dev/null; then
+if command -v fvm &>/dev/null; then
     if fvm list 2>/dev/null | grep -q "No SDKs have been installed"; then
         warn "flutter (fvm)" "fvm present, no SDK installed"
         hint "run: fvm install stable && fvm global stable"
@@ -222,12 +248,12 @@ else
     warn "settings.json" "missing"
 fi
 
-if command -v code &> /dev/null; then
-    installed="$(code --list-extensions 2>/dev/null | tr 'A-Z' 'a-z')"
+if command -v code &>/dev/null; then
+    installed="$(code --list-extensions 2>/dev/null | tr '[:upper:]' '[:lower:]')"
     wanted="$(sed -n 's/.*"\([a-zA-Z0-9._-]*\.[a-zA-Z0-9._-]*\)".*/\1/p' "$REPO_DIR/vscode/extensions.json")"
     missing_ext=""
     for e in $wanted; do
-        printf '%s\n' "$installed" | grep -qx "$(printf '%s' "$e" | tr 'A-Z' 'a-z')" || missing_ext="$missing_ext $e"
+        printf '%s\n' "$installed" | grep -qx "$(printf '%s' "$e" | tr '[:upper:]' '[:lower:]')" || missing_ext="$missing_ext $e"
     done
     if [ -z "$missing_ext" ]; then
         ok "extensions" "all recommended installed"
@@ -242,7 +268,7 @@ fi
 
 # --- Docker / OrbStack ------------------------------------------------------
 section "Docker"
-if command -v docker &> /dev/null; then
+if command -v docker &>/dev/null; then
     ok "docker CLI" "$(docker --version 2>/dev/null | head -c 40)"
 else
     if [ -d "/Applications/OrbStack.app" ]; then
@@ -256,7 +282,7 @@ fi
 
 # --- Starship ---------------------------------------------------------------
 section "Starship"
-if command -v starship &> /dev/null; then
+if command -v starship &>/dev/null; then
     ok "starship" "$(starship --version | head -n 1)"
     if STARSHIP_CONFIG="$REPO_DIR/starship/starship.toml" starship prompt &>/dev/null; then
         ok "starship config" "parses cleanly"
@@ -269,7 +295,7 @@ fi
 
 # --- Ollama -----------------------------------------------------------------
 section "Ollama"
-if command -v ollama &> /dev/null; then
+if command -v ollama &>/dev/null; then
     ok "ollama CLI" "$(ollama --version 2>/dev/null | head -n 1)"
     if curl -s http://localhost:11434/api/tags &>/dev/null; then
         ok "ollama service" "running on localhost:11434"

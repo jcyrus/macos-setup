@@ -1,0 +1,27 @@
+# lefthook.yml — git hooks for this repo.
+#
+# Install the hooks once with:
+#     lefthook install
+#
+# Bypass for a single commit (use sparingly):
+#     LEFTHOOK=0 git commit ...
+#
+# The scripts in this repo *are* the product, so they are linted and formatted
+# on the way in rather than audited after the fact.
+
+pre-commit:
+  parallel: true
+  commands:
+    # Catches real bugs: unquoted expansions, `set -e` masking, bad test syntax.
+    # Cannot auto-fix, so this blocks the commit.
+    shellcheck:
+      glob: "*.sh"
+      run: shellcheck {staged_files}
+
+    # Formatting is mechanical, so fix it and restage rather than blocking.
+    # Style comes from .editorconfig, which shfmt reads directly — do not add
+    # -i/-ci flags here, they would be ignored while .editorconfig exists.
+    shfmt:
+      glob: "*.sh"
+      run: shfmt -w {staged_files}
+      stage_fixed: true
