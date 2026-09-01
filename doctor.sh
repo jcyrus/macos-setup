@@ -102,6 +102,7 @@ check_link "~/.config/nvim" "$HOME/.config/nvim" "$REPO_DIR/nvim"
 check_link "~/.config/ghostty" "$HOME/.config/ghostty" "$REPO_DIR/ghostty"
 check_link "~/.config/starship.toml" "$HOME/.config/starship.toml" "$REPO_DIR/starship/starship.toml"
 check_link "~/.tmux.conf" "$HOME/.tmux.conf" "$REPO_DIR/tmux/.tmux.conf"
+check_link "~/.config/aerospace" "$HOME/.config/aerospace" "$REPO_DIR/aerospace"
 
 # --- Shell ------------------------------------------------------------------
 section "Shell"
@@ -305,6 +306,26 @@ if command -v ollama &>/dev/null; then
     fi
 else
     warn "ollama" "not installed"
+fi
+
+# --- Window Management ------------------------------------------------------
+section "Window Management"
+if [ -d "/Applications/AeroSpace.app" ] || command -v aerospace &>/dev/null; then
+    ok "AeroSpace" "installed"
+else
+    fail "AeroSpace" "not installed (cask aerospace)"
+fi
+
+if command -v borders &>/dev/null; then
+    ok "borders" "installed"
+    if brew services list 2>/dev/null | grep -E '^borders\s+started' &>/dev/null; then
+        ok "borders service" "running"
+    else
+        warn "borders service" "not started"
+        hint "run: brew services start borders"
+    fi
+else
+    fail "borders" "not installed (formula borders)"
 fi
 
 # --- Summary ----------------------------------------------------------------

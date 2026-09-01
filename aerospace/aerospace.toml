@@ -1,0 +1,156 @@
+# ==============================================================================
+# AeroSpace Configuration
+# Modern i3-inspired tiling window manager for macOS
+# ==============================================================================
+
+# Config version
+config-version = 2
+
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Accordion layout padding
+accordion-padding = 30
+
+# Default layout for new workspaces
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Layout key mapping presets
+key-mapping.preset = 'qwerty'
+
+# Mouse follows focus when switching windows
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Startup hooks: launch JankyBorders with Catppuccin Mocha Mauve active border
+after-startup-command = [
+    'exec-and-forget borders active_color=0xffcba6f7 inactive_color=0x00000000 width=4.0 radius=10.0'
+]
+
+# ==============================================================================
+# Gaps (Inner & Outer spacing)
+# ==============================================================================
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 8
+outer.bottom     = 8
+outer.top        = 8
+outer.right      = 8
+
+# ==============================================================================
+# Keybindings: Main Mode (⌥ Option Modifier)
+# ==============================================================================
+[mode.main.binding]
+
+# --- Focus Navigation (Vim Keys) ---
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+
+# --- Window Movement / Swapping ---
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+
+# --- Layout Controls & Fullscreen ---
+alt-f = 'fullscreen'
+alt-slash = 'layout tiles horizontal vertical'
+alt-e = 'layout accordion horizontal vertical'
+alt-shift-space = 'layout floating tiling'
+
+# --- Workspaces (1 through 9) ---
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+# --- Move Window to Workspace & Follow ---
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+
+# --- Workspace & Monitor Navigation ---
+alt-tab = 'workspace-back-and-forth'
+alt-shift-tab = 'move-node-to-monitor --wrap-around next'
+
+# --- Modes ---
+alt-r = 'mode resize'
+alt-shift-semicolon = 'mode service'
+
+# ==============================================================================
+# Keybindings: Resize Mode
+# ==============================================================================
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+b = 'balance-sizes'
+enter = 'mode main'
+esc = 'mode main'
+
+# ==============================================================================
+# Keybindings: Service Mode (System & Reload)
+# ==============================================================================
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']
+f = ['layout floating tiling', 'mode main']
+backspace = ['close-all-windows-but-current', 'mode main']
+
+# ==============================================================================
+# Window Rules (Floating utility popups & dialogs)
+# ==============================================================================
+[[on-window-detected]]
+if.app-id = 'com.raycast.macos'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'net.freemacsoft.AppCleaner'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Shottr'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Bitwarden'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = '1Password'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'The Unarchiver'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Hidden Bar|Stats'
+run = 'layout floating'

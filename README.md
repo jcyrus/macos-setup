@@ -12,6 +12,8 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 |                   | **Starship**       | Minimal, blazing fast shell prompt.                    |
 |                   | **Zoxide**         | Smarter `cd` that remembers your most used paths.      |
 |                   | **tmux**           | Terminal multiplexer with persistent sessions.         |
+| **🪟 Window Mgr**  | **AeroSpace**      | i3-inspired tiling window manager (Zero SIP required). |
+|                   | **JankyBorders**   | Catppuccin active window border highlighter (`borders`).|
 | **🛠 Core CLI**   | **Eza**            | Modern replacement for `ls` with icons & git status.   |
 |                   | **Bat**            | Modern replacement for `cat` with syntax highlighting. |
 |                   | **Ripgrep**        | Ultra-fast text search tool (`rg`).                    |
@@ -307,6 +309,33 @@ These are declared directly in `nvim/lua/config/lazy.lua` and install on first l
 - LazyVim bootstraps on first run of `nvim`.
 - Mason installs language servers/debug tools automatically.
 - Use `:LazyExtras` to toggle modules beyond the ones already declared in `nvim/lua/config/lazy.lua`.
+
+## 🪟 Window Management (AeroSpace + JankyBorders)
+
+`./install.sh` configures **AeroSpace** (an i3-inspired tree tiling window manager) and **JankyBorders** (an active window border highlighter with Catppuccin Mocha Mauve accent).
+
+Unlike `yabai`, AeroSpace requires **zero SIP tampering** and uses instant virtual workspaces without macOS animation delays.
+
+### Keyboard Shortcuts (⌥ Option Modifier)
+
+All window management shortcuts use the `⌥ Option` (Alt) key to avoid colliding with `⌘ Command` (macOS apps), `⌃ Ctrl+a` (tmux), or Neovim:
+
+| Shortcut | Action | Description |
+| :--- | :--- | :--- |
+| **`⌥ Opt + H` / `J` / `K` / `L`** | Focus Window | Vim-style directional focus (Left / Down / Up / Right). |
+| **`⌥ Opt + ⇧ Shift + H` / `J` / `K` / `L`** | Swap / Move Window | Swap position of current window in that direction. |
+| **`⌥ Opt + F`** | Maximize / Zoom Toggle | Toggle fullscreen zoom for the focused window. |
+| **`⌥ Opt + /`** | Toggle Split Axis | Switch split between Horizontal (side-by-side) and Vertical. |
+| **`⌥ Opt + E`** | Accordion Layout | Toggle accordion mode for nested tiles. |
+| **`⌥ Opt + ⇧ Shift + Space`** | Float / Tile Toggle | Detach window to floating mode (or re-tile). |
+| **`⌥ Opt + 1` .. `9`** | Switch Workspace | Jump to workspace 1 through 9 instantly (0ms delay). |
+| **`⌥ Opt + ⇧ Shift + 1` .. `9`** | Move to Workspace | Send focused window to workspace and follow focus. |
+| **`⌥ Opt + Tab`** | Toggle Workspace | Bounce back to previous active workspace. |
+| **`⌥ Opt + ⇧ Shift + Tab`** | Move to Next Monitor | Move focused window to the next connected display. |
+| **`⌥ Opt + R`** | Resize Mode | Enter resize mode (`H`/`J`/`K`/`L` to resize, `B` to balance, `Esc` to exit). |
+| **`⌥ Opt + ⇧ Shift + ;`** | Service Mode | System actions (`Esc` to reload config, `R` to flatten tree). |
+
+> **Note:** On first launch, macOS requires granting **Accessibility** permission to AeroSpace in **System Settings → Privacy & Security → Accessibility**. Utility popups (Raycast, Shottr, Bitwarden, Finder dialogs) are automatically set to floating mode.
 
 ## 📦 Customization
 

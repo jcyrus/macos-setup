@@ -59,6 +59,7 @@ Inspect the output line-by-line for `warn` and `FAIL` indicators.
      - Ghostty: `ln -sfn "$REPO_DIR/ghostty" "$HOME/.config/ghostty"`
      - Starship: `ln -sfn "$REPO_DIR/starship/starship.toml" "$HOME/.config/starship.toml"`
      - tmux: `ln -sfn "$REPO_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"`
+     - AeroSpace: `ln -sfn "$REPO_DIR/aerospace" "$HOME/.config/aerospace"`
 
 2. **Missing Shell Init (`FAIL: <tool> init absent from .zshrc`)**:
    - Cause: Tool initialization line missing from `~/.zshrc`.
@@ -71,6 +72,9 @@ Inspect the output line-by-line for `warn` and `FAIL` indicators.
 4. **VS Code Settings Unapplied (`warn: settings.json real file, differs...` or `missing`)**:
    - Fix: Copy `vscode/settings.json` to `$HOME/Library/Application Support/Code/User/settings.json`.
 
+5. **JankyBorders Service Stopped (`warn: borders service not started`)**:
+   - Fix: Run `brew services start borders`.
+
 After applying fixes, **re-run `./doctor.sh`** until exit status is `0` with `0 failures`.
 
 ---
@@ -82,6 +86,7 @@ Present a summary to the user:
 - **Manual GUI Steps Remaining** (Prompt user to perform these non-scriptable actions):
   1. **Ghostty**: Open app to inspect Catppuccin Mocha theme & 0xProto font.
   2. **tmux**: Open terminal, start `tmux`, press `prefix + I` (`Ctrl+a` then `Shift+i`) to install TPM plugins.
-  3. **Raycast**: Open Raycast (`Option+Space`) and grant initial macOS permissions.
-  4. **Ollama**: Run `ollama pull llama3.2` to download initial LLM model.
-  5. **Neovim**: Run `nvim` once to let LazyVim bootstrap plugins & LSPs.
+  3. **Raycast**: Open Raycast (`Option+Space` or `Cmd+Space`) and grant initial macOS permissions.
+  4. **AeroSpace**: Open System Settings → Privacy & Security → Accessibility and ensure AeroSpace is enabled.
+  5. **Ollama**: Run `ollama pull llama3.2` to download initial LLM model.
+  6. **Neovim**: Run `nvim` once to let LazyVim bootstrap plugins & LSPs.

@@ -28,12 +28,21 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ```bash
 brew tap leoafarias/fvm
-brew tap jcyrus/homebrew-tap
+brew tap jcyrus/tap
+brew tap nikitabobko/tap
+brew tap FelixKratz/formulae
 ```
 
 > If you would rather install everything at once, `brew bundle --file=./Brewfile` covers sections 2 and 3 in one command, taps included.
 
 ## 3. Install Tooling
+
+### 🪟 Window Management
+
+```bash
+brew install --cask aerospace
+brew install borders
+```
 
 ### 🚀 Terminal
 
@@ -269,6 +278,18 @@ The config uses the Catppuccin v2 `@catppuccin_status_*` interface and pins the 
 ```bash
 git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.tmux/plugins/tmux
 ```
+
+### AeroSpace + JankyBorders
+
+```bash
+mkdir -p ~/.config/aerospace
+[ -e ~/.aerospace.toml ] && [ ! -L ~/.aerospace.toml ] && mv ~/.aerospace.toml ~/.aerospace.toml.backup.$(date +%s)
+ln -sfn "$(pwd)/aerospace/aerospace.toml" ~/.aerospace.toml
+ln -sfn "$(pwd)/aerospace/aerospace.toml" ~/.config/aerospace/aerospace.toml
+brew services start borders
+```
+
+Open **System Settings → Privacy & Security → Accessibility** and ensure **AeroSpace** is enabled.
 
 ## 6. VS Code
 

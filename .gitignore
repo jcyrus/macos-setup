@@ -1,0 +1,9 @@
+# System files
+.DS_Store
+
+# Backup files
+*.backup
+*.backup.*
+
+# Local analysis artifacts
+graphify-out/

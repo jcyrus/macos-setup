@@ -8,6 +8,7 @@ The format is based on Keep a Changelog.
 
 ### Added
 
+- **AeroSpace tiling window manager and JankyBorders focus indicator**: Added `nikitabobko/tap` and `FelixKratz/formulae` to Brewfile, complete with `aerospace/aerospace.toml` configuration, Catppuccin Mocha Mauve border integration, Vim-inspired `⌥ Option` navigation, instant virtual workspaces (zero SIP disabling required), and utility floating window rules. Updated `install.sh`, `doctor.sh`, `README.md`, `MANUAL_INSTALL.md`, and `AGENTS.md`.
 - Shell linting for the repo's own scripts: `shellcheck`, `shfmt` and `lefthook` in the Brewfile, a `lefthook.yml` pre-commit hook, and an `.editorconfig` that is the single source of truth for shell formatting. `shellcheck` blocks a commit when it finds anything; `shfmt` reformats and restages instead. `install.sh` runs `lefthook install` when executed from a git clone.
 - `.editorconfig` also covers JSON/YAML/TOML/Lua/Markdown, closing a gap where `vscode/extensions.json` recommended the EditorConfig extension but the repo shipped no config for it to read.
 - `macos.sh`, an opinionated macOS system preferences script covering keyboard repeat, text substitution, Finder, screenshots, Dock/Spaces and dialog defaults. It supports `--dry-run` to preview changes and `--restore` to undo them, exporting every domain it touches to `~/.macos-setup-backups/<timestamp>/` before writing. All settings are user-level `defaults write` calls: nothing requires `sudo`, and nothing weakens Gatekeeper, quarantine or FileVault.

@@ -29,9 +29,19 @@ fi
 
 # 3. Tap custom repositories (brew bundle would do this too, but tapping
 # explicitly here surfaces any tap failure separately from bundle failures).
-echo "🚰 Tapping jcyrus/tap and leoafarias/fvm..."
+echo "🚰 Tapping custom repositories..."
 brew tap jcyrus/tap
 brew tap leoafarias/fvm
+brew tap nikitabobko/tap
+brew tap FelixKratz/formulae
+
+# Homebrew 6+ requires explicit trust for third-party taps containing casks
+if brew trust --help &>/dev/null; then
+    brew trust jcyrus/tap 2>/dev/null || true
+    brew trust leoafarias/fvm 2>/dev/null || true
+    brew trust nikitabobko/tap 2>/dev/null || true
+    brew trust FelixKratz/formulae 2>/dev/null || true
+fi
 
 # 4. Bundle Apps
 # A single unavailable cask should not abort the rest of the setup, so this
@@ -222,6 +232,17 @@ fi
 
 ln -sfn "$REPO_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
+echo "🪟 Setting up AeroSpace..."
+if [ -e "$HOME/.config/aerospace" ] && [ ! -L "$HOME/.config/aerospace" ]; then
+    mv "$HOME/.config/aerospace" "$HOME/.config/aerospace.backup.$(date +%s)"
+fi
+if [ -e "$HOME/.aerospace.toml" ] && [ ! -L "$HOME/.aerospace.toml" ]; then
+    mv "$HOME/.aerospace.toml" "$HOME/.aerospace.toml.backup.$(date +%s)"
+fi
+
+ln -sfn "$REPO_DIR/aerospace" "$HOME/.config/aerospace"
+ln -sfn "$REPO_DIR/aerospace/aerospace.toml" "$HOME/.aerospace.toml"
+
 # 8. Language Setup
 echo "🦀 Setting up Rust..."
 # Homebrew's rustup formula (formerly rustup-init) links only `rustup` into
@@ -262,6 +283,11 @@ if command -v ollama &>/dev/null; then
     brew services start ollama 2>/dev/null || true
 fi
 
+echo "🪟 Starting JankyBorders background service..."
+if command -v borders &>/dev/null; then
+    brew services start borders 2>/dev/null || true
+fi
+
 # 9. First-run caches
 echo "📚 Priming tldr cache..."
 if command -v tldr &>/dev/null; then
@@ -284,4 +310,4 @@ if ! command -v docker &>/dev/null; then
     fi
 fi
 
-echo "✅ Done! Restart your terminal, then open nvim once to bootstrap LazyVim."
+echo "✅ Done! Restart your terminal, open nvim once to bootstrap LazyVim, and grant AeroSpace Accessibility permissions in System Settings."

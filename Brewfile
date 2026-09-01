@@ -3,6 +3,12 @@
 # --- TAPS ---
 tap "leoafarias/fvm"
 tap "jcyrus/tap"
+tap "nikitabobko/tap"
+tap "FelixKratz/formulae"
+
+# --- WINDOW MANAGEMENT ---
+cask "aerospace"
+brew "borders"
 
 # --- TERMINAL ---
 cask "ghostty"
