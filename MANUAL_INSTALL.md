@@ -282,10 +282,9 @@ git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.tmux/plugins/tmux
 ### AeroSpace + JankyBorders
 
 ```bash
-mkdir -p ~/.config/aerospace
-[ -e ~/.aerospace.toml ] && [ ! -L ~/.aerospace.toml ] && mv ~/.aerospace.toml ~/.aerospace.toml.backup.$(date +%s)
-ln -sfn "$(pwd)/aerospace/aerospace.toml" ~/.aerospace.toml
-ln -sfn "$(pwd)/aerospace/aerospace.toml" ~/.config/aerospace/aerospace.toml
+[ -e ~/.aerospace.toml ] && mv ~/.aerospace.toml ~/.aerospace.toml.backup.$(date +%s)
+[ -e ~/.config/aerospace ] && [ ! -L ~/.config/aerospace ] && mv ~/.config/aerospace ~/.config/aerospace.backup.$(date +%s)
+ln -sfn "$(pwd)/aerospace" ~/.config/aerospace
 brew services start borders
 ```
 

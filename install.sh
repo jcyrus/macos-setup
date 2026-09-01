@@ -236,12 +236,15 @@ echo "🪟 Setting up AeroSpace..."
 if [ -e "$HOME/.config/aerospace" ] && [ ! -L "$HOME/.config/aerospace" ]; then
     mv "$HOME/.config/aerospace" "$HOME/.config/aerospace.backup.$(date +%s)"
 fi
-if [ -e "$HOME/.aerospace.toml" ] && [ ! -L "$HOME/.aerospace.toml" ]; then
+# AeroSpace errors out with 'Ambiguous config' if both ~/.aerospace.toml and
+# ~/.config/aerospace/aerospace.toml exist. Clean up any root file.
+if [ -L "$HOME/.aerospace.toml" ]; then
+    rm -f "$HOME/.aerospace.toml"
+elif [ -f "$HOME/.aerospace.toml" ]; then
     mv "$HOME/.aerospace.toml" "$HOME/.aerospace.toml.backup.$(date +%s)"
 fi
 
 ln -sfn "$REPO_DIR/aerospace" "$HOME/.config/aerospace"
-ln -sfn "$REPO_DIR/aerospace/aerospace.toml" "$HOME/.aerospace.toml"
 
 # 8. Language Setup
 echo "🦀 Setting up Rust..."
