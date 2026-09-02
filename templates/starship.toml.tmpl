@@ -1,0 +1,376 @@
+format = """
+$os\
+$directory\
+$git_branch\
+$git_status\
+$custom\
+$fill\
+$aws\
+$azure\
+$bun\
+$deno\
+$elixir\
+$erlang\
+$gcloud\
+$helm\
+$julia\
+$kubernetes\
+$nim\
+$opa\
+$perl\
+$pulumi\
+$rlang\
+$scala\
+$terraform\
+$zig\
+$c\
+$cpp\
+$dart\
+$docker_context\
+$golang\
+$java\
+$kotlin\
+$lua\
+$nodejs\
+$package\
+$php\
+$python\
+$ruby\
+$rust\
+$swift\
+$cmd_duration\
+$line_break\
+$character
+"""
+
+palette = "__STARSHIP_PALETTE__"
+add_newline = true
+
+[fill]
+symbol = " "
+
+[character]
+success_symbol = "[󰄛](bold green) "
+error_symbol = "[󰄛](bold red) "
+vimcmd_symbol = "[󰘳](bold mauve) "
+
+[cmd_duration]
+min_time = 500
+format = '[](fg:peach)[⏱ $duration]($style)[](fg:peach)'
+style = "fg:base bg:peach"
+
+[os]
+disabled = false
+format = '[](fg:mauve)[$symbol]($style)'
+style = "fg:base bg:mauve"
+
+[os.symbols]
+Macos = "󰀵 "
+Linux = "󰌽 "
+Windows = "󰍲 "
+Ubuntu = "󰕈 "
+Arch = "󰣇 "
+Debian = "󰣚 "
+Fedora = "󰣛 "
+
+[directory]
+format = "[](fg:mauve bg:blue)[  $path ]($style)"
+style = "fg:base bg:blue"
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " 󰌾"
+
+[git_branch]
+format = "[](fg:blue bg:green)[ 󰘬 $branch]($style)"
+style = "fg:base bg:green"
+
+[git_status]
+format = '([ $all_status$ahead_behind]($style))'
+style = "fg:base bg:green"
+ahead = "󰁝${count}"
+behind = "󰁅${count}"
+diverged = "󰹹󰁝${ahead_count}󰁅${behind_count}"
+conflicted = "󰞇${count}"
+deleted = "󰆴${count}"
+modified = "󰏫${count}"
+renamed = "󰑕${count}"
+staged = "󰄬${count}"
+stashed = "󰏗${count}"
+untracked = "󰞋${count}"
+
+[c]
+symbol = " "
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[cpp]
+symbol = " "
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[dart]
+symbol = " "
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[docker_context]
+symbol = " "
+format = "[](fg:blue)[$symbol$context]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[golang]
+symbol = " "
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal) "
+style = "fg:base bg:teal"
+
+[java]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
+style = "fg:base bg:red"
+
+[kotlin]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
+style = "fg:base bg:mauve"
+
+[lua]
+symbol = " "
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[nodejs]
+symbol = " "
+format = "[](fg:green)[$symbol$version]($style)[](fg:green) "
+style = "fg:base bg:green"
+
+[package]
+symbol = "󰏗 "
+format = "[](fg:text)[$symbol$version]($style)[](fg:text) "
+style = "fg:base bg:text"
+
+[php]
+symbol = " "
+format = "[](fg:lavender)[$symbol$version]($style)[](fg:lavender) "
+style = "fg:base bg:lavender"
+
+[python]
+symbol = " "
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
+style = "fg:base bg:yellow"
+
+[ruby]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
+style = "fg:base bg:red"
+
+[rust]
+symbol = " "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
+style = "fg:base bg:peach"
+
+[swift]
+symbol = " "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
+style = "fg:base bg:peach"
+
+[aws]
+symbol = "  "
+format = "[](fg:peach)[$symbol($profile)(\($region\))]($style)[](fg:peach) "
+style = "fg:base bg:peach"
+
+[azure]
+symbol = "󰠅 "
+format = "[](fg:blue)[$symbol($subscription)]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[bun]
+symbol = " "
+format = "[](fg:rosewater)[$symbol$version]($style)[](fg:rosewater) "
+style = "fg:base bg:rosewater"
+
+[deno]
+symbol = " "
+format = "[](fg:text)[$symbol$version]($style)[](fg:text) "
+style = "fg:base bg:text"
+
+[elixir]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
+style = "fg:base bg:mauve"
+
+[erlang]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
+style = "fg:base bg:red"
+
+[gcloud]
+symbol = "󱇶 "
+format = "[](fg:blue)[$symbol$account(@$domain)(\($project\))]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[helm]
+symbol = "⎈ "
+format = "[](fg:sky)[$symbol$version]($style)[](fg:sky) "
+style = "fg:base bg:sky"
+
+[julia]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
+style = "fg:base bg:mauve"
+
+[kubernetes]
+symbol = "󱃾 "
+format = "[](fg:sky)[$symbol$context( \($namespace\))]($style)[](fg:sky) "
+style = "fg:base bg:sky"
+
+[nim]
+symbol = " "
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
+style = "fg:base bg:yellow"
+
+[opa]
+symbol = "󱤊 "
+format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[perl]
+symbol = " "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
+style = "fg:base bg:peach"
+
+[pulumi]
+symbol = " "
+format = "[](fg:mauve)[$symbol$stack]($style)[](fg:mauve) "
+style = "fg:base bg:mauve"
+
+[rlang]
+symbol = "󰟔 "
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire) "
+style = "fg:base bg:sapphire"
+
+[scala]
+symbol = " "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
+style = "fg:base bg:red"
+
+[terraform]
+symbol = "󱁢 "
+format = "[](fg:lavender)[$symbol$workspace]($style)[](fg:lavender) "
+style = "fg:base bg:lavender"
+
+[zig]
+symbol = " "
+format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
+style = "fg:base bg:yellow"
+
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+
+[palettes.catppuccin_macchiato]
+rosewater = "#f4dbd6"
+flamingo = "#f0c6c6"
+pink = "#f5bde6"
+mauve = "#c6a0f6"
+red = "#ed8796"
+maroon = "#ee99a0"
+peach = "#f5a97f"
+yellow = "#eed49f"
+green = "#a6da95"
+teal = "#8bd5ca"
+sky = "#91d7e3"
+sapphire = "#7dc4e4"
+blue = "#8aadf4"
+lavender = "#b7bdf8"
+text = "#cad3f5"
+subtext1 = "#b8c0e0"
+subtext0 = "#a5adcb"
+overlay2 = "#939ab7"
+overlay1 = "#8087a2"
+overlay0 = "#6e738d"
+surface2 = "#5b6078"
+surface1 = "#494d64"
+surface0 = "#363a4f"
+base = "#24273a"
+mantle = "#1e2030"
+crust = "#181926"
+
+[palettes.catppuccin_frappe]
+rosewater = "#f2d5cf"
+flamingo = "#eebebe"
+pink = "#f4b8e4"
+mauve = "#ca9ee6"
+red = "#e78284"
+maroon = "#ea999c"
+peach = "#ef9f76"
+yellow = "#e5c890"
+green = "#a6d189"
+teal = "#81c8be"
+sky = "#99d1db"
+sapphire = "#85c1dc"
+blue = "#8caaee"
+lavender = "#babbf1"
+text = "#c6d0f5"
+subtext1 = "#b5bfe2"
+subtext0 = "#a5adce"
+overlay2 = "#949cbb"
+overlay1 = "#838ba7"
+overlay0 = "#737994"
+surface2 = "#626880"
+surface1 = "#51576d"
+surface0 = "#414559"
+base = "#303446"
+mantle = "#292c3c"
+crust = "#232634"
+
+[palettes.catppuccin_latte]
+rosewater = "#dc8a78"
+flamingo = "#dd7878"
+pink = "#ea76cb"
+mauve = "#8839ef"
+red = "#d20f39"
+maroon = "#e64553"
+peach = "#fe640b"
+yellow = "#df8e1d"
+green = "#40a02b"
+teal = "#179299"
+sky = "#04a5e5"
+sapphire = "#209fb5"
+blue = "#1e66f2"
+lavender = "#7287fd"
+text = "#4c4f69"
+subtext1 = "#5c5f77"
+subtext0 = "#6c6f85"
+overlay2 = "#7c7f93"
+overlay1 = "#8c8fa1"
+overlay0 = "#9ca0b0"
+surface2 = "#acb0be"
+surface1 = "#bcc0cc"
+surface0 = "#ccd0da"
+base = "#eff1f5"
+mantle = "#e6e9ef"
+crust = "#dce0e8"

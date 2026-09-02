@@ -84,40 +84,59 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 git clone https://github.com/jcyrus/macos-setup.git && cd macos-setup && chmod +x install.sh && ./install.sh
 ```
 
-### 🤖 AI Agent Automated Install
+Running `./install.sh` in an interactive terminal launches the **Interactive TUI Setup Wizard**.
 
-If you prefer to let an AI agent (Cursor, Antigravity, Claude Code, Windsurf, Copilot, etc.) handle the setup, copy and paste this prompt to your AI assistant:
+---
 
-> *"Run `./install.sh` to set up this Mac. Monitor the execution stream, automatically fix any Homebrew, cask, PATH, or symlink issues that occur, run `./doctor.sh` to verify health, and auto-remediate any doctor failures until `./doctor.sh` passes cleanly with 0 errors."*
+### 🎛️ Interactive TUI Wizard & Presets
 
-AI coding agents automatically follow the detailed troubleshooting playbooks and health verification rules defined in [AGENTS.md](AGENTS.md).
+The interactive installer guides you through choosing preset profiles, customizing packages, and tailoring configurations:
 
-Or step by step:
+1. **⚡ Preset Profiles**:
+   - **`Complete Experience`**: Installs everything (Rust, Web, Flutter, AeroSpace, Neovim, and all GUI apps).
+   - **`Minimalist / CLI Focus`**: Lightweight terminal stack with Ghostty, Neovim, Tmux, Starship, Rust, and modern CLI tools.
+   - **`Full-Stack Web`**: Node.js (FNM), pnpm, VS Code, Chrome, Brave, TablePlus, Bruno, OrbStack.
+   - **`Systems & Rust`**: Rustup, Bacon, Cargo tools, Neovim (LazyVim), Lazygit, Yazi.
+   - **`Mobile & Flutter`**: Flutter (FVM), Cocoapods, Scrcpy, VS Code, OrbStack.
+   - **`Custom Checklist`**: Granular package-by-package and category selection matrix.
+2. **🎨 Machine & Config Customizer**:
+   - Custom Git user name, email, and Delta diff layout.
+   - Theme selection (Catppuccin Mocha, Macchiato, Frappe, Latte).
+   - Coding font selection (0xProto Nerd Font, JetBrains Mono Nerd Font).
+   - Ghostty background opacity and blur.
+   - AeroSpace modifier key (`alt`/`cmd`/`ctrl`) and gap dimensions.
+   - Toggle macOS system defaults and fast keyboard repeat rates.
+3. **💾 Saved State**:
+   - Saves your choices to `~/.config/macos-setup/config.toml` so future runs and `./update.sh` stay consistent.
 
-### Step 1: Clone
+---
 
-Open your terminal and clone this repo:
+### 🤖 Non-Interactive & AI Agent Execution
+
+For CI pipelines, unattended automation, or AI agents:
 
 ```bash
-git clone https://github.com/jcyrus/macos-setup.git
-cd macos-setup
-chmod +x install.sh
+# Run full installation unattended
+./install.sh --unattended
 
+# Run a specific profile headlessly
+./install.sh --preset=minimalist -y
+./install.sh --preset=web -y
+
+# Simulate changes without installing (Dry Run)
+./install.sh --dry-run
+
+# Use a pre-existing config file
+./install.sh --config ~/.config/macos-setup/config.toml -y
 ```
 
-### Step 2: Install
+AI coding agents follow the automated playbooks in [AGENTS.md](AGENTS.md).
 
-Run the installer. This sets up Homebrew, installs all apps, and configures Zsh, Neovim, and tmux.
-
-```bash
-./install.sh
-```
-
-Prefer to do it by hand? [MANUAL_INSTALL.md](MANUAL_INSTALL.md) walks through every step the installer performs.
+---
 
 ### Step 3: Updates
 
-To keep your apps and tools up to date, or to install new apps added to `Brewfile`:
+To keep your apps and tools up to date according to your active profile:
 
 ```bash
 ./update.sh
@@ -125,13 +144,13 @@ To keep your apps and tools up to date, or to install new apps added to `Brewfil
 
 ### Step 4: Health Check
 
-To see how far a machine has drifted from this setup, run the doctor. It is strictly read-only — no installs, no writes:
+To see how far a machine has drifted from your configured setup, run the manifest-aware doctor:
 
 ```bash
 ./doctor.sh
 ```
 
-It reports dangling config symlinks (the failure mode where a tool starts fine but silently loads no config), missing shell initialisation, duplicated `zoxide`/`fzf` setup, toolchains that are installed but not activated, and unapplied VS Code settings. Exits non-zero if anything failed.
+It validates only the components enabled in your profile, reporting dangling symlinks, missing shell initializations, unactivated toolchains, or unapplied VS Code settings. Exits non-zero if any required component failed.
 
 ### Step 5: Post-Install Steps
 

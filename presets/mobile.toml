@@ -1,0 +1,50 @@
+# Mobile Developer Profile: Flutter (FVM), Cocoapods, Scrcpy, VS Code, OrbStack
+name = "Mobile & Flutter"
+description = "Cross-platform mobile development setup with FVM, Cocoapods, Scrcpy, VS Code, and essential GUI tools."
+
+[config.git]
+delta_side_by_side = true
+
+[config.theme]
+palette = "catppuccin_mocha"
+font = "0xProto Nerd Font Mono"
+ghostty_opacity = "0.90"
+ghostty_blur = "20"
+ghostty_titlebar = "hidden"
+
+[config.window_manager]
+enabled = false
+modifier = "alt"
+gaps = 8
+border_color = "0xffcba6f7"
+border_width = "4.0"
+border_radius = "10.0"
+
+[config.macos_defaults]
+enabled = true
+dock_autohide = true
+dock_fast_animation = true
+screenshots_dir = "~/Screenshots"
+fast_keyboard_repeat = true
+
+[categories]
+window_management = false
+terminal = true
+core_cli = true
+modern_cli = true
+shell_quality = true
+ai = true
+editors = true
+git_tuis = true
+rust = false
+web = false
+mobile = true
+gui_core = true
+fonts = true
+security = true
+creative = true
+custom_tap = false
+
+[packages.skip]
+formulae = ["bacon", "cargo-binstall", "fnm", "pnpm", "jcyrus/tap/zerodrop", "jcyrus/tap/spektr"]
+casks = ["aerospace", "darktable", "stremio"]

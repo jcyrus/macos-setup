@@ -1,63 +1,79 @@
 #!/bin/bash
-# update.sh
+# update.sh — Config-aware updater for macos-setup packages, dotfiles, and toolchains.
 
 set -e
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "🔄 Starting Update Process..."
+# Source config helpers
+# shellcheck source=lib/common.sh
+source "$REPO_DIR/lib/common.sh"
+# shellcheck source=lib/config.sh
+source "$REPO_DIR/lib/config.sh"
+# shellcheck source=lib/brew.sh
+source "$REPO_DIR/lib/brew.sh"
+
+init_default_config
+if [ -f "$CONFIG_FILE" ]; then
+    load_preset "$CONFIG_FILE"
+fi
+
+log_step "Starting system and packages update..."
 
 # 1. Update Homebrew itself
-echo "🍺 Updating Homebrew..."
+log_info "Updating Homebrew metadata..."
 brew update
 
 # 2. Upgrade installed packages
-echo "⬆️  Upgrading packages..."
+log_info "Upgrading installed formulae and casks..."
 brew upgrade
 
-# 3. Tap custom repositories (brew bundle would do this too, but tapping
-# explicitly here surfaces any tap failure separately from bundle failures).
-echo "🚰 Tapping jcyrus/tap and leoafarias/fvm..."
-brew tap jcyrus/tap
-brew tap leoafarias/fvm
+# 3. Dynamic or Master Brewfile bundle
+active_brewfile="$REPO_DIR/Brewfile"
+if [ -f "$CONFIG_FILE" ]; then
+    active_brewfile="${CONFIG_DIR}/Brewfile.generated"
+    generate_brewfile "$active_brewfile"
+fi
 
-# 4. Install new apps from Brewfile (and clean up old ones if you want to be strict, but we won't strictly cleanup to be flexible)
-echo "📦 Installing/Updating apps from Brewfile..."
-brew bundle --file="$REPO_DIR/Brewfile"
+log_info "Synchronizing active manifest ($active_brewfile)..."
+brew bundle --file="$active_brewfile" || true
 
-# 5. Cleanup
-echo "🧹 Cleaning up..."
+# 4. Cleanup old versions
+log_info "Cleaning up old package versions..."
 brew cleanup
 
-echo "🦀 Updating Rust toolchain..."
-# Homebrew's rustup formula links only `rustup` into its shim directory;
-# rustc/cargo live there too. ~/.cargo/bin is where `cargo install` puts binaries.
-export PATH="/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH"
-if command -v rustup &>/dev/null; then
-    rustup update
-else
-    echo "⚠️  rustup not found. Skipping Rust update."
+# 5. Language toolchains
+if [ "$CAT_RUST" -eq 1 ]; then
+    log_info "Updating Rust toolchain..."
+    ensure_path_environment
+    if command -v rustup &>/dev/null; then
+        rustup update
+    fi
 fi
 
-echo "📱 Refreshing Node LTS (fnm)..."
-eval "$(fnm env --use-on-cd)"
-fnm install --lts
-fnm default lts-latest
-
-echo "🧠 Syncing Neovim plugins (LazyVim)..."
-if command -v nvim &>/dev/null; then
-    nvim --headless "+Lazy! sync" +qa
+if [ "$CAT_WEB" -eq 1 ] && command -v fnm &>/dev/null; then
+    log_info "Refreshing Node LTS (fnm)..."
+    eval "$(fnm env --use-on-cd)"
+    fnm install --lts
+    fnm default lts-latest
 fi
 
-echo "📚 Updating tldr cache..."
+# 6. Neovim plugins
+if [ "$CAT_EDITORS" -eq 1 ] && command -v nvim &>/dev/null; then
+    log_info "Syncing Neovim plugins (LazyVim)..."
+    nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
+fi
+
+# 7. tmux plugins
+if [ "$CAT_TERMINAL" -eq 1 ] && [ -x "$HOME/.tmux/plugins/tpm/bin/update_plugins" ]; then
+    log_info "Updating tmux plugins..."
+    "$HOME/.tmux/plugins/tpm/bin/update_plugins" all || true
+fi
+
+# 8. Caches
 if command -v tldr &>/dev/null; then
-    tldr --update
-fi
-echo "🪟 Updating tmux plugins..."
-if [ -x "$HOME/.tmux/plugins/tpm/bin/update_plugins" ]; then
-    "$HOME/.tmux/plugins/tpm/bin/update_plugins" all
-else
-    echo "⚠️  TPM not found. Skipping tmux plugin update."
+    log_dim "Updating tealdeer / tldr cache..."
+    tldr --update || true
 fi
 
-echo "✅ Update Complete!"
+log_success "System update complete!"

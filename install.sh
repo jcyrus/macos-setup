@@ -1,316 +1,207 @@
 #!/bin/bash
-# install.sh
+# install.sh — Modular Day 1 setup installer and interactive TUI wizard for macOS.
 
-set -e # Fail immediately if any command fails
+set -e # Fail immediately on unexpected critical error
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "🚀 Starting Day 1 Installation..."
+# Source modular libraries
+# shellcheck source=lib/common.sh
+source "$REPO_DIR/lib/common.sh"
+# shellcheck source=lib/config.sh
+source "$REPO_DIR/lib/config.sh"
+# shellcheck source=lib/brew.sh
+source "$REPO_DIR/lib/brew.sh"
+# shellcheck source=lib/dotfiles.sh
+source "$REPO_DIR/lib/dotfiles.sh"
+# shellcheck source=lib/toolchains.sh
+source "$REPO_DIR/lib/toolchains.sh"
+# shellcheck source=lib/macos.sh
+source "$REPO_DIR/lib/macos.sh"
+# shellcheck source=lib/ui.sh
+source "$REPO_DIR/lib/ui.sh"
 
-# 1. Xcode Command Line Tools (Homebrew and git both need these)
-if ! xcode-select -p &>/dev/null; then
-    echo "🧰 Installing Xcode Command Line Tools..."
-    # Returns non-zero when an install is already in progress, which must not
-    # abort the script under `set -e` before the guidance below is printed.
-    xcode-select --install || true
-    echo "⏳ Finish the Command Line Tools installer, then re-run this script."
-    exit 1
-fi
+# Global CLI flags
+UNATTENDED=false
+DRY_RUN=false
+CHOSEN_PRESET=""
+CUSTOM_CONFIG=""
 
-# 2. Install Homebrew
-if ! command -v brew &>/dev/null; then
-    echo "🍺 Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-    echo "🍺 Homebrew found. Updating..."
-    brew update
-fi
+print_usage() {
+    cat <<EOF
+🍎 The Modern Mac Setup Installer
 
-# 3. Tap custom repositories (brew bundle would do this too, but tapping
-# explicitly here surfaces any tap failure separately from bundle failures).
-echo "🚰 Tapping custom repositories..."
-brew tap jcyrus/tap
-brew tap leoafarias/fvm
-brew tap nikitabobko/tap
-brew tap FelixKratz/formulae
+Usage:
+  ./install.sh [options]
 
-# Homebrew 6+ requires explicit trust for third-party taps containing casks
-if brew trust --help &>/dev/null; then
-    brew trust jcyrus/tap 2>/dev/null || true
-    brew trust leoafarias/fvm 2>/dev/null || true
-    brew trust nikitabobko/tap 2>/dev/null || true
-    brew trust FelixKratz/formulae 2>/dev/null || true
-fi
+Options:
+  -y, --unattended         Run non-interactively with default or specified preset.
+  -p, --preset <name>      Choose a profile (full, minimalist, web, rust, mobile).
+  -c, --config <file>      Use an existing configuration TOML file.
+  -d, --dry-run            Simulate installation and generate config/Brewfile without changes.
+  -h, --help               Show this help message.
 
-# 4. Bundle Apps
-# A single unavailable cask should not abort the rest of the setup, so this
-# step is allowed to fail loudly instead of tripping `set -e`.
-echo "📦 Installing apps from Brewfile..."
-if ! brew bundle --file="$REPO_DIR/Brewfile"; then
-    BUNDLE_FAILED=true
-    echo "⚠️  Some Brewfile entries failed to install. Continuing with shell setup."
-    echo "   Re-run 'brew bundle --file=$REPO_DIR/Brewfile' afterwards to retry."
-fi
-
-# 5. Configure Shell
-echo "🐚 Configuring Zsh..."
-
-# Install Oh My Zsh if missing
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-fi
-
-# Check if .zshrc exists and back it up
-if [ -f "$HOME/.zshrc" ]; then
-    echo "📝 Backing up existing .zshrc to .zshrc.backup..."
-    cp "$HOME/.zshrc" "$HOME/.zshrc.backup"
-fi
-
-touch "$HOME/.zshrc"
-
-ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-fi
-
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-fi
-
-# Ensure Homebrew is in path (idempotent)
-if ! grep -q "shellenv" "$HOME/.zshrc"; then
-    # The single quotes are deliberate: this line must land in .zshrc verbatim
-    # so brew resolves it at shell startup, not when this installer runs.
-    # shellcheck disable=SC2016
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>"$HOME/.zshrc"
-fi
-
-# Oh My Zsh Setup (Only if not present)
-# zoxide and fzf are deliberately NOT listed here: the tools block below
-# initialises both directly, and loading the OMZ plugins too would bind their
-# keys and shims twice. zsh-syntax-highlighting must stay last.
-OMZ_PLUGINS="plugins=(git brew zsh-autosuggestions zsh-syntax-highlighting)"
-
-if ! grep -q "oh-my-zsh.sh" "$HOME/.zshrc"; then
-    cat <<EOT >>"$HOME/.zshrc"
-
-# --- Oh My Zsh (MacOS Setup) ---
-export ZSH="\$HOME/.oh-my-zsh"
-ZSH_THEME=""
-$OMZ_PLUGINS
-source \$ZSH/oh-my-zsh.sh
-EOT
-elif ! grep -qF "$OMZ_PLUGINS" "$HOME/.zshrc"; then
-    # Never rewrite an existing plugins= line; it may hold customisations we
-    # cannot safely merge. Tell the user what to add instead.
-    echo "⚠️  Your .zshrc already sets Oh My Zsh plugins. Leaving it untouched."
-    echo "   For this setup, make sure it includes: git brew zsh-autosuggestions zsh-syntax-highlighting"
-    echo "   (keep zsh-syntax-highlighting last, and omit zoxide/fzf — they are initialised separately)"
-fi
-
-# Tools & Aliases (Use a marker to avoid dupes)
-if ! grep -q "# --- MacOS Setup Tools ---" "$HOME/.zshrc"; then
-    cat <<EOT >>"$HOME/.zshrc"
-
-# --- MacOS Setup Tools ---
-eval "\$(starship init zsh)"
-eval "\$(zoxide init zsh)"
-eval "\$(fnm env --use-on-cd)"
-eval "\$(fzf --zsh)"
-
-alias ls="eza --icons=auto"
-alias ll="eza -l --icons=auto"
-alias cat="bat --paging=never --plain"
-alias f="fvm flutter"
-alias lg="lazygit"
-alias help="tldr"
-
-# Homebrew's rustup formula links only \`rustup\` into bin; the rustc/cargo
-# shims live here. \$HOME/.cargo/bin is where \`cargo install\` puts binaries.
-export PATH="/opt/homebrew/opt/rustup/bin:\$PATH"
-export PATH="\$HOME/.cargo/bin:\$PATH"
-EOT
-fi
-
-# 6. Git defaults
-echo "⚙️ Configuring Git defaults..."
-git config --global core.pager delta
-git config --global interactive.diffFilter "delta --color-only"
-git config --global delta.navigate true
-git config --global delta.dark true
-git config --global delta.line-numbers true
-git config --global delta.side-by-side true
-git config --global merge.conflictstyle zdiff3
-
-# Install this repo's own git hooks (shellcheck + shfmt on commit). Only
-# meaningful from a git clone, so this is skipped for archive downloads.
-if command -v lefthook &>/dev/null && [ -d "$REPO_DIR/.git" ]; then
-    echo "🪝 Installing git hooks (lefthook)..."
-    (cd "$REPO_DIR" && lefthook install >/dev/null) ||
-        echo "⚠️  Could not install git hooks. Continuing."
-fi
-
-# 7. Dotfile symlinks
-echo "🧠 Setting up Neovim config..."
-mkdir -p "$HOME/.config"
-
-needs_nvim_migration=false
-
-if [ -e "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
-    mv "$HOME/.config/nvim" "$HOME/.config/nvim.backup.$(date +%s)"
-    needs_nvim_migration=true
-fi
-
-ln -sfn "$REPO_DIR/nvim" "$HOME/.config/nvim"
-
-if [ "$needs_nvim_migration" = true ]; then
-    for nvim_state_dir in "$HOME/.local/share/nvim" "$HOME/.local/state/nvim" "$HOME/.cache/nvim"; do
-        if [ -d "$nvim_state_dir" ]; then
-            mv "$nvim_state_dir" "$nvim_state_dir.backup.$(date +%s)"
-        fi
-    done
-fi
-
-echo "🪟 Setting up tmux..."
-ln -sfn "$REPO_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
-mkdir -p "$HOME/.tmux/plugins"
-if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-fi
-
-CATPPUCCIN_TMUX_REPO="https://github.com/catppuccin/tmux.git"
-# Keep this tag in sync with the pin in tmux/.tmux.conf, otherwise `prefix + U`
-# will drag the plugin off the version this config is written against.
-CATPPUCCIN_TMUX_VERSION="v2.1.3"
-CATPPUCCIN_TMUX_DIR="$HOME/.tmux/plugins/tmux"
-
-backup_and_install_catppuccin_tmux() {
-    if [ -e "$CATPPUCCIN_TMUX_DIR" ]; then
-        mv "$CATPPUCCIN_TMUX_DIR" "$CATPPUCCIN_TMUX_DIR.backup.$(date +%s)"
-    fi
-    git clone -b "$CATPPUCCIN_TMUX_VERSION" "$CATPPUCCIN_TMUX_REPO" "$CATPPUCCIN_TMUX_DIR"
+Examples:
+  ./install.sh                           # Interactive TUI Setup Wizard
+  ./install.sh --unattended              # Fast automated full installation (AI Agent mode)
+  ./install.sh -p web -y                 # Unattended Web developer setup
+  ./install.sh --config ~/.config/macos-setup/config.toml
+EOF
 }
 
-if [ -d "$CATPPUCCIN_TMUX_DIR/.git" ]; then
-    origin_url="$(git -C "$CATPPUCCIN_TMUX_DIR" remote get-url origin 2>/dev/null || true)"
-    if [ "$origin_url" = "$CATPPUCCIN_TMUX_REPO" ] || [ "$origin_url" = "git@github.com:catppuccin/tmux.git" ]; then
-        if ! git -C "$CATPPUCCIN_TMUX_DIR" diff --quiet || ! git -C "$CATPPUCCIN_TMUX_DIR" diff --cached --quiet; then
-            backup_and_install_catppuccin_tmux
-        else
-            git -C "$CATPPUCCIN_TMUX_DIR" fetch --tags --quiet
-            git -C "$CATPPUCCIN_TMUX_DIR" checkout --quiet -f "$CATPPUCCIN_TMUX_VERSION"
-        fi
+# Parse CLI arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -y | --unattended | --non-interactive)
+            UNATTENDED=true
+            shift
+            ;;
+        -p | --preset)
+            CHOSEN_PRESET="$2"
+            shift 2
+            ;;
+        --preset=*)
+            CHOSEN_PRESET="${1#*=}"
+            shift
+            ;;
+        -c | --config)
+            CUSTOM_CONFIG="$2"
+            shift 2
+            ;;
+        --config=*)
+            CUSTOM_CONFIG="${1#*=}"
+            shift
+            ;;
+        -d | --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h | --help)
+            print_usage
+            exit 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            print_usage
+            exit 1
+            ;;
+    esac
+done
+
+# Initialize default configuration
+init_default_config
+check_system_environment
+
+# If custom config file provided, load it
+if [ -n "$CUSTOM_CONFIG" ]; then
+    if [ -f "$CUSTOM_CONFIG" ]; then
+        log_info "Loading configuration from: $CUSTOM_CONFIG"
+        load_preset "$CUSTOM_CONFIG"
     else
-        backup_and_install_catppuccin_tmux
+        log_error "Config file not found: $CUSTOM_CONFIG"
+        exit 1
     fi
-elif [ ! -e "$CATPPUCCIN_TMUX_DIR" ]; then
-    git clone -b "$CATPPUCCIN_TMUX_VERSION" "$CATPPUCCIN_TMUX_REPO" "$CATPPUCCIN_TMUX_DIR"
+elif [ -n "$CHOSEN_PRESET" ]; then
+    preset_file="$REPO_DIR/presets/${CHOSEN_PRESET}.toml"
+    if [ -f "$preset_file" ]; then
+        load_preset "$preset_file"
+        CONFIG_PRESET="$CHOSEN_PRESET"
+    else
+        log_error "Preset not found: $CHOSEN_PRESET (available: full, minimalist, web, rust, mobile)"
+        exit 1
+    fi
+fi
+
+# Determine whether to run Interactive TUI or Unattended
+IS_TTY=false
+if [ -t 0 ] && [ -t 1 ]; then
+    IS_TTY=true
+fi
+
+if [ "$UNATTENDED" = false ] && [ "$IS_TTY" = true ] && [ -z "$CHOSEN_PRESET" ] && [ -z "$CUSTOM_CONFIG" ]; then
+    # Launch interactive TUI flow
+    select_preset_screen
+    ui_status=$?
+
+    # If user selected custom profile, open category matrix screen
+    if [ "$ui_status" -eq 2 ] || [ "$CONFIG_PRESET" = "custom" ]; then
+        category_matrix_screen
+    fi
+
+    # Machine & config customizer screen
+    config_customizer_screen
+
+    # Summary confirmation screen
+    summary_confirmation_screen
+fi
+
+# ==============================================================================
+# INSTALLATION PIPELINE
+# ==============================================================================
+GENERATED_BREWFILE="${CONFIG_DIR}/Brewfile.generated"
+
+log_step "Initializing installation pipeline for profile: $CONFIG_PRESET_NAME"
+
+# 1. Save active configuration profile
+if [ "$DRY_RUN" = false ]; then
+    save_config "$CONFIG_FILE"
+    log_success "Saved machine configuration to $CONFIG_FILE"
 else
-    backup_and_install_catppuccin_tmux
+    log_info "[Dry-Run] Would save config to $CONFIG_FILE"
 fi
 
-echo "👻 Setting up Ghostty..."
-needs_ghostty_migration=false
-
-if [ -e "$HOME/.config/ghostty" ] && [ ! -L "$HOME/.config/ghostty" ]; then
-    mv "$HOME/.config/ghostty" "$HOME/.config/ghostty.backup.$(date +%s)"
-    needs_ghostty_migration=true
-fi
-
-ln -sfn "$REPO_DIR/ghostty" "$HOME/.config/ghostty"
-
-if [ "$needs_ghostty_migration" = true ]; then
-    echo "📝 Existing Ghostty config backed up."
-fi
-
-echo "✨ Setting up Starship config..."
-if [ -e "$HOME/.config/starship.toml" ] && [ ! -L "$HOME/.config/starship.toml" ]; then
-    mv "$HOME/.config/starship.toml" "$HOME/.config/starship.toml.backup.$(date +%s)"
-fi
-
-ln -sfn "$REPO_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
-
-echo "🪟 Setting up AeroSpace..."
-if [ -e "$HOME/.config/aerospace" ] && [ ! -L "$HOME/.config/aerospace" ]; then
-    mv "$HOME/.config/aerospace" "$HOME/.config/aerospace.backup.$(date +%s)"
-fi
-# AeroSpace errors out with 'Ambiguous config' if both ~/.aerospace.toml and
-# ~/.config/aerospace/aerospace.toml exist. Clean up any root file.
-if [ -L "$HOME/.aerospace.toml" ]; then
-    rm -f "$HOME/.aerospace.toml"
-elif [ -f "$HOME/.aerospace.toml" ]; then
-    mv "$HOME/.aerospace.toml" "$HOME/.aerospace.toml.backup.$(date +%s)"
-fi
-
-ln -sfn "$REPO_DIR/aerospace" "$HOME/.config/aerospace"
-
-# 8. Language Setup
-echo "🦀 Setting up Rust..."
-# Homebrew's rustup formula (formerly rustup-init) links only `rustup` into
-# bin; rustc/cargo live in an unlinked shim directory that must be on PATH.
-# There is no `rustup-init` binary any more, so the toolchain is installed
-# with `rustup toolchain install` rather than by running an installer.
-if command -v brew &>/dev/null && [ -d "$(brew --prefix rustup 2>/dev/null)/bin" ]; then
-    rustup_prefix="$(brew --prefix rustup)"
-    export PATH="$rustup_prefix/bin:$PATH"
-fi
-
-if ! command -v rustup &>/dev/null; then
-    echo "❌ Error: rustup not found. Brew installation failed."
+# 2. Preflight: Xcode Command Line Tools
+if ! xcode-select -p &>/dev/null; then
+    log_step "Installing Xcode Command Line Tools..."
+    xcode-select --install || true
+    log_warn "Finish the Command Line Tools installer on your screen, then re-run this script."
     exit 1
 fi
 
-# SC2143 suggests `! grep -q` here, but that is NOT equivalent on macOS: BSD
-# grep exits 0 for `-qv` on empty input, so if rustup ever fails and prints
-# nothing, the rewrite would report "already installed" and skip the install.
-# The command-substitution form treats empty output as "no toolchain" and
-# attempts the install, which is the safe direction. Verified on BSD grep.
-# shellcheck disable=SC2143
-if [ -z "$(rustup toolchain list 2>/dev/null | grep -v 'no installed toolchains')" ]; then
-    rustup default stable
-else
-    echo "🦀 Rust toolchain already installed. Skipping."
+# 3. Dynamic Brewfile Generation
+log_step "Compiling custom Brewfile from selected manifest..."
+generate_brewfile "$GENERATED_BREWFILE"
+log_success "Manifest generated at $GENERATED_BREWFILE"
+
+if [ "$DRY_RUN" = true ]; then
+    log_info "[Dry-Run] Manifest content:"
+    cat "$GENERATED_BREWFILE"
+    log_info "[Dry-Run] Simulation complete. No changes made to system."
+    exit 0
 fi
 
-echo "📱 Setting up Node (LTS)..."
-eval "$(fnm env)"
-# `fnm install --lts` only installs; without a default alias, new shells still
-# resolve to the system node (or none at all).
-fnm install --lts
-fnm default lts-latest
+# 4. Bootstrap Homebrew
+bootstrap_homebrew
+ensure_path_environment
 
-echo "🤖 Starting Ollama background service..."
-if command -v ollama &>/dev/null; then
-    brew services start ollama 2>/dev/null || true
+# 5. Install Packages
+install_brew_packages "$GENERATED_BREWFILE"
+ensure_path_environment
+
+# 6. Deploy Shell & Dotfiles
+setup_shell_config
+setup_git_defaults
+setup_neovim_config
+setup_tmux_config
+setup_ghostty_config
+setup_starship_config
+setup_aerospace_config
+setup_vscode_config
+
+# 7. Language Toolchains & Services
+setup_rust_toolchain
+setup_node_toolchain
+setup_background_services
+setup_caches_and_checks
+
+# 8. macOS System Defaults
+apply_macos_settings
+
+log_step "✨ Installation and customization complete!"
+log_info "Restart your terminal to load the new Zsh environment."
+if [ "$CAT_WINDOW_MANAGEMENT" -eq 1 ] && [ "$CONFIG_AEROSPACE_ENABLED" = true ]; then
+    log_info "Grant AeroSpace Accessibility permissions in macOS System Settings."
 fi
-
-echo "🪟 Starting JankyBorders background service..."
-if command -v borders &>/dev/null; then
-    brew services start borders 2>/dev/null || true
+if [ "$CAT_EDITORS" -eq 1 ]; then
+    log_info "Open 'nvim' once to let LazyVim bootstrap plugins & language servers."
 fi
-
-# 9. First-run caches
-echo "📚 Priming tldr cache..."
-if command -v tldr &>/dev/null; then
-    # Optional and network-dependent; must not fail the whole install.
-    tldr --update || echo "⚠️  Could not update the tldr cache. Continuing."
-fi
-
-if [ "${BUNDLE_FAILED:-false}" = true ]; then
-    echo "⚠️  Reminder: some Brewfile entries failed earlier. See the log above."
-fi
-
-# 10. Docker / OrbStack CLI check
-if ! command -v docker &>/dev/null; then
-    if [ -d "/Applications/OrbStack.app" ]; then
-        echo "⚠️  OrbStack is installed but 'docker' is not on PATH."
-        echo "   Open OrbStack and enable CLI integration, or run:"
-        echo "   ln -sfn /Applications/OrbStack.app/Contents/MacOS/xbin/docker /opt/homebrew/bin/docker"
-    else
-        echo "ℹ️  Docker CLI not found. Install OrbStack or Docker Desktop if needed."
-    fi
-fi
-
-echo "✅ Done! Restart your terminal, open nvim once to bootstrap LazyVim, and grant AeroSpace Accessibility permissions in System Settings."

@@ -1,0 +1,430 @@
+#!/bin/bash
+# lib/ui.sh — Interactive Terminal User Interface (TUI) wizard.
+
+# shellcheck disable=SC2034
+# Global configuration variables are mutated for downstream consumption.
+
+# Prevent multiple inclusions
+if [ -n "${_MACOS_SETUP_UI_LOADED:-}" ]; then
+    return 0
+fi
+_MACOS_SETUP_UI_LOADED=1
+
+# Helper: Read single keypress (including arrow escape sequences)
+read_key() {
+    local key=""
+    local rest=""
+    # Disable echo and set character-at-a-time input
+    stty -echo -icanon min 1 time 0 2>/dev/null || true
+    key="$(dd bs=1 count=1 2>/dev/null)"
+
+    if [ "$key" = $'\x1b' ]; then
+        # Read subsequent characters with short timeout
+        stty min 0 time 1 2>/dev/null || true
+        rest="$(dd bs=1 count=2 2>/dev/null)"
+        key="$key$rest"
+    fi
+    # Restore normal terminal mode
+    stty echo icanon 2>/dev/null || true
+
+    case "$key" in
+        $'\x1b[A' | $'\x1bOA') echo "UP" ;;
+        $'\x1b[B' | $'\x1bOB') echo "DOWN" ;;
+        $'\x1b[C' | $'\x1bOC') echo "RIGHT" ;;
+        $'\x1b[D' | $'\x1bOD') echo "LEFT" ;;
+        $'\x1b') echo "ESC" ;;
+        "" | $'\n' | $'\r') echo "ENTER" ;;
+        " ") echo "SPACE" ;;
+        $'\t') echo "TAB" ;;
+        "a" | "A") echo "A" ;;
+        "n" | "N") echo "N" ;;
+        "c" | "C") echo "C" ;;
+        "q" | "Q") echo "Q" ;;
+        *) echo "$key" ;;
+    esac
+}
+
+# Render top header banner
+render_header() {
+    clear_screen
+    printf "%s" "$C_MAUVE"
+    echo "  ╔══════════════════════════════════════════════════════════════════════╗"
+    echo "  ║                   🍎 THE MODERN MAC SETUP WIZARD                     ║"
+    echo "  ║              Modular Developer Stack & Config Customizer             ║"
+    echo "  ╚══════════════════════════════════════════════════════════════════════╝"
+    printf "%s\n" "$C_RESET"
+}
+
+# ==============================================================================
+# SCREEN 1: PRESET SELECTION
+# ==============================================================================
+select_preset_screen() {
+    local options=(
+        "Complete Experience"
+        "Minimalist / CLI Focus"
+        "Full-Stack Web"
+        "Systems & Rust"
+        "Mobile & Flutter"
+        "Custom Checklist"
+    )
+    local descriptions=(
+        "Full stack setup: Rust, Web, Flutter, AeroSpace, Neovim, and all GUI apps."
+        "Lightweight terminal: Ghostty, Neovim, Tmux, Starship, Rust, and modern CLI tools."
+        "Web engineering: Node.js (FNM), pnpm, VS Code, Chrome, OrbStack, TablePlus, Bruno."
+        "Systems programming: Rustup, Bacon, Cargo tools, Neovim, Lazygit, and Yazi."
+        "Cross-platform mobile: Flutter (FVM), Cocoapods, Scrcpy, VS Code, and OrbStack."
+        "Granular package-by-package & category selection matrix."
+    )
+    local preset_keys=(
+        "full"
+        "minimalist"
+        "web"
+        "rust"
+        "mobile"
+        "custom"
+    )
+
+    local current=0
+    local total=${#options[@]}
+    cursor_hide
+    trap 'cursor_show; stty echo icanon 2>/dev/null; exit 1' INT TERM
+
+    while true; do
+        render_header
+        printf "%s📌 Step 1/3: Choose an Installation Profile%s\n\n" "$C_HEAD" "$C_RESET"
+
+        for i in "${!options[@]}"; do
+            if [ "$i" -eq "$current" ]; then
+                printf "   %s❯%s %s● %-26s%s %s← [Selected]%s\n" "$C_MAUVE" "$C_RESET" "$C_BOLD$C_WHITE" "${options[$i]}" "$C_RESET" "$C_TEAL" "$C_RESET"
+            else
+                printf "     %s○ %-26s%s\n" "$C_DIM" "${options[$i]}" "$C_RESET"
+            fi
+        done
+
+        printf "\n%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        printf "%s📋 Summary:%s %s\n" "$C_BOLD" "$C_RESET" "${descriptions[$current]}"
+        printf "%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        printf "%s[↑/↓] Navigate   [Enter] Confirm Profile   [q] Quit%s\n" "$C_DIM" "$C_RESET"
+
+        local action
+        action="$(read_key)"
+        case "$action" in
+            UP)
+                current=$(((current - 1 + total) % total))
+                ;;
+            DOWN)
+                current=$(((current + 1) % total))
+                ;;
+            ENTER)
+                cursor_show
+                local selected_key="${preset_keys[$current]}"
+                if [ "$selected_key" = "custom" ]; then
+                    CONFIG_PRESET="custom"
+                    CONFIG_PRESET_NAME="Custom Selection"
+                    return 2
+                else
+                    CONFIG_PRESET="$selected_key"
+                    load_preset "$REPO_DIR/presets/${selected_key}.toml"
+                    return 0
+                fi
+                ;;
+            Q | ESC)
+                cursor_show
+                clear_screen
+                log_info "Setup cancelled by user."
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# ==============================================================================
+# SCREEN 2: CATEGORY & PACKAGE MATRIX (MULTI-SELECT)
+# ==============================================================================
+category_matrix_screen() {
+    local cat_names=(
+        "Window Management (AeroSpace, JankyBorders)"
+        "Terminal & Multiplexer (Ghostty, Starship, Zoxide, Tmux)"
+        "Core CLI Utilities (git, gh, eza, bat, ripgrep, fd, fzf, jq, tealdeer)"
+        "Modern CLI Power Tools (delta, dust, duf, procs, btop, tokei, yazi)"
+        "Shell Quality & Linters (shellcheck, shfmt, lefthook)"
+        "AI & Local LLM (Ollama)"
+        "Editors & IDEs (Neovim / LazyVim, VS Code)"
+        "Git TUIs (Lazygit, Lazydocker)"
+        "Rust Toolchain (Rustup, Bacon, Cargo Binstall)"
+        "Web Toolchain (Node / FNM, pnpm)"
+        "Mobile Toolchain (Flutter / FVM, Cocoapods, Scrcpy)"
+        "GUI Productivity Apps (Raycast, OrbStack, TablePlus, Bruno, Obsidian, etc.)"
+        "Nerd Fonts (0xProto, JetBrains Mono)"
+        "Security Tools (Bitwarden, Tailscale)"
+        "Creative & Media (Figma, Darktable, ImageMagick, Telegram, Spotify, IINA)"
+        "Custom Tap Tools (ZeroDrop, Spektr)"
+    )
+    local cat_vars=(
+        "CAT_WINDOW_MANAGEMENT"
+        "CAT_TERMINAL"
+        "CAT_CORE_CLI"
+        "CAT_MODERN_CLI"
+        "CAT_SHELL_QUALITY"
+        "CAT_AI"
+        "CAT_EDITORS"
+        "CAT_GIT_TUIS"
+        "CAT_RUST"
+        "CAT_WEB"
+        "CAT_MOBILE"
+        "CAT_GUI_CORE"
+        "CAT_FONTS"
+        "CAT_SECURITY"
+        "CAT_CREATIVE"
+        "CAT_CUSTOM_TAP"
+    )
+
+    local current=0
+    local total=${#cat_names[@]}
+    cursor_hide
+
+    while true; do
+        render_header
+        printf "%s📦 Step 2/3: Customize Package Categories%s\n\n" "$C_HEAD" "$C_RESET"
+
+        for i in "${!cat_names[@]}"; do
+            local var_name="${cat_vars[$i]}"
+            local val="${!var_name}"
+            local check=" "
+            local color="$C_DIM"
+
+            if [ "$val" -eq 1 ]; then
+                check="✓"
+                color="$C_GREEN"
+            fi
+
+            if [ "$i" -eq "$current" ]; then
+                printf " %s❯%s [%s%s%s] %s%s%s\n" "$C_MAUVE" "$C_RESET" "$color" "$check" "$C_RESET" "$C_BOLD$C_WHITE" "${cat_names[$i]}" "$C_RESET"
+            else
+                printf "   [%s%s%s] %s%s%s\n" "$color" "$check" "$C_RESET" "$C_DIM" "${cat_names[$i]}" "$C_RESET"
+            fi
+        done
+
+        printf "\n%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        printf "%s[↑/↓] Move   [Space] Toggle   [a] Select All   [n] Select None   [Enter] Next%s\n" "$C_DIM" "$C_RESET"
+
+        local action
+        action="$(read_key)"
+        case "$action" in
+            UP)
+                current=$(((current - 1 + total) % total))
+                ;;
+            DOWN)
+                current=$(((current + 1) % total))
+                ;;
+            SPACE)
+                local var_name="${cat_vars[$current]}"
+                if [ "${!var_name}" -eq 1 ]; then
+                    eval "$var_name=0"
+                else
+                    eval "$var_name=1"
+                fi
+                ;;
+            A)
+                for var_name in "${cat_vars[@]}"; do eval "$var_name=1"; done
+                ;;
+            N)
+                for var_name in "${cat_vars[@]}"; do eval "$var_name=0"; done
+                ;;
+            ENTER)
+                cursor_show
+                return 0
+                ;;
+            Q | ESC)
+                cursor_show
+                clear_screen
+                log_info "Setup cancelled by user."
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# ==============================================================================
+# SCREEN 3: MACHINE & CONFIGURATION CUSTOMIZER
+# ==============================================================================
+config_customizer_screen() {
+    local fields=(
+        "Git User Name"
+        "Git Email Address"
+        "Git Delta Diff Style"
+        "Theme Palette"
+        "Terminal Font"
+        "Ghostty Background Opacity"
+        "AeroSpace Modifier Key"
+        "AeroSpace Window Gaps"
+        "Apply macOS System Defaults"
+    )
+
+    local current=0
+    local total=${#fields[@]}
+    cursor_hide
+
+    while true; do
+        render_header
+        printf "%s🎨 Step 3/3: Personalize Configuration & Aesthetics%s\n\n" "$C_HEAD" "$C_RESET"
+
+        # Field 0: Git Name
+        local f0="[ ${CONFIG_GIT_NAME:-"(not set)"} ]"
+        # Field 1: Git Email
+        local f1="[ ${CONFIG_GIT_EMAIL:-"(not set)"} ]"
+        # Field 2: Delta
+        local f2_text="Inline"
+        [ "$CONFIG_GIT_DELTA_SIDE_BY_SIDE" = true ] && f2_text="Side-by-Side"
+        local f2="[ $f2_text ]"
+        # Field 3: Palette
+        local f3="[ ${CONFIG_THEME_PALETTE} ]"
+        # Field 4: Font
+        local f4="[ ${CONFIG_THEME_FONT} ]"
+        # Field 5: Opacity
+        local f5="[ ${CONFIG_GHOSTTY_OPACITY} ]"
+        # Field 6: AeroSpace Modifier
+        local f6="[ ${CONFIG_AEROSPACE_MODIFIER} (Option) ]"
+        # Field 7: AeroSpace Gaps
+        local f7="[ ${CONFIG_AEROSPACE_GAPS}px ]"
+        # Field 8: macOS Defaults
+        local f8_text="No (Skip)"
+        [ "$CONFIG_MACOS_DEFAULTS_ENABLED" = true ] && f8_text="Yes (Fast Dock & Keys)"
+        local f8="[ $f8_text ]"
+
+        local values=("$f0" "$f1" "$f2" "$f3" "$f4" "$f5" "$f6" "$f7" "$f8")
+
+        for i in "${!fields[@]}"; do
+            if [ "$i" -eq "$current" ]; then
+                printf " %s❯%s %-32s %s%s%s\n" "$C_MAUVE" "$C_RESET" "${fields[$i]}:" "$C_BOLD$C_TEAL" "${values[$i]}" "$C_RESET"
+            else
+                printf "   %-32s %s%s%s\n" "${fields[$i]}:" "$C_DIM" "${values[$i]}" "$C_RESET"
+            fi
+        done
+
+        printf "\n%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        printf "%s[↑/↓] Navigate   [Space/Enter] Toggle Option / Edit   [c] Continue to Install%s\n" "$C_DIM" "$C_RESET"
+
+        local action
+        action="$(read_key)"
+        case "$action" in
+            UP)
+                current=$(((current - 1 + total) % total))
+                ;;
+            DOWN)
+                current=$(((current + 1) % total))
+                ;;
+            SPACE | ENTER)
+                case "$current" in
+                    0) # Git Name
+                        cursor_show
+                        printf "\n%sEnter your Git User Name:%s " "$C_BOLD" "$C_RESET"
+                        read -r input_name
+                        [ -n "$input_name" ] && CONFIG_GIT_NAME="$input_name"
+                        cursor_hide
+                        ;;
+                    1) # Git Email
+                        cursor_show
+                        printf "\n%sEnter your Git Email Address:%s " "$C_BOLD" "$C_RESET"
+                        read -r input_email
+                        [ -n "$input_email" ] && CONFIG_GIT_EMAIL="$input_email"
+                        cursor_hide
+                        ;;
+                    2) # Delta Diff
+                        if [ "$CONFIG_GIT_DELTA_SIDE_BY_SIDE" = true ]; then
+                            CONFIG_GIT_DELTA_SIDE_BY_SIDE=false
+                        else
+                            CONFIG_GIT_DELTA_SIDE_BY_SIDE=true
+                        fi
+                        ;;
+                    3) # Palette cycle
+                        case "$CONFIG_THEME_PALETTE" in
+                            catppuccin_mocha) CONFIG_THEME_PALETTE="catppuccin_macchiato" ;;
+                            catppuccin_macchiato) CONFIG_THEME_PALETTE="catppuccin_frappe" ;;
+                            catppuccin_frappe) CONFIG_THEME_PALETTE="catppuccin_latte" ;;
+                            *) CONFIG_THEME_PALETTE="catppuccin_mocha" ;;
+                        esac
+                        ;;
+                    4) # Font cycle
+                        if [ "$CONFIG_THEME_FONT" = "0xProto Nerd Font Mono" ]; then
+                            CONFIG_THEME_FONT="JetBrains Mono Nerd Font"
+                        else
+                            CONFIG_THEME_FONT="0xProto Nerd Font Mono"
+                        fi
+                        ;;
+                    5) # Opacity cycle
+                        case "$CONFIG_GHOSTTY_OPACITY" in
+                            "0.88") CONFIG_GHOSTTY_OPACITY="0.95" ;;
+                            "0.95") CONFIG_GHOSTTY_OPACITY="1.00" ;;
+                            *) CONFIG_GHOSTTY_OPACITY="0.88" ;;
+                        esac
+                        ;;
+                    6) # Modifier cycle
+                        case "$CONFIG_AEROSPACE_MODIFIER" in
+                            "alt") CONFIG_AEROSPACE_MODIFIER="cmd" ;;
+                            "cmd") CONFIG_AEROSPACE_MODIFIER="ctrl" ;;
+                            *) CONFIG_AEROSPACE_MODIFIER="alt" ;;
+                        esac
+                        ;;
+                    7) # Gaps cycle
+                        case "$CONFIG_AEROSPACE_GAPS" in
+                            8) CONFIG_AEROSPACE_GAPS=4 ;;
+                            4) CONFIG_AEROSPACE_GAPS=12 ;;
+                            12) CONFIG_AEROSPACE_GAPS=0 ;;
+                            *) CONFIG_AEROSPACE_GAPS=8 ;;
+                        esac
+                        ;;
+                    8) # macOS defaults toggle
+                        if [ "$CONFIG_MACOS_DEFAULTS_ENABLED" = true ]; then
+                            CONFIG_MACOS_DEFAULTS_ENABLED=false
+                        else
+                            CONFIG_MACOS_DEFAULTS_ENABLED=true
+                        fi
+                        ;;
+                esac
+                ;;
+            C)
+                cursor_show
+                return 0
+                ;;
+            Q | ESC)
+                cursor_show
+                clear_screen
+                log_info "Setup cancelled by user."
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# ==============================================================================
+# SCREEN 4: SUMMARY & CONFIRMATION
+# ==============================================================================
+summary_confirmation_screen() {
+    local active_cats=0
+    for cat_var in CAT_WINDOW_MANAGEMENT CAT_TERMINAL CAT_CORE_CLI CAT_MODERN_CLI CAT_SHELL_QUALITY CAT_AI CAT_EDITORS CAT_GIT_TUIS CAT_RUST CAT_WEB CAT_MOBILE CAT_GUI_CORE CAT_FONTS CAT_SECURITY CAT_CREATIVE CAT_CUSTOM_TAP; do
+        [ "${!cat_var}" -eq 1 ] && active_cats=$((active_cats + 1))
+    done
+
+    render_header
+    printf "%s🚀 Setup Ready to Install%s\n\n" "$C_HEAD" "$C_RESET"
+    printf "  • Profile:            %s%s%s\n" "$C_BOLD" "$CONFIG_PRESET_NAME" "$C_RESET"
+    printf "  • Active Categories:  %s%d of 16 categories enabled%s\n" "$C_GREEN" "$active_cats" "$C_RESET"
+    printf "  • Theme Palette:      %s%s%s\n" "$C_BOLD" "$CONFIG_THEME_PALETTE" "$C_RESET"
+    printf "  • Coding Font:        %s%s%s\n" "$C_BOLD" "$CONFIG_THEME_FONT" "$C_RESET"
+    printf "  • macOS Defaults:     %s%s%s\n" "$C_BOLD" "$([ "$CONFIG_MACOS_DEFAULTS_ENABLED" = true ] && echo "Enabled" || echo "Disabled")" "$C_RESET"
+    printf "  • Config Save Path:   %s%s%s\n\n" "$C_DIM" "$CONFIG_FILE" "$C_RESET"
+
+    printf "%sPress [Enter] to start installation, or [q] to cancel.%s\n" "$C_HEAD" "$C_RESET"
+
+    local action
+    action="$(read_key)"
+    if [ "$action" = "ENTER" ]; then
+        clear_screen
+        return 0
+    else
+        clear_screen
+        log_info "Installation aborted."
+        exit 0
+    fi
+}
