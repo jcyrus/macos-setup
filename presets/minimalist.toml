@@ -1,0 +1,49 @@
+# Minimalist Profile: Core CLI, Modern CLI, Ghostty, Neovim, Tmux, Starship, and Rust
+name = "Minimalist / CLI Focus"
+description = "Lightweight terminal environment with Ghostty, Neovim, Tmux, Starship, Rust, and modern CLI tools."
+
+[config.git]
+delta_side_by_side = true
+
+[config.theme]
+palette = "catppuccin_mocha"
+font = "0xProto Nerd Font Mono"
+ghostty_opacity = "0.95"
+ghostty_blur = "10"
+ghostty_titlebar = "hidden"
+
+[config.window_manager]
+enabled = false
+modifier = "alt"
+gaps = 8
+border_color = "0xffcba6f7"
+border_width = "4.0"
+border_radius = "10.0"
+
+[config.macos_defaults]
+enabled = true
+dock_autohide = true
+dock_fast_animation = true
+screenshots_dir = "~/Screenshots"
+fast_keyboard_repeat = true
+
+[categories]
+window_management = false
+terminal = true
+core_cli = true
+modern_cli = true
+shell_quality = true
+ai = true
+editors = true
+git_tuis = true
+rust = true
+web = false
+mobile = false
+gui_core = false
+fonts = true
+security = false
+creative = false
+custom_tap = true
+
+[packages.skip]
+casks = ["visual-studio-code", "brave-browser", "google-chrome", "tableplus", "bruno", "obsidian", "appcleaner", "the-unarchiver", "hiddenbar", "stats", "utm", "sf-symbols", "bitwarden", "tailscale-app", "figma", "darktable", "telegram", "spotify", "iina", "stremio"]

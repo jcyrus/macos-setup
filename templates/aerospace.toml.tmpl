@@ -1,0 +1,156 @@
+# ==============================================================================
+# AeroSpace Configuration Template
+# Modern i3-inspired tiling window manager for macOS
+# ==============================================================================
+
+# Config version
+config-version = 2
+
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Accordion layout padding
+accordion-padding = 30
+
+# Default layout for new workspaces
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Layout key mapping presets
+key-mapping.preset = 'qwerty'
+
+# Mouse follows focus when switching windows
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Startup hooks: launch JankyBorders with configured active border color
+after-startup-command = [
+    'exec-and-forget borders active_color=__BORDERS_ACTIVE_COLOR__ inactive_color=0x00000000 width=__BORDERS_WIDTH__ radius=__BORDERS_RADIUS__'
+]
+
+# ==============================================================================
+# Gaps (Inner & Outer spacing)
+# ==============================================================================
+[gaps]
+inner.horizontal = __AEROSPACE_GAP_INNER__
+inner.vertical   = __AEROSPACE_GAP_INNER__
+outer.left       = __AEROSPACE_GAP_OUTER__
+outer.bottom     = __AEROSPACE_GAP_OUTER__
+outer.top        = __AEROSPACE_GAP_OUTER__
+outer.right      = __AEROSPACE_GAP_OUTER__
+
+# ==============================================================================
+# Keybindings: Main Mode (__AEROSPACE_MODIFIER__ Modifier)
+# ==============================================================================
+[mode.main.binding]
+
+# --- Focus Navigation (Vim Keys) ---
+__AEROSPACE_MODIFIER__-h = 'focus left'
+__AEROSPACE_MODIFIER__-j = 'focus down'
+__AEROSPACE_MODIFIER__-k = 'focus up'
+__AEROSPACE_MODIFIER__-l = 'focus right'
+
+# --- Window Movement / Swapping ---
+__AEROSPACE_MODIFIER__-shift-h = 'move left'
+__AEROSPACE_MODIFIER__-shift-j = 'move down'
+__AEROSPACE_MODIFIER__-shift-k = 'move up'
+__AEROSPACE_MODIFIER__-shift-l = 'move right'
+
+# --- Layout Controls & Fullscreen ---
+__AEROSPACE_MODIFIER__-f = 'fullscreen'
+__AEROSPACE_MODIFIER__-slash = 'layout tiles horizontal vertical'
+__AEROSPACE_MODIFIER__-e = 'layout accordion horizontal vertical'
+__AEROSPACE_MODIFIER__-shift-space = 'layout floating tiling'
+
+# --- Workspaces (1 through 9) ---
+__AEROSPACE_MODIFIER__-1 = 'workspace 1'
+__AEROSPACE_MODIFIER__-2 = 'workspace 2'
+__AEROSPACE_MODIFIER__-3 = 'workspace 3'
+__AEROSPACE_MODIFIER__-4 = 'workspace 4'
+__AEROSPACE_MODIFIER__-5 = 'workspace 5'
+__AEROSPACE_MODIFIER__-6 = 'workspace 6'
+__AEROSPACE_MODIFIER__-7 = 'workspace 7'
+__AEROSPACE_MODIFIER__-8 = 'workspace 8'
+__AEROSPACE_MODIFIER__-9 = 'workspace 9'
+
+# --- Move Window to Workspace & Follow ---
+__AEROSPACE_MODIFIER__-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+__AEROSPACE_MODIFIER__-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+__AEROSPACE_MODIFIER__-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+__AEROSPACE_MODIFIER__-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+__AEROSPACE_MODIFIER__-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+__AEROSPACE_MODIFIER__-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+__AEROSPACE_MODIFIER__-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+__AEROSPACE_MODIFIER__-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+__AEROSPACE_MODIFIER__-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+
+# --- Workspace & Monitor Navigation ---
+__AEROSPACE_MODIFIER__-tab = 'workspace-back-and-forth'
+__AEROSPACE_MODIFIER__-shift-tab = 'move-node-to-monitor --wrap-around next'
+
+# --- Modes ---
+__AEROSPACE_MODIFIER__-r = 'mode resize'
+__AEROSPACE_MODIFIER__-shift-semicolon = 'mode service'
+
+# ==============================================================================
+# Keybindings: Resize Mode
+# ==============================================================================
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+b = 'balance-sizes'
+enter = 'mode main'
+esc = 'mode main'
+
+# ==============================================================================
+# Keybindings: Service Mode (System & Reload)
+# ==============================================================================
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']
+f = ['layout floating tiling', 'mode main']
+backspace = ['close-all-windows-but-current', 'mode main']
+
+# ==============================================================================
+# Window Rules (Floating utility popups & dialogs)
+# ==============================================================================
+[[on-window-detected]]
+if.app-id = 'com.raycast.macos'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'net.freemacsoft.AppCleaner'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Shottr'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Bitwarden'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = '1Password'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'The Unarchiver'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Hidden Bar|Stats'
+run = 'layout floating'
