@@ -87,13 +87,48 @@ __AEROSPACE_MODIFIER__-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
 __AEROSPACE_MODIFIER__-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
 __AEROSPACE_MODIFIER__-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 
-# --- Workspace & Monitor Navigation ---
+# --- Silent Throw (Move Window to Workspace WITHOUT Switching Focus) ---
+__AEROSPACE_MODIFIER__-cmd-1 = 'move-node-to-workspace 1'
+__AEROSPACE_MODIFIER__-cmd-2 = 'move-node-to-workspace 2'
+__AEROSPACE_MODIFIER__-cmd-3 = 'move-node-to-workspace 3'
+__AEROSPACE_MODIFIER__-cmd-4 = 'move-node-to-workspace 4'
+__AEROSPACE_MODIFIER__-cmd-5 = 'move-node-to-workspace 5'
+__AEROSPACE_MODIFIER__-cmd-6 = 'move-node-to-workspace 6'
+__AEROSPACE_MODIFIER__-cmd-7 = 'move-node-to-workspace 7'
+__AEROSPACE_MODIFIER__-cmd-8 = 'move-node-to-workspace 8'
+__AEROSPACE_MODIFIER__-cmd-9 = 'move-node-to-workspace 9'
+
+# --- Multi-Monitor & Workspace Navigation ---
 __AEROSPACE_MODIFIER__-tab = 'workspace-back-and-forth'
 __AEROSPACE_MODIFIER__-shift-tab = 'move-node-to-monitor --wrap-around next'
+__AEROSPACE_MODIFIER__-ctrl-tab = 'focus-monitor --wrap-around next'
+__AEROSPACE_MODIFIER__-ctrl-shift-tab = 'focus-monitor --wrap-around prev'
+__AEROSPACE_MODIFIER__-shift-m = 'move-workspace-to-monitor --wrap-around next'
+
+# Directional Window Movement Across Monitors
+__AEROSPACE_MODIFIER__-ctrl-h = 'move-node-to-monitor --wrap-around left'
+__AEROSPACE_MODIFIER__-ctrl-l = 'move-node-to-monitor --wrap-around right'
+__AEROSPACE_MODIFIER__-ctrl-k = 'move-node-to-monitor --wrap-around up'
+__AEROSPACE_MODIFIER__-ctrl-j = 'move-node-to-monitor --wrap-around down'
 
 # --- Modes ---
 __AEROSPACE_MODIFIER__-r = 'mode resize'
 __AEROSPACE_MODIFIER__-shift-semicolon = 'mode service'
+
+# ==============================================================================
+# Multi-Monitor Workspace Pinning
+# Workspaces 1-4 pinned to Primary display; 5-8 pinned to Secondary display.
+# (If secondary display is disconnected, workspaces 5-8 automatically open on main display)
+# ==============================================================================
+[workspace-to-monitor-force-assignment]
+1 = 'main'
+2 = 'main'
+3 = 'main'
+4 = 'main'
+5 = 'secondary'
+6 = 'secondary'
+7 = 'secondary'
+8 = 'secondary'
 
 # ==============================================================================
 # Keybindings: Resize Mode

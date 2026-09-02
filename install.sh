@@ -1,24 +1,18 @@
 #!/bin/bash
 # install.sh — Modular Day 1 setup installer and interactive TUI wizard for macOS.
+# shellcheck disable=SC1091
 
 set -e # Fail immediately on unexpected critical error
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Source modular libraries
-# shellcheck source=lib/common.sh
 source "$REPO_DIR/lib/common.sh"
-# shellcheck source=lib/config.sh
 source "$REPO_DIR/lib/config.sh"
-# shellcheck source=lib/brew.sh
 source "$REPO_DIR/lib/brew.sh"
-# shellcheck source=lib/dotfiles.sh
 source "$REPO_DIR/lib/dotfiles.sh"
-# shellcheck source=lib/toolchains.sh
 source "$REPO_DIR/lib/toolchains.sh"
-# shellcheck source=lib/macos.sh
 source "$REPO_DIR/lib/macos.sh"
-# shellcheck source=lib/ui.sh
 source "$REPO_DIR/lib/ui.sh"
 
 # Global CLI flags
@@ -121,11 +115,11 @@ fi
 if [ "$UNATTENDED" = false ] && [ "$IS_TTY" = true ] && [ -z "$CHOSEN_PRESET" ] && [ -z "$CUSTOM_CONFIG" ]; then
     # Launch interactive TUI flow
     select_preset_screen
-    ui_status=$?
 
-    # If user selected custom profile, open category matrix screen
-    if [ "$ui_status" -eq 2 ] || [ "$CONFIG_PRESET" = "custom" ]; then
+    # If user selected custom profile, open category matrix and individual checklist screens
+    if [ "$CONFIG_PRESET" = "custom" ]; then
         category_matrix_screen
+        individual_packages_screen
     fi
 
     # Machine & config customizer screen

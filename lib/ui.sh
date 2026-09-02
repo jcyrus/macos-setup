@@ -32,6 +32,8 @@ read_key() {
         $'\x1b[B' | $'\x1bOB') echo "DOWN" ;;
         $'\x1b[C' | $'\x1bOC') echo "RIGHT" ;;
         $'\x1b[D' | $'\x1bOD') echo "LEFT" ;;
+        $'\x1b[5~') echo "PAGEUP" ;;
+        $'\x1b[6~') echo "PAGEDOWN" ;;
         $'\x1b') echo "ESC" ;;
         "" | $'\n' | $'\r') echo "ENTER" ;;
         " ") echo "SPACE" ;;
@@ -87,11 +89,11 @@ select_preset_screen() {
     local current=0
     local total=${#options[@]}
     cursor_hide
-    trap 'cursor_show; stty echo icanon 2>/dev/null; exit 1' INT TERM
+    trap 'cursor_show; stty echo icanon 2>/dev/null; exit 0' INT TERM
 
     while true; do
         render_header
-        printf "%s📌 Step 1/3: Choose an Installation Profile%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s📌 Step 1/4: Choose an Installation Profile%s\n\n" "$C_HEAD" "$C_RESET"
 
         for i in "${!options[@]}"; do
             if [ "$i" -eq "$current" ]; then
@@ -121,12 +123,11 @@ select_preset_screen() {
                 if [ "$selected_key" = "custom" ]; then
                     CONFIG_PRESET="custom"
                     CONFIG_PRESET_NAME="Custom Selection"
-                    return 2
                 else
                     CONFIG_PRESET="$selected_key"
                     load_preset "$REPO_DIR/presets/${selected_key}.toml"
-                    return 0
                 fi
+                return 0
                 ;;
             Q | ESC)
                 cursor_show
@@ -139,7 +140,7 @@ select_preset_screen() {
 }
 
 # ==============================================================================
-# SCREEN 2: CATEGORY & PACKAGE MATRIX (MULTI-SELECT)
+# SCREEN 2A: CATEGORY MATRIX (MULTI-SELECT)
 # ==============================================================================
 category_matrix_screen() {
     local cat_names=(
@@ -185,7 +186,7 @@ category_matrix_screen() {
 
     while true; do
         render_header
-        printf "%s📦 Step 2/3: Customize Package Categories%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s📦 Step 2/4: Customize Package Categories%s\n\n" "$C_HEAD" "$C_RESET"
 
         for i in "${!cat_names[@]}"; do
             local var_name="${cat_vars[$i]}"
@@ -206,7 +207,7 @@ category_matrix_screen() {
         done
 
         printf "\n%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
-        printf "%s[↑/↓] Move   [Space] Toggle   [a] Select All   [n] Select None   [Enter] Next%s\n" "$C_DIM" "$C_RESET"
+        printf "%s[↑/↓] Move   [Space] Toggle   [a] Select All   [n] Select None   [Enter] Individual Apps%s\n" "$C_DIM" "$C_RESET"
 
         local action
         action="$(read_key)"
@@ -246,6 +247,187 @@ category_matrix_screen() {
 }
 
 # ==============================================================================
+# SCREEN 2B: INDIVIDUAL PACKAGES CHECKLIST (GRANULAR)
+# ==============================================================================
+individual_packages_screen() {
+    # Format: "type|category_var|pkg_name|display_label"
+    local raw_pkgs=(
+        "cask|CAT_GUI_CORE|brave-browser|Brave Browser"
+        "cask|CAT_GUI_CORE|google-chrome|Google Chrome"
+        "cask|CAT_GUI_CORE|raycast|Raycast Launcher"
+        "cask|CAT_GUI_CORE|orbstack|OrbStack Containers"
+        "cask|CAT_GUI_CORE|tableplus|TablePlus Database GUI"
+        "cask|CAT_GUI_CORE|shottr|Shottr Precision Screenshots"
+        "cask|CAT_GUI_CORE|bruno|Bruno Open-Source API Client"
+        "cask|CAT_GUI_CORE|obsidian|Obsidian Notes & Brain"
+        "cask|CAT_GUI_CORE|appcleaner|AppCleaner Uninstaller"
+        "cask|CAT_GUI_CORE|the-unarchiver|The Unarchiver Utility"
+        "cask|CAT_GUI_CORE|hiddenbar|Hidden Bar Menu Icon Hider"
+        "cask|CAT_GUI_CORE|stats|Stats System Monitor"
+        "cask|CAT_GUI_CORE|utm|UTM Virtual Machines"
+        "cask|CAT_GUI_CORE|sf-symbols|SF Symbols Apple Icons"
+        "cask|CAT_SECURITY|bitwarden|Bitwarden Password Manager"
+        "cask|CAT_SECURITY|tailscale-app|Tailscale Mesh VPN"
+        "cask|CAT_CREATIVE|figma|Figma Interface Design"
+        "cask|CAT_CREATIVE|darktable|Darktable Photo Workflow"
+        "brew|CAT_CREATIVE|imagemagick|ImageMagick CLI"
+        "cask|CAT_CREATIVE|telegram|Telegram Messenger"
+        "cask|CAT_CREATIVE|spotify|Spotify Music"
+        "cask|CAT_CREATIVE|iina|IINA Media Player"
+        "cask|CAT_CREATIVE|stremio|Stremio Video Streaming"
+        "cask|CAT_WINDOW_MANAGEMENT|aerospace|AeroSpace Tiling Window Mgr"
+        "brew|CAT_WINDOW_MANAGEMENT|borders|JankyBorders Window Highlighter"
+        "cask|CAT_TERMINAL|ghostty|Ghostty GPU Terminal"
+        "brew|CAT_TERMINAL|starship|Starship Prompt"
+        "brew|CAT_TERMINAL|zoxide|Zoxide Fast cd"
+        "brew|CAT_TERMINAL|tmux|tmux Terminal Multiplexer"
+        "brew|CAT_EDITORS|neovim|Neovim (LazyVim Stack)"
+        "cask|CAT_EDITORS|visual-studio-code|VS Code Editor"
+        "brew|CAT_AI|ollama|Ollama Local LLM"
+        "brew|CAT_RUST|rustup|Rustup Toolchain Manager"
+        "brew|CAT_RUST|bacon|Bacon Rust Background Checker"
+        "brew|CAT_RUST|cargo-binstall|Cargo Binstall Fast Installer"
+        "brew|CAT_WEB|fnm|Fast Node Manager (FNM)"
+        "brew|CAT_WEB|pnpm|pnpm Package Manager"
+        "brew|CAT_MOBILE|leoafarias/fvm/fvm|Flutter Version Manager (FVM)"
+        "brew|CAT_MOBILE|cocoapods|Cocoapods iOS Manager"
+        "brew|CAT_MOBILE|scrcpy|Scrcpy Android Mirroring"
+        "cask|CAT_FONTS|font-0xproto-nerd-font|0xProto Nerd Font"
+        "cask|CAT_FONTS|font-jetbrains-mono-nerd-font|JetBrains Mono Nerd Font"
+        "brew|CAT_CUSTOM_TAP|jcyrus/tap/zerodrop|ZeroDrop TUI Chat"
+        "brew|CAT_CUSTOM_TAP|jcyrus/tap/spektr|Spektr Artifact Cleaner"
+    )
+
+    local current=0
+    local offset=0
+    local page_size=14
+    local total=${#raw_pkgs[@]}
+    cursor_hide
+
+    # Helper: Check if specific package is currently enabled
+    _is_pkg_active() {
+        local type="$1" cat_var="$2" pkg="$3"
+        if [ "${!cat_var}" -eq 0 ]; then
+            return 1
+        fi
+        if [ "$type" = "cask" ]; then
+            _is_in_list "$pkg" "$SKIPPED_CASKS" && return 1
+        else
+            _is_in_list "$pkg" "$SKIPPED_FORMULAE" && return 1
+        fi
+        return 0
+    }
+
+    # Helper: Toggle package inclusion/exclusion
+    _toggle_pkg() {
+        local type="$1" cat_var="$2" pkg="$3"
+        # If parent category is disabled, enable category first
+        if [ "${!cat_var}" -eq 0 ]; then
+            eval "$cat_var=1"
+        fi
+
+        if [ "$type" = "cask" ]; then
+            if _is_in_list "$pkg" "$SKIPPED_CASKS"; then
+                # Remove from skip list
+                SKIPPED_CASKS="$(echo "$SKIPPED_CASKS" | tr ' ' '\n' | grep -vFx "$pkg" | tr '\n' ' ')"
+            else
+                # Add to skip list
+                SKIPPED_CASKS="$SKIPPED_CASKS $pkg"
+            fi
+        else
+            if _is_in_list "$pkg" "$SKIPPED_FORMULAE"; then
+                SKIPPED_FORMULAE="$(echo "$SKIPPED_FORMULAE" | tr ' ' '\n' | grep -vFx "$pkg" | tr '\n' ' ')"
+            else
+                SKIPPED_FORMULAE="$SKIPPED_FORMULAE $pkg"
+            fi
+        fi
+    }
+
+    while true; do
+        render_header
+        printf "%s📋 Step 2/4: Granular App & CLI Checklist%s\n\n" "$C_HEAD" "$C_RESET"
+
+        # Adjust scroll offset
+        if [ "$current" -lt "$offset" ]; then
+            offset="$current"
+        elif [ "$current" -ge "$((offset + page_size))" ]; then
+            offset="$((current - page_size + 1))"
+        fi
+
+        # Top scroll indicator
+        if [ "$offset" -gt 0 ]; then
+            printf "   %s▲  (%d items above)...%s\n" "$C_DIM" "$offset" "$C_RESET"
+        else
+            printf "\n"
+        fi
+
+        local end_idx=$((offset + page_size))
+        [ "$end_idx" -gt "$total" ] && end_idx="$total"
+
+        for ((i = offset; i < end_idx; i++)); do
+            IFS='|' read -r p_type p_cat p_name p_label <<<"${raw_pkgs[$i]}"
+            local check=" "
+            local color="$C_DIM"
+
+            if _is_pkg_active "$p_type" "$p_cat" "$p_name"; then
+                check="✓"
+                color="$C_GREEN"
+            fi
+
+            if [ "$i" -eq "$current" ]; then
+                printf " %s❯%s [%s%s%s] %s%-34s%s %s(%s)%s\n" "$C_MAUVE" "$C_RESET" "$color" "$check" "$C_RESET" "$C_BOLD$C_WHITE" "$p_label" "$C_RESET" "$C_TEAL" "$p_name" "$C_RESET"
+            else
+                printf "   [%s%s%s] %s%-34s%s %s(%s)%s\n" "$color" "$check" "$C_RESET" "$C_DIM" "$p_label" "$C_RESET" "$C_GRAY" "$p_name" "$C_RESET"
+            fi
+        done
+
+        # Bottom scroll indicator
+        local remaining=$((total - end_idx))
+        if [ "$remaining" -gt 0 ]; then
+            printf "   %s▼  (%d more items below)...%s\n" "$C_DIM" "$remaining" "$C_RESET"
+        else
+            printf "\n"
+        fi
+
+        printf "%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        printf "%s[↑/↓] Move   [Space] Toggle App   [Enter] Continue to Config Customizer%s\n" "$C_DIM" "$C_RESET"
+
+        local action
+        action="$(read_key)"
+        case "$action" in
+            UP)
+                current=$(((current - 1 + total) % total))
+                ;;
+            DOWN)
+                current=$(((current + 1) % total))
+                ;;
+            PAGEUP)
+                current=$((current - page_size))
+                [ "$current" -lt 0 ] && current=0
+                ;;
+            PAGEDOWN)
+                current=$((current + page_size))
+                [ "$current" -ge "$total" ] && current=$((total - 1))
+                ;;
+            SPACE)
+                IFS='|' read -r p_type p_cat p_name p_label <<<"${raw_pkgs[$current]}"
+                _toggle_pkg "$p_type" "$p_cat" "$p_name"
+                ;;
+            ENTER)
+                cursor_show
+                return 0
+                ;;
+            Q | ESC)
+                cursor_show
+                clear_screen
+                log_info "Setup cancelled by user."
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# ==============================================================================
 # SCREEN 3: MACHINE & CONFIGURATION CUSTOMIZER
 # ==============================================================================
 config_customizer_screen() {
@@ -267,7 +449,7 @@ config_customizer_screen() {
 
     while true; do
         render_header
-        printf "%s🎨 Step 3/3: Personalize Configuration & Aesthetics%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s🎨 Step 3/4: Personalize Configuration & Aesthetics%s\n\n" "$C_HEAD" "$C_RESET"
 
         # Field 0: Git Name
         local f0="[ ${CONFIG_GIT_NAME:-"(not set)"} ]"
@@ -407,7 +589,7 @@ summary_confirmation_screen() {
     done
 
     render_header
-    printf "%s🚀 Setup Ready to Install%s\n\n" "$C_HEAD" "$C_RESET"
+    printf "%s🚀 Step 4/4: Setup Ready to Install%s\n\n" "$C_HEAD" "$C_RESET"
     printf "  • Profile:            %s%s%s\n" "$C_BOLD" "$CONFIG_PRESET_NAME" "$C_RESET"
     printf "  • Active Categories:  %s%d of 16 categories enabled%s\n" "$C_GREEN" "$active_cats" "$C_RESET"
     printf "  • Theme Palette:      %s%s%s\n" "$C_BOLD" "$CONFIG_THEME_PALETTE" "$C_RESET"

@@ -1,16 +1,14 @@
 #!/bin/bash
 # update.sh — Config-aware updater for macos-setup packages, dotfiles, and toolchains.
+# shellcheck disable=SC1091
 
 set -e
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Source config helpers
-# shellcheck source=lib/common.sh
 source "$REPO_DIR/lib/common.sh"
-# shellcheck source=lib/config.sh
 source "$REPO_DIR/lib/config.sh"
-# shellcheck source=lib/brew.sh
 source "$REPO_DIR/lib/brew.sh"
 
 init_default_config

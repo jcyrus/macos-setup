@@ -10,13 +10,13 @@
 # SC2088: this file passes "~/..." strings as display labels, not paths to resolve.
 # shellcheck disable=SC2143
 # SC2143: BSD grep behavior requires checking command substitution output.
+# shellcheck disable=SC1091
+# Modular libraries are located in lib/ and sourced at runtime.
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Source configuration & helpers
-# shellcheck source=lib/common.sh
 source "$REPO_DIR/lib/common.sh"
-# shellcheck source=lib/config.sh
 source "$REPO_DIR/lib/config.sh"
 
 init_default_config
