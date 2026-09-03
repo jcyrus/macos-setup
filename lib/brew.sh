@@ -205,7 +205,6 @@ EOF
         echo "" >>"$output_file"
         echo "# --- CREATIVE / LIFESTYLE ---" >>"$output_file"
         _add_cask "figma"
-        _add_cask "darktable"
         _add_brew "imagemagick"
         _add_cask "telegram"
         _add_cask "spotify"

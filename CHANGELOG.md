@@ -22,6 +22,7 @@ The format is based on Keep a Changelog.
 
 ### Removed
 
+- `darktable` cask. Homebrew disabled it on 2026-09-01 because it fails the macOS Gatekeeper check, so `brew bundle` errors out on it rather than skipping it. Removed from the Brewfile, `lib/brew.sh`, the TUI checklist, the preset skip lists, and the docs.
 - `whisky` cask. It's deprecated upstream (unmaintained) and no longer installable via `brew bundle`.
 
 ### Fixed

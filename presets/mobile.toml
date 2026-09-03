@@ -52,4 +52,4 @@ custom_tap = false
 
 [packages.skip]
 formulae = ["bacon", "cargo-binstall", "fnm", "pnpm", "jcyrus/tap/zerodrop", "jcyrus/tap/spektr"]
-casks = ["aerospace", "darktable", "stremio"]
+casks = ["aerospace", "stremio"]

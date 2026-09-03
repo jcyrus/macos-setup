@@ -123,7 +123,7 @@ brew install --cask bitwarden tailscale-app
 ### 🎨 Creative + 🍿 Lifestyle + 👻 Custom
 
 ```bash
-brew install --cask figma darktable telegram spotify iina stremio
+brew install --cask figma telegram spotify iina stremio
 brew install imagemagick
 brew install jcyrus/tap/zerodrop jcyrus/tap/spektr
 ```

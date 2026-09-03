@@ -101,7 +101,6 @@ cask "tailscale-app"
 
 # --- CREATIVE / LIFESTYLE ---
 cask "figma"
-cask "darktable"
 brew "imagemagick"
 cask "telegram"
 cask "spotify"

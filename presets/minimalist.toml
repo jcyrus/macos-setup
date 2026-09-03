@@ -51,4 +51,4 @@ creative = false
 custom_tap = true
 
 [packages.skip]
-casks = ["visual-studio-code", "tableplus", "bruno", "obsidian", "appcleaner", "the-unarchiver", "hiddenbar", "stats", "utm", "sf-symbols", "bitwarden", "tailscale-app", "figma", "darktable", "telegram", "spotify", "iina", "stremio"]
+casks = ["visual-studio-code", "tableplus", "bruno", "obsidian", "appcleaner", "the-unarchiver", "hiddenbar", "stats", "utm", "sf-symbols", "bitwarden", "tailscale-app", "figma", "telegram", "spotify", "iina", "stremio"]

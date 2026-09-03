@@ -159,7 +159,7 @@ category_matrix_screen() {
         "GUI Productivity Apps (Raycast, OrbStack, TablePlus, Bruno, Obsidian, etc.)"
         "Nerd Fonts (0xProto, JetBrains Mono)"
         "Security Tools (Bitwarden, Tailscale)"
-        "Creative & Media (Figma, Darktable, ImageMagick, Telegram, Spotify, IINA)"
+        "Creative & Media (Figma, ImageMagick, Telegram, Spotify, IINA)"
         "Custom Tap Tools (ZeroDrop, Spektr)"
     )
     local cat_vars=(
@@ -269,7 +269,6 @@ individual_packages_screen() {
         "cask|CAT_SECURITY|bitwarden|Bitwarden Password Manager"
         "cask|CAT_SECURITY|tailscale-app|Tailscale Mesh VPN"
         "cask|CAT_CREATIVE|figma|Figma Interface Design"
-        "cask|CAT_CREATIVE|darktable|Darktable Photo Workflow"
         "brew|CAT_CREATIVE|imagemagick|ImageMagick CLI"
         "cask|CAT_CREATIVE|telegram|Telegram Messenger"
         "cask|CAT_CREATIVE|spotify|Spotify Music"

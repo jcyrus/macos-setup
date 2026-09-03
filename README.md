@@ -60,7 +60,6 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | **🔒 Security**   | **Bitwarden**      | Open-source password manager.                          |
 |                   | **Tailscale**      | Zero-config VPN mesh network.                          |
 | **🎨 Creative**   | **Figma**          | Interface design tool.                                 |
-|                   | **Darktable**      | Open-source photography workflow.                      |
 |                   | **ImageMagick**    | CLI image manipulation tool.                           |
 | **📓 Notes**      | **Obsidian**       | Local-first notes and knowledge base.                  |
 | **🍿 Lifestyle**  | **Telegram**       | Messaging client.                                      |

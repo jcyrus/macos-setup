@@ -52,4 +52,4 @@ custom_tap = true
 
 [packages.skip]
 formulae = ["fnm", "pnpm", "cocoapods", "scrcpy", "imagemagick"]
-casks = ["visual-studio-code", "tableplus", "bruno", "figma", "darktable", "stremio", "spotify", "telegram"]
+casks = ["visual-studio-code", "tableplus", "bruno", "figma", "stremio", "spotify", "telegram"]
