@@ -231,9 +231,23 @@ bootstrap_homebrew() {
         elif [ -d "/usr/local/bin" ]; then
             eval "$(/usr/local/bin/brew shellenv)"
         fi
+        if ! command -v brew &>/dev/null; then
+            log_error "Homebrew installed but 'brew' is not on PATH."
+            log_error "Open a new terminal and re-run this script."
+            return 1
+        fi
     else
         log_info "Homebrew found. Updating..."
-        brew update
+        # A failed `brew update` is not a reason to abandon the run. The local
+        # formula index is still usable, only possibly stale, and `brew bundle`
+        # works fine against it. This used to be a bare call under `set -e`, so
+        # one unreachable tap aborted the whole install before a single package
+        # was touched — precisely what happens on the unreliable wifi a day-one
+        # setup tends to run on.
+        if ! brew update; then
+            log_warn "brew update failed. Continuing with the local formula index."
+            log_dim "Usually a network problem. Re-run './update.sh' once you have a stable connection."
+        fi
     fi
 }
 

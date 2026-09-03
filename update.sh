@@ -19,12 +19,22 @@ fi
 log_step "Starting system and packages update..."
 
 # 1. Update Homebrew itself
+# Non-fatal for the same reason as in bootstrap_homebrew: a stale formula index
+# still upgrades and bundles fine, and `set -e` on a bare call turns a network
+# blip into an update that stops before touching anything.
 log_info "Updating Homebrew metadata..."
-brew update
+if ! brew update; then
+    log_warn "brew update failed. Continuing with the local formula index."
+    log_dim "Usually a network problem; upgrades below may not see the newest versions."
+fi
 
 # 2. Upgrade installed packages
+# One package failing to build should not skip the dotfiles and toolchain steps.
 log_info "Upgrading installed formulae and casks..."
-brew upgrade
+if ! brew upgrade; then
+    log_warn "Some packages failed to upgrade. Continuing with the rest of the update."
+    log_dim "Re-run 'brew upgrade' afterwards to see the failures on their own."
+fi
 
 # 3. Dynamic or Master Brewfile bundle
 active_brewfile="$REPO_DIR/Brewfile"
