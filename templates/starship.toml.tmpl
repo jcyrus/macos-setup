@@ -109,120 +109,120 @@ command = "echo ''"
 when = "! git rev-parse --is-inside-work-tree 2>/dev/null"
 format = "[](fg:blue) "
 
-[c]
-symbol = " "
-format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
-style = "fg:base bg:blue"
-
-[cpp]
-symbol = " "
-format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
-style = "fg:base bg:blue"
-
-[dart]
-symbol = " "
-format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
-style = "fg:base bg:blue"
-
-[docker_context]
-symbol = " "
-format = "[](fg:blue)[$symbol$context]($style)[](fg:blue) "
-style = "fg:base bg:blue"
-
-[golang]
-symbol = " "
-format = "[](fg:teal)[$symbol$version]($style)[](fg:teal) "
-style = "fg:base bg:teal"
-
-[java]
-symbol = " "
-format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
-style = "fg:base bg:red"
-
-[kotlin]
-symbol = " "
-format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
-style = "fg:base bg:mauve"
-
-[lua]
-symbol = " "
-format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
-style = "fg:base bg:blue"
+[package]
+symbol = "󰏗 "
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
+style = "fg:base bg:peach"
 
 [nodejs]
 symbol = " "
 format = "[](fg:green)[$symbol$version]($style)[](fg:green) "
 style = "fg:base bg:green"
 
-[package]
-symbol = "󰏗 "
-format = "[](fg:text)[$symbol$version]($style)[](fg:text) "
-style = "fg:base bg:text"
+[rust]
+symbol = "󱘗 "
+format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
+style = "fg:base bg:red"
 
-[php]
-symbol = " "
+[python]
+symbol = " "
+format = '[](fg:yellow)[$symbol$version( \($virtualenv\))]($style)[](fg:yellow) '
+style = "fg:base bg:yellow"
+
+[golang]
+symbol = " "
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire) "
+style = "fg:base bg:sapphire"
+
+[java]
+symbol = " "
+format = "[](fg:maroon)[$symbol$version]($style)[](fg:maroon) "
+style = "fg:base bg:maroon"
+
+[dart]
+symbol = " "
+format = "[](fg:sky)[$symbol$version]($style)[](fg:sky) "
+style = "fg:base bg:sky"
+
+[docker_context]
+symbol = " "
+format = "[](fg:blue)[$symbol$context]($style)[](fg:blue) "
+style = "fg:base bg:blue"
+
+[lua]
+symbol = " "
 format = "[](fg:lavender)[$symbol$version]($style)[](fg:lavender) "
 style = "fg:base bg:lavender"
 
-[python]
-symbol = " "
-format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
-style = "fg:base bg:yellow"
+[c]
+symbol = " "
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal) "
+style = "fg:base bg:teal"
+
+[cpp]
+symbol = " "
+format = "[](fg:teal)[$symbol$version]($style)[](fg:teal) "
+style = "fg:base bg:teal"
 
 [ruby]
 symbol = " "
 format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
 style = "fg:base bg:red"
 
-[rust]
-symbol = " "
-format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
-style = "fg:base bg:peach"
-
 [swift]
 symbol = " "
 format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
 style = "fg:base bg:peach"
 
+[php]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
+style = "fg:base bg:mauve"
+
+[kotlin]
+symbol = " "
+format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
+style = "fg:base bg:mauve"
+
 [aws]
-symbol = "  "
-format = '[](fg:peach)[$symbol($profile)(\($region\))]($style)[](fg:peach) '
+symbol = " "
+format = '[](fg:peach)[$symbol$profile( \($region\))]($style)[](fg:peach) '
 style = "fg:base bg:peach"
+
+[gcloud]
+symbol = "󱇶 "
+format = '[](fg:blue)[$symbol$account(@$domain)( \($project\))]($style)[](fg:blue) '
+style = "fg:base bg:blue"
 
 [azure]
 symbol = "󰠅 "
-format = "[](fg:blue)[$symbol($subscription)]($style)[](fg:blue) "
+format = '[](fg:blue)[$symbol($subscription)]($style)[](fg:blue) '
 style = "fg:base bg:blue"
 
 [bun]
 symbol = " "
-format = "[](fg:rosewater)[$symbol$version]($style)[](fg:rosewater) "
-style = "fg:base bg:rosewater"
+format = "[](fg:peach)[$symbol$version]($style)[](fg:peach) "
+style = "fg:base bg:peach"
 
 [deno]
-symbol = " "
-format = "[](fg:text)[$symbol$version]($style)[](fg:text) "
-style = "fg:base bg:text"
+symbol = " "
+format = "[](fg:green)[$symbol$version]($style)[](fg:green) "
+style = "fg:base bg:green"
 
 [elixir]
-symbol = " "
-format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
+symbol = " "
+format = '[](fg:mauve)[$symbol$version( \(OTP $otp_version\))]($style)[](fg:mauve) '
 style = "fg:base bg:mauve"
 
 [erlang]
-symbol = " "
+symbol = " "
 format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
 style = "fg:base bg:red"
 
-[gcloud]
-symbol = "󱇶 "
-format = '[](fg:blue)[$symbol$account(@$domain)(\($project\))]($style)[](fg:blue) '
-style = "fg:base bg:blue"
-
 [helm]
-symbol = "⎈ "
-format = "[](fg:sky)[$symbol$version]($style)[](fg:sky) "
-style = "fg:base bg:sky"
+symbol = "󰠳 "
+format = "[](fg:sapphire)[$symbol$version]($style)[](fg:sapphire) "
+style = "fg:base bg:sapphire"
 
 [julia]
 symbol = " "
@@ -230,9 +230,11 @@ format = "[](fg:mauve)[$symbol$version]($style)[](fg:mauve) "
 style = "fg:base bg:mauve"
 
 [kubernetes]
+disabled = false
 symbol = "󱃾 "
-format = '[](fg:sky)[$symbol$context( \($namespace\))]($style)[](fg:sky) '
-style = "fg:base bg:sky"
+format = '[](fg:teal)[$symbol$context( \($namespace\))]($style)[](fg:teal) '
+style = "fg:base bg:teal"
+detect_files = ["k8s", "kubeconfig", "Chart.yaml", "helmfile.yaml"]
 
 [nim]
 symbol = " "
