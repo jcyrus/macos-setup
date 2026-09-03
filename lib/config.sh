@@ -253,15 +253,39 @@ render_template() {
         return 1
     fi
 
-    mkdir -p "$(dirname "$out")"
+    # Older versions of this installer symlinked these paths back into the repo,
+    # and redirecting onto a symlink writes through to its target — silently
+    # overwriting the repo's checked-in configs with rendered output. The link
+    # can be on the file (~/.config/starship.toml) or on its parent directory
+    # (~/.config/ghostty -> <repo>/ghostty), and the directory case does not
+    # make `[ -L "$out" ]` true, so both have to be handled.
+    local out_dir
+    out_dir="$(dirname "$out")"
 
-    # Older versions of this installer symlinked these paths back into the repo.
-    # Redirecting onto a symlink writes through to its target, which silently
-    # overwrites the repo's checked-in configs with rendered output. Drop the
-    # link first so we always render a real file at $out.
+    if [ -L "$out_dir" ]; then
+        log_warn "Replacing legacy symlinked config directory: $out_dir"
+        rm -f "$out_dir"
+    fi
+
+    mkdir -p "$out_dir"
+
     if [ -L "$out" ]; then
         log_warn "Replacing legacy symlink with a rendered file: $out"
         rm -f "$out"
+    fi
+
+    # Safety net. Whatever the layout, a rendered config must never be written
+    # inside the checkout — that is how the repo's own configs got overwritten.
+    if [ -n "${REPO_DIR:-}" ]; then
+        local resolved_dir
+        resolved_dir="$(cd "$out_dir" 2>/dev/null && pwd -P)"
+        case "$resolved_dir/" in
+            "$REPO_DIR"/*)
+                log_error "Refusing to render into the repository: $out"
+                log_error "Resolved to $resolved_dir, inside $REPO_DIR."
+                return 1
+                ;;
+        esac
     fi
 
     # Derive VS Code theme name based on palette
