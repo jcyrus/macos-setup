@@ -27,6 +27,11 @@ dock_fast_animation = true
 screenshots_dir = "~/Screenshots"
 fast_keyboard_repeat = true
 
+# Browser casks to install. Zen is the main browser; Brave and Chrome round out
+# Chromium coverage. This does not touch the macOS default browser.
+[config.browsers]
+install = ["zen", "brave-browser", "google-chrome"]
+
 [categories]
 window_management = true
 terminal = true
@@ -39,6 +44,7 @@ git_tuis = true
 rust = true
 web = true
 mobile = true
+browsers = true
 gui_core = true
 fonts = true
 security = true

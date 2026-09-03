@@ -88,10 +88,22 @@ brew install rustup bacon cargo-binstall
 brew install fnm pnpm leoafarias/fvm/fvm cocoapods scrcpy
 ```
 
+### 🌐 Browsers
+
+Zen is the main browser; the other two are for Chromium coverage. Install only
+what you want — nothing here changes the macOS default browser.
+
+```bash
+brew install --cask zen brave-browser google-chrome
+```
+
+Other browsers `install.sh` offers: `firefox`, `arc`, `vivaldi`, `microsoft-edge`,
+`orion`, `librewolf`, `floorp`.
+
 ### 💻 GUI Apps
 
 ```bash
-brew install --cask visual-studio-code brave-browser google-chrome raycast orbstack
+brew install --cask visual-studio-code raycast orbstack
 brew install --cask tableplus shottr bruno obsidian appcleaner the-unarchiver
 brew install --cask hiddenbar stats utm sf-symbols
 ```

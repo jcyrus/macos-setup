@@ -51,6 +51,11 @@ init_default_config() {
     CONFIG_MACOS_SCREENSHOTS_DIR="$HOME/Screenshots"
     CONFIG_MACOS_FAST_KEY_REPEAT=true
 
+    # Browsers (space-delimited cask tokens; Zen is the opinionated main browser).
+    # This only decides what gets installed — the macOS default browser is left
+    # alone, since choosing it is the user's call (or their link router's).
+    CONFIG_BROWSERS="zen"
+
     # Categories (1 = enabled, 0 = disabled)
     CAT_WINDOW_MANAGEMENT=1
     CAT_TERMINAL=1
@@ -63,6 +68,7 @@ init_default_config() {
     CAT_RUST=1
     CAT_WEB=1
     CAT_MOBILE=1
+    CAT_BROWSERS=1
     CAT_GUI_CORE=1
     CAT_FONTS=1
     CAT_SECURITY=1
@@ -129,8 +135,17 @@ load_preset() {
     val="$(_get_toml_val "$preset_file" "border_radius")"
     [ -n "$val" ] && CONFIG_BORDERS_RADIUS="$val"
 
+    # Browsers — `install` lives under [config.browsers] and holds cask tokens.
+    # An explicitly empty list is honoured; a missing key keeps the default.
+    if grep -qE '^[[:space:]]*install[[:space:]]*=' "$preset_file"; then
+        CONFIG_BROWSERS="$(grep -E '^[[:space:]]*install[[:space:]]*=' "$preset_file" |
+            head -n 1 |
+            sed -E 's/^[[:space:]]*install[[:space:]]*=[[:space:]]*\[//; s/\]//; s/"//g; s/,/ /g' |
+            xargs)"
+    fi
+
     # Categories
-    for cat in window_management terminal core_cli modern_cli shell_quality ai editors git_tuis rust web mobile gui_core fonts security creative custom_tap; do
+    for cat in window_management terminal core_cli modern_cli shell_quality ai editors git_tuis rust web mobile browsers gui_core fonts security creative custom_tap; do
         val="$(_get_toml_val "$preset_file" "$cat")"
         cat_upper="$(echo "$cat" | tr '[:lower:]' '[:upper:]')"
         if [ "$val" = "true" ]; then
@@ -202,6 +217,9 @@ dock_fast = ${CONFIG_MACOS_DOCK_FAST}
 screenshots_dir = "${CONFIG_MACOS_SCREENSHOTS_DIR}"
 fast_keyboard_repeat = ${CONFIG_MACOS_FAST_KEY_REPEAT}
 
+[config.browsers]
+install = [$(for b in $CONFIG_BROWSERS; do printf '"%s", ' "$b"; done | sed 's/, $//')]
+
 [categories]
 window_management = $([ "$CAT_WINDOW_MANAGEMENT" -eq 1 ] && echo "true" || echo "false")
 terminal = $([ "$CAT_TERMINAL" -eq 1 ] && echo "true" || echo "false")
@@ -214,6 +232,7 @@ git_tuis = $([ "$CAT_GIT_TUIS" -eq 1 ] && echo "true" || echo "false")
 rust = $([ "$CAT_RUST" -eq 1 ] && echo "true" || echo "false")
 web = $([ "$CAT_WEB" -eq 1 ] && echo "true" || echo "false")
 mobile = $([ "$CAT_MOBILE" -eq 1 ] && echo "true" || echo "false")
+browsers = $([ "$CAT_BROWSERS" -eq 1 ] && echo "true" || echo "false")
 gui_core = $([ "$CAT_GUI_CORE" -eq 1 ] && echo "true" || echo "false")
 fonts = $([ "$CAT_FONTS" -eq 1 ] && echo "true" || echo "false")
 security = $([ "$CAT_SECURITY" -eq 1 ] && echo "true" || echo "false")

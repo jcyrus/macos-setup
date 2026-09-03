@@ -72,7 +72,7 @@ select_preset_screen() {
     local descriptions=(
         "Full stack setup: Rust, Web, Flutter, AeroSpace, Neovim, and all GUI apps."
         "Lightweight terminal: Ghostty, Neovim, Tmux, Starship, Rust, and modern CLI tools."
-        "Web engineering: Node.js (FNM), pnpm, VS Code, Chrome, OrbStack, TablePlus, Bruno."
+        "Web engineering: Node.js (FNM), pnpm, VS Code, Zen, Chrome, OrbStack, TablePlus, Bruno."
         "Systems programming: Rustup, Bacon, Cargo tools, Neovim, Lazygit, and Yazi."
         "Cross-platform mobile: Flutter (FVM), Cocoapods, Scrcpy, VS Code, and OrbStack."
         "Granular package-by-package & category selection matrix."
@@ -93,7 +93,7 @@ select_preset_screen() {
 
     while true; do
         render_header
-        printf "%s📌 Step 1/4: Choose an Installation Profile%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s📌 Step 1/5: Choose an Installation Profile%s\n\n" "$C_HEAD" "$C_RESET"
 
         for i in "${!options[@]}"; do
             if [ "$i" -eq "$current" ]; then
@@ -155,6 +155,7 @@ category_matrix_screen() {
         "Rust Toolchain (Rustup, Bacon, Cargo Binstall)"
         "Web Toolchain (Node / FNM, pnpm)"
         "Mobile Toolchain (Flutter / FVM, Cocoapods, Scrcpy)"
+        "Browsers (picked individually on the next screen)"
         "GUI Productivity Apps (Raycast, OrbStack, TablePlus, Bruno, Obsidian, etc.)"
         "Nerd Fonts (0xProto, JetBrains Mono)"
         "Security Tools (Bitwarden, Tailscale)"
@@ -173,6 +174,7 @@ category_matrix_screen() {
         "CAT_RUST"
         "CAT_WEB"
         "CAT_MOBILE"
+        "CAT_BROWSERS"
         "CAT_GUI_CORE"
         "CAT_FONTS"
         "CAT_SECURITY"
@@ -186,7 +188,7 @@ category_matrix_screen() {
 
     while true; do
         render_header
-        printf "%s📦 Step 2/4: Customize Package Categories%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s📦 Step 2/5: Customize Package Categories%s\n\n" "$C_HEAD" "$C_RESET"
 
         for i in "${!cat_names[@]}"; do
             local var_name="${cat_vars[$i]}"
@@ -252,8 +254,6 @@ category_matrix_screen() {
 individual_packages_screen() {
     # Format: "type|category_var|pkg_name|display_label"
     local raw_pkgs=(
-        "cask|CAT_GUI_CORE|brave-browser|Brave Browser"
-        "cask|CAT_GUI_CORE|google-chrome|Google Chrome"
         "cask|CAT_GUI_CORE|raycast|Raycast Launcher"
         "cask|CAT_GUI_CORE|orbstack|OrbStack Containers"
         "cask|CAT_GUI_CORE|tableplus|TablePlus Database GUI"
@@ -345,7 +345,7 @@ individual_packages_screen() {
 
     while true; do
         render_header
-        printf "%s📋 Step 2/4: Granular App & CLI Checklist%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s📋 Step 2/5: Granular App & CLI Checklist%s\n\n" "$C_HEAD" "$C_RESET"
 
         # Adjust scroll offset
         if [ "$current" -lt "$offset" ]; then
@@ -428,6 +428,108 @@ individual_packages_screen() {
 }
 
 # ==============================================================================
+# SCREEN 2C: BROWSER PICKER
+# ==============================================================================
+# Shown on every interactive run, preset or not. Zen is the opinionated default,
+# but browsers are personal, so nothing here is forced. This only decides what
+# gets installed — the macOS default browser is never touched.
+browser_selection_screen() {
+    # Format: "cask_token|display_label|one-line description"
+    local raw_browsers=(
+        "zen|Zen Browser|Firefox-based, vertical tabs, split view, workspaces"
+        "brave-browser|Brave|Chromium with built-in ad and tracker blocking"
+        "google-chrome|Google Chrome|Chromium baseline for DevTools and testing"
+        "firefox|Mozilla Firefox|Gecko engine, for cross-engine testing"
+        "arc|Arc|Chromium with spaces and a sidebar-first layout"
+        "vivaldi|Vivaldi|Chromium, heavily customizable, built-in tiling"
+        "microsoft-edge|Microsoft Edge|Chromium with Edge-specific DevTools"
+        "orion|Orion|WebKit engine, runs Chrome and Firefox extensions"
+        "librewolf|LibreWolf|Hardened Firefox fork with telemetry stripped"
+        "floorp|Floorp|Firefox fork with vertical tabs and workspaces"
+    )
+
+    local current=0
+    local total=${#raw_browsers[@]}
+    cursor_hide
+
+    # Helper: append or remove a browser from the install list, order preserved
+    _toggle_browser() {
+        local token="$1"
+        if _is_in_list "$token" "$CONFIG_BROWSERS"; then
+            CONFIG_BROWSERS="$(echo "$CONFIG_BROWSERS" | tr ' ' '\n' | grep -vFx "$token" | tr '\n' ' ' | xargs)"
+        else
+            CONFIG_BROWSERS="$(echo "$CONFIG_BROWSERS $token" | xargs)"
+        fi
+    }
+
+    while true; do
+        render_header
+        printf "%s🌐 Step 3/5: Choose Your Browsers%s\n\n" "$C_HEAD" "$C_RESET"
+
+        for i in "${!raw_browsers[@]}"; do
+            IFS='|' read -r b_token b_label b_desc <<<"${raw_browsers[$i]}"
+            local check=" "
+            local color="$C_DIM"
+
+            if _is_in_list "$b_token" "$CONFIG_BROWSERS"; then
+                check="✓"
+                color="$C_GREEN"
+            fi
+
+            if [ "$i" -eq "$current" ]; then
+                printf " %s❯%s [%s%s%s] %s%-18s%s %s%s%s\n" "$C_MAUVE" "$C_RESET" "$color" "$check" "$C_RESET" "$C_BOLD$C_WHITE" "$b_label" "$C_RESET" "$C_TEAL" "$b_desc" "$C_RESET"
+            else
+                printf "   [%s%s%s] %s%-18s%s %s%s%s\n" "$color" "$check" "$C_RESET" "$C_DIM" "$b_label" "$C_RESET" "$C_GRAY" "$b_desc" "$C_RESET"
+            fi
+        done
+
+        printf "\n%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        if [ -n "$CONFIG_BROWSERS" ]; then
+            printf "%s📋 Installing:%s %s\n" "$C_BOLD" "$C_RESET" "$CONFIG_BROWSERS"
+        else
+            printf "%s📋 Installing:%s %snothing — Safari stays your only browser%s\n" "$C_BOLD" "$C_RESET" "$C_DIM" "$C_RESET"
+        fi
+        printf "%sYour macOS default browser is left untouched — set it yourself later.%s\n" "$C_DIM" "$C_RESET"
+        printf "%s────────────────────────────────────────────────────────────────────────%s\n" "$C_GRAY" "$C_RESET"
+        printf "%s[↑/↓] Move   [Space] Toggle   [n] Select None   [Enter] Continue%s\n" "$C_DIM" "$C_RESET"
+
+        local action
+        action="$(read_key)"
+        case "$action" in
+            UP)
+                current=$(((current - 1 + total) % total))
+                ;;
+            DOWN)
+                current=$(((current + 1) % total))
+                ;;
+            SPACE)
+                IFS='|' read -r b_token b_label b_desc <<<"${raw_browsers[$current]}"
+                _toggle_browser "$b_token"
+                ;;
+            N)
+                CONFIG_BROWSERS=""
+                ;;
+            ENTER)
+                cursor_show
+                # An empty list disables the category so no stray header is emitted
+                if [ -n "$CONFIG_BROWSERS" ]; then
+                    CAT_BROWSERS=1
+                else
+                    CAT_BROWSERS=0
+                fi
+                return 0
+                ;;
+            Q | ESC)
+                cursor_show
+                clear_screen
+                log_info "Setup cancelled by user."
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# ==============================================================================
 # SCREEN 3: MACHINE & CONFIGURATION CUSTOMIZER
 # ==============================================================================
 config_customizer_screen() {
@@ -449,7 +551,7 @@ config_customizer_screen() {
 
     while true; do
         render_header
-        printf "%s🎨 Step 3/4: Personalize Configuration & Aesthetics%s\n\n" "$C_HEAD" "$C_RESET"
+        printf "%s🎨 Step 4/5: Personalize Configuration & Aesthetics%s\n\n" "$C_HEAD" "$C_RESET"
 
         # Field 0: Git Name
         local f0="[ ${CONFIG_GIT_NAME:-"(not set)"} ]"
@@ -584,14 +686,20 @@ config_customizer_screen() {
 # ==============================================================================
 summary_confirmation_screen() {
     local active_cats=0
-    for cat_var in CAT_WINDOW_MANAGEMENT CAT_TERMINAL CAT_CORE_CLI CAT_MODERN_CLI CAT_SHELL_QUALITY CAT_AI CAT_EDITORS CAT_GIT_TUIS CAT_RUST CAT_WEB CAT_MOBILE CAT_GUI_CORE CAT_FONTS CAT_SECURITY CAT_CREATIVE CAT_CUSTOM_TAP; do
+    for cat_var in CAT_WINDOW_MANAGEMENT CAT_TERMINAL CAT_CORE_CLI CAT_MODERN_CLI CAT_SHELL_QUALITY CAT_AI CAT_EDITORS CAT_GIT_TUIS CAT_RUST CAT_WEB CAT_MOBILE CAT_BROWSERS CAT_GUI_CORE CAT_FONTS CAT_SECURITY CAT_CREATIVE CAT_CUSTOM_TAP; do
         [ "${!cat_var}" -eq 1 ] && active_cats=$((active_cats + 1))
     done
 
+    local browser_summary="none"
+    if [ "$CAT_BROWSERS" -eq 1 ] && [ -n "$CONFIG_BROWSERS" ]; then
+        browser_summary="$CONFIG_BROWSERS"
+    fi
+
     render_header
-    printf "%s🚀 Step 4/4: Setup Ready to Install%s\n\n" "$C_HEAD" "$C_RESET"
+    printf "%s🚀 Step 5/5: Setup Ready to Install%s\n\n" "$C_HEAD" "$C_RESET"
     printf "  • Profile:            %s%s%s\n" "$C_BOLD" "$CONFIG_PRESET_NAME" "$C_RESET"
-    printf "  • Active Categories:  %s%d of 16 categories enabled%s\n" "$C_GREEN" "$active_cats" "$C_RESET"
+    printf "  • Active Categories:  %s%d of 17 categories enabled%s\n" "$C_GREEN" "$active_cats" "$C_RESET"
+    printf "  • Browsers:           %s%s%s\n" "$C_BOLD" "$browser_summary" "$C_RESET"
     printf "  • Theme Palette:      %s%s%s\n" "$C_BOLD" "$CONFIG_THEME_PALETTE" "$C_RESET"
     printf "  • Coding Font:        %s%s%s\n" "$C_BOLD" "$CONFIG_THEME_FONT" "$C_RESET"
     printf "  • macOS Defaults:     %s%s%s\n" "$C_BOLD" "$([ "$CONFIG_MACOS_DEFAULTS_ENABLED" = true ] && echo "Enabled" || echo "Disabled")" "$C_RESET"

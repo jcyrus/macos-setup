@@ -157,12 +157,19 @@ EOF
         _add_brew "scrcpy"
     fi
 
-    # 13. GUI CORE
+    # 13. BROWSERS
+    if [ "$CAT_BROWSERS" -eq 1 ] && [ -n "${CONFIG_BROWSERS:-}" ]; then
+        echo "" >>"$output_file"
+        echo "# --- BROWSERS ---" >>"$output_file"
+        for browser in $CONFIG_BROWSERS; do
+            _add_cask "$browser"
+        done
+    fi
+
+    # 14. GUI CORE
     if [ "$CAT_GUI_CORE" -eq 1 ]; then
         echo "" >>"$output_file"
         echo "# --- GUI APPS ---" >>"$output_file"
-        _add_cask "brave-browser"
-        _add_cask "google-chrome"
         _add_cask "raycast"
         _add_cask "orbstack"
         _add_cask "tableplus"
@@ -177,7 +184,7 @@ EOF
         _add_cask "sf-symbols"
     fi
 
-    # 14. FONTS
+    # 15. FONTS
     if [ "$CAT_FONTS" -eq 1 ]; then
         echo "" >>"$output_file"
         echo "# --- FONTS ---" >>"$output_file"
@@ -185,7 +192,7 @@ EOF
         _add_cask "font-jetbrains-mono-nerd-font"
     fi
 
-    # 15. SECURITY
+    # 16. SECURITY
     if [ "$CAT_SECURITY" -eq 1 ]; then
         echo "" >>"$output_file"
         echo "# --- SECURITY ---" >>"$output_file"
@@ -193,7 +200,7 @@ EOF
         _add_cask "tailscale-app"
     fi
 
-    # 16. CREATIVE / MEDIA
+    # 17. CREATIVE / MEDIA
     if [ "$CAT_CREATIVE" -eq 1 ]; then
         echo "" >>"$output_file"
         echo "# --- CREATIVE / LIFESTYLE ---" >>"$output_file"
@@ -206,7 +213,7 @@ EOF
         _add_cask "stremio"
     fi
 
-    # 17. CUSTOM TAP APPS
+    # 18. CUSTOM TAP APPS
     if [ "$CAT_CUSTOM_TAP" -eq 1 ]; then
         echo "" >>"$output_file"
         echo "# --- CUSTOM TAP APPS ---" >>"$output_file"

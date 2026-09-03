@@ -67,10 +67,15 @@ brew "leoafarias/fvm/fvm"
 brew "cocoapods"
 brew "scrcpy"
 
-# --- GUI APPS ---
-cask "visual-studio-code"
+# --- BROWSERS ---
+# Zen is the main browser; the others are here for cross-engine testing.
+# `install.sh` lets you pick a different set — see its --browsers flag.
+cask "zen"
 cask "brave-browser"
 cask "google-chrome"
+
+# --- GUI APPS ---
+cask "visual-studio-code"
 cask "raycast"
 cask "orbstack"
 cask "tableplus"
@@ -110,6 +115,13 @@ brew "jcyrus/tap/zerodrop"
 brew "jcyrus/tap/spektr"
 
 # --- OPTIONAL (Uncomment to install) ---
+# cask "firefox"
+# cask "arc"
+# cask "vivaldi"
+# cask "microsoft-edge"
+# cask "orion"
+# cask "librewolf"
+# cask "floorp"
 # cask "font-fira-code"
 # cask "iterm2"
 # cask "warp"

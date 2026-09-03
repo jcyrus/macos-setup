@@ -20,6 +20,8 @@ UNATTENDED=false
 DRY_RUN=false
 CHOSEN_PRESET=""
 CUSTOM_CONFIG=""
+CHOSEN_BROWSERS=""
+BROWSERS_OVERRIDDEN=false
 
 print_usage() {
     cat <<EOF
@@ -32,6 +34,10 @@ Options:
   -y, --unattended         Run non-interactively with default or specified preset.
   -p, --preset <name>      Choose a profile (full, minimalist, web, rust, mobile).
   -c, --config <file>      Use an existing configuration TOML file.
+  -b, --browsers <list>    Browser casks to install, space or comma separated.
+                           Defaults to "zen". Pass "none" to install no browser.
+                           Choices: zen, brave-browser, google-chrome, firefox,
+                           arc, vivaldi, microsoft-edge, orion, librewolf, floorp.
   -d, --dry-run            Simulate installation and generate config/Brewfile without changes.
   -h, --help               Show this help message.
 
@@ -39,6 +45,8 @@ Examples:
   ./install.sh                           # Interactive TUI Setup Wizard
   ./install.sh --unattended              # Fast automated full installation (AI Agent mode)
   ./install.sh -p web -y                 # Unattended Web developer setup
+  ./install.sh -b "zen firefox" -y       # Unattended, install Zen and Firefox only
+  ./install.sh --browsers none -y        # Unattended, keep Safari as the only browser
   ./install.sh --config ~/.config/macos-setup/config.toml
 EOF
 }
@@ -66,6 +74,16 @@ while [[ $# -gt 0 ]]; do
             CUSTOM_CONFIG="${1#*=}"
             shift
             ;;
+        -b | --browsers)
+            CHOSEN_BROWSERS="$2"
+            BROWSERS_OVERRIDDEN=true
+            shift 2
+            ;;
+        --browsers=*)
+            CHOSEN_BROWSERS="${1#*=}"
+            BROWSERS_OVERRIDDEN=true
+            shift
+            ;;
         -d | --dry-run)
             DRY_RUN=true
             shift
@@ -81,6 +99,23 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Apply a --browsers override on top of whatever the preset or config asked for.
+# Accepts a comma or space separated list; "none" installs no browser at all.
+apply_browser_override() {
+    [ "$BROWSERS_OVERRIDDEN" = true ] || return 0
+
+    local normalized
+    normalized="$(echo "$CHOSEN_BROWSERS" | tr ',' ' ' | xargs)"
+
+    if [ -z "$normalized" ] || [ "$normalized" = "none" ]; then
+        CONFIG_BROWSERS=""
+        CAT_BROWSERS=0
+    else
+        CONFIG_BROWSERS="$normalized"
+        CAT_BROWSERS=1
+    fi
+}
 
 # Initialize default configuration
 init_default_config
@@ -106,6 +141,8 @@ elif [ -n "$CHOSEN_PRESET" ]; then
     fi
 fi
 
+apply_browser_override
+
 # Determine whether to run Interactive TUI or Unattended
 IS_TTY=false
 if [ -t 0 ] && [ -t 1 ]; then
@@ -120,6 +157,13 @@ if [ "$UNATTENDED" = false ] && [ "$IS_TTY" = true ] && [ -z "$CHOSEN_PRESET" ] 
     if [ "$CONFIG_PRESET" = "custom" ]; then
         category_matrix_screen
         individual_packages_screen
+    fi
+
+    # Browser picker — every profile gets one, since browsers are personal.
+    # A preset reset CONFIG_BROWSERS, so re-apply an explicit --browsers first.
+    apply_browser_override
+    if [ "$BROWSERS_OVERRIDDEN" = false ] && [ "$CAT_BROWSERS" -eq 1 ]; then
+        browser_selection_screen
     fi
 
     # Machine & config customizer screen
@@ -198,4 +242,8 @@ if [ "$CAT_WINDOW_MANAGEMENT" -eq 1 ] && [ "$CONFIG_AEROSPACE_ENABLED" = true ];
 fi
 if [ "$CAT_EDITORS" -eq 1 ]; then
     log_info "Open 'nvim' once to let LazyVim bootstrap plugins & language servers."
+fi
+if [ "$CAT_BROWSERS" -eq 1 ] && [ -n "$CONFIG_BROWSERS" ]; then
+    log_info "Installed browsers: $CONFIG_BROWSERS"
+    log_dim "Your macOS default browser was left as-is — change it in System Settings › Desktop & Dock."
 fi

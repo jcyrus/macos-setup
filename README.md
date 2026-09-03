@@ -43,9 +43,10 @@ This repository automates the installation of a modern stack (Rust, Flutter, Web
 | **📱 Mobile**     | **FVM**            | Flutter Version Manager.                               |
 |                   | **Scrcpy**         | Low-latency Android screen mirroring.                  |
 |                   | **Cocoapods**      | Dependency manager for iOS projects.                   |
-| **💻 GUI Core**   | **Raycast**        | Extensible launcher (Spotlight replacement).           |
+| **🌐 Browsers**   | **Zen**            | Main browser: Firefox-based, vertical tabs, split view. |
 |                   | **Brave**          | Privacy-focused browser.                               |
 |                   | **Google Chrome**  | Google's web browser.                                  |
+| **💻 GUI Core**   | **Raycast**        | Extensible launcher (Spotlight replacement).           |
 |                   | **OrbStack**       | Fast container manager for macOS.                      |
 |                   | **TablePlus**      | Native database GUI.                                   |
 |                   | **Shottr**         | Precision screenshot tool.                             |
@@ -95,18 +96,24 @@ The interactive installer guides you through choosing preset profiles, customizi
 1. **⚡ Preset Profiles**:
    - **`Complete Experience`**: Installs everything (Rust, Web, Flutter, AeroSpace, Neovim, and all GUI apps).
    - **`Minimalist / CLI Focus`**: Lightweight terminal stack with Ghostty, Neovim, Tmux, Starship, Rust, and modern CLI tools.
-   - **`Full-Stack Web`**: Node.js (FNM), pnpm, VS Code, Chrome, Brave, TablePlus, Bruno, OrbStack.
+   - **`Full-Stack Web`**: Node.js (FNM), pnpm, VS Code, Zen, Chrome, TablePlus, Bruno, OrbStack.
    - **`Systems & Rust`**: Rustup, Bacon, Cargo tools, Neovim (LazyVim), Lazygit, Yazi.
    - **`Mobile & Flutter`**: Flutter (FVM), Cocoapods, Scrcpy, VS Code, OrbStack.
    - **`Custom Checklist`**: Granular package-by-package and category selection matrix.
-2. **🎨 Machine & Config Customizer**:
+2. **🌐 Browser Picker**:
+   - Shown on every interactive run, whichever profile you picked. **Zen** is the
+     pre-selected main browser; Brave, Chrome, Firefox, Arc, Vivaldi, Edge, Orion,
+     LibreWolf and Floorp are one keystroke away, and `[n]` installs none at all.
+   - This only decides what gets **installed**. Your macOS default browser is never
+     changed — pick it yourself in System Settings, or leave it to a link router.
+3. **🎨 Machine & Config Customizer**:
    - Custom Git user name, email, and Delta diff layout.
    - Theme selection (Catppuccin Mocha, Macchiato, Frappe, Latte).
    - Coding font selection (0xProto Nerd Font, JetBrains Mono Nerd Font).
    - Ghostty background opacity and blur.
    - AeroSpace modifier key (`alt`/`cmd`/`ctrl`) and gap dimensions.
    - Toggle macOS system defaults and fast keyboard repeat rates.
-3. **💾 Saved State**:
+4. **💾 Saved State**:
    - Saves your choices to `~/.config/macos-setup/config.toml` so future runs and `./update.sh` stay consistent.
 
 ---
@@ -122,6 +129,10 @@ For CI pipelines, unattended automation, or AI agents:
 # Run a specific profile headlessly
 ./install.sh --preset=minimalist -y
 ./install.sh --preset=web -y
+
+# Choose which browsers get installed (default: zen)
+./install.sh --browsers "zen firefox" -y
+./install.sh --browsers none -y
 
 # Simulate changes without installing (Dry Run)
 ./install.sh --dry-run

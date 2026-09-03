@@ -287,6 +287,35 @@ if [ "$CAT_WINDOW_MANAGEMENT" -eq 1 ] && [ "$CONFIG_AEROSPACE_ENABLED" = true ];
     fi
 fi
 
+# --- Browsers ---------------------------------------------------------------
+if [ "$CAT_BROWSERS" -eq 1 ] && [ -n "${CONFIG_BROWSERS:-}" ]; then
+    section "Browsers"
+    for browser in $CONFIG_BROWSERS; do
+        case "$browser" in
+            zen) app="/Applications/Zen.app" ;;
+            brave-browser) app="/Applications/Brave Browser.app" ;;
+            google-chrome) app="/Applications/Google Chrome.app" ;;
+            firefox) app="/Applications/Firefox.app" ;;
+            arc) app="/Applications/Arc.app" ;;
+            vivaldi) app="/Applications/Vivaldi.app" ;;
+            microsoft-edge) app="/Applications/Microsoft Edge.app" ;;
+            orion) app="/Applications/Orion.app" ;;
+            librewolf) app="/Applications/LibreWolf.app" ;;
+            floorp) app="/Applications/Floorp.app" ;;
+            *) app="" ;;
+        esac
+
+        if [ -z "$app" ]; then
+            warn "$browser" "unknown cask, cannot verify"
+        elif [ -d "$app" ]; then
+            ok "$browser" "installed"
+        else
+            fail "$browser" "not installed"
+            hint "brew install --cask $browser"
+        fi
+    done
+fi
+
 # --- Summary ----------------------------------------------------------------
 printf "\n%s── Summary%s\n" "$C_HEAD" "$C_OFF"
 printf "  %s%d ok%s   %s%d warn%s   %s%d fail%s\n\n" \

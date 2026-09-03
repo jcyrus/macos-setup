@@ -27,6 +27,10 @@ dock_fast_animation = true
 screenshots_dir = "~/Screenshots"
 fast_keyboard_repeat = true
 
+# Systems profile stays lean: Zen only.
+[config.browsers]
+install = ["zen"]
+
 [categories]
 window_management = true
 terminal = true
@@ -39,6 +43,7 @@ git_tuis = true
 rust = true
 web = false
 mobile = false
+browsers = true
 gui_core = false
 fonts = true
 security = false
@@ -47,4 +52,4 @@ custom_tap = true
 
 [packages.skip]
 formulae = ["fnm", "pnpm", "cocoapods", "scrcpy", "imagemagick"]
-casks = ["visual-studio-code", "brave-browser", "tableplus", "bruno", "figma", "darktable", "stremio", "spotify", "telegram"]
+casks = ["visual-studio-code", "tableplus", "bruno", "figma", "darktable", "stremio", "spotify", "telegram"]

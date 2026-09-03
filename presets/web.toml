@@ -27,6 +27,10 @@ dock_fast_animation = true
 screenshots_dir = "~/Screenshots"
 fast_keyboard_repeat = true
 
+# Zen for daily driving, Chrome for the Chromium DevTools web work needs.
+[config.browsers]
+install = ["zen", "google-chrome"]
+
 [categories]
 window_management = false
 terminal = true
@@ -39,6 +43,7 @@ git_tuis = true
 rust = false
 web = true
 mobile = false
+browsers = true
 gui_core = true
 fonts = true
 security = true
