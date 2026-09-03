@@ -98,6 +98,17 @@ staged = "󰄬${count}"
 stashed = "󰏗${count}"
 untracked = "󰞋${count}"
 
+# Custom modules for dynamic powerline end cap depending on whether git is active
+[custom.git_cap]
+command = "echo ''"
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+format = "[](fg:green) "
+
+[custom.dir_cap]
+command = "echo ''"
+when = "! git rev-parse --is-inside-work-tree 2>/dev/null"
+format = "[](fg:blue) "
+
 [c]
 symbol = " "
 format = "[](fg:blue)[$symbol$version]($style)[](fg:blue) "
@@ -175,7 +186,7 @@ style = "fg:base bg:peach"
 
 [aws]
 symbol = "  "
-format = "[](fg:peach)[$symbol($profile)(\($region\))]($style)[](fg:peach) "
+format = '[](fg:peach)[$symbol($profile)(\($region\))]($style)[](fg:peach) '
 style = "fg:base bg:peach"
 
 [azure]
@@ -205,7 +216,7 @@ style = "fg:base bg:red"
 
 [gcloud]
 symbol = "󱇶 "
-format = "[](fg:blue)[$symbol$account(@$domain)(\($project\))]($style)[](fg:blue) "
+format = '[](fg:blue)[$symbol$account(@$domain)(\($project\))]($style)[](fg:blue) '
 style = "fg:base bg:blue"
 
 [helm]
@@ -220,7 +231,7 @@ style = "fg:base bg:mauve"
 
 [kubernetes]
 symbol = "󱃾 "
-format = "[](fg:sky)[$symbol$context( \($namespace\))]($style)[](fg:sky) "
+format = '[](fg:sky)[$symbol$context( \($namespace\))]($style)[](fg:sky) '
 style = "fg:base bg:sky"
 
 [nim]

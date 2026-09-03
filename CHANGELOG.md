@@ -27,6 +27,9 @@ The format is based on Keep a Changelog.
 
 ### Fixed
 
+- **The Starship powerline was destroyed by any run of `install.sh`.** `templates/starship.toml.tmpl` — the file actually rendered to `~/.config/starship.toml` — wrote three `format` values as TOML *basic* strings containing `\(` (`aws`, `gcloud`, `kubernetes`). `\(` is not a valid escape in a basic string, so the whole config failed to parse and Starship silently fell back to its stock prompt: no powerline, no Catppuccin, no Nerd Font glyphs. Those three are now *literal* (single-quoted) strings, matching how `starship/starship.toml` has always written them. The template renders and parses cleanly under all four palettes.
+- The same template's `format` string calls `$custom` but defined no `[custom.*]` modules, so even once parsing was fixed the powerline had no closing cap and the last segment ended flat. `[custom.git_cap]` and `[custom.dir_cap]` — which draw the end cap in green inside a git repo and blue outside one — are now in the template as well as in `starship/starship.toml`.
+- **`render_template` overwrote the repo's own checked-in configs.** It redirects with `sed … > "$out"`, and older versions of the installer symlinked `~/.config/starship.toml` back into the clone. Redirecting onto a symlink writes through to its target, so on any machine carrying that legacy layout an install rewrote `starship/starship.toml`, `ghostty/config` and `aerospace/aerospace.toml` in the working tree. `render_template` now drops a symlink at `$out` before rendering, so it always produces a real file.
 - The README app manifest still listed Whisky as an installed app after the cask was removed from the Brewfile.
 - `install.sh` masked the return value of `brew --prefix rustup` by assigning it inside an `export` (SC2155).
 - `doctor.sh` used `tr 'A-Z' 'a-z'` to case-fold VS Code extension IDs, which is not accent- or locale-safe; it now uses `[:upper:]`/`[:lower:]`.

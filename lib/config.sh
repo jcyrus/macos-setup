@@ -255,6 +255,15 @@ render_template() {
 
     mkdir -p "$(dirname "$out")"
 
+    # Older versions of this installer symlinked these paths back into the repo.
+    # Redirecting onto a symlink writes through to its target, which silently
+    # overwrites the repo's checked-in configs with rendered output. Drop the
+    # link first so we always render a real file at $out.
+    if [ -L "$out" ]; then
+        log_warn "Replacing legacy symlink with a rendered file: $out"
+        rm -f "$out"
+    fi
+
     # Derive VS Code theme name based on palette
     local vscode_theme="Catppuccin Mocha"
     case "$CONFIG_THEME_PALETTE" in
