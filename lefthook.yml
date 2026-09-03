@@ -25,3 +25,13 @@ pre-commit:
       glob: "*.sh"
       run: shfmt -w {staged_files}
       stage_fixed: true
+
+    # A broken template is invisible until it reaches a machine: Starship
+    # answers an unparseable config by falling back to its stock prompt rather
+    # than erroring, so a bad escape silently replaced the powerline for anyone
+    # who ran install.sh. Checks the whole template set whenever any template or
+    # its checked-in counterpart is staged, so it cannot fix one and forget the
+    # other. Takes no {staged_files} — the checks are cross-file by nature.
+    templates:
+      glob: "{templates/*,starship/*,aerospace/*,ghostty/*,vscode/*}"
+      run: ./scripts/check-templates.sh
